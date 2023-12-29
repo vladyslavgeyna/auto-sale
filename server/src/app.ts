@@ -2,6 +2,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
 import { appDataSource } from './data-source'
+import errorMiddleware from './middlewares/error.middleware'
+import accountRouter from './resources/account/account.router'
 
 class App {
 	private port: number
@@ -21,7 +23,9 @@ class App {
 		return `/${this.URI_PREFIX}/${resourceName}`
 	}
 
-	private initializeRoutes() {}
+	private initializeRoutes() {
+		this.app.use(this.getRouteUri('account'), accountRouter)
+	}
 
 	private initializeMiddlewares() {
 		this.app.use(cookieParser())
@@ -35,7 +39,7 @@ class App {
 	}
 
 	private initializeErrorHandling() {
-		// this.app.use(errorMiddleware)
+		this.app.use(errorMiddleware)
 	}
 
 	public async start() {
