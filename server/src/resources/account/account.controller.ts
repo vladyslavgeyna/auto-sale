@@ -27,18 +27,18 @@ class AccountController {
 		res: Response,
 		next: NextFunction,
 	) {
+		const clientUrl = String(process.env.CLIENT_URL)
+
+		const redirectUrl = `${clientUrl}/account/login?verified=`
+
 		try {
 			const userId = req.params.userId
 
 			await accountService.verify(userId)
 
-			const clientUrl = String(process.env.CLIENT_URL)
-
-			const redirectUrl = `${clientUrl}/account/login?verified=true`
-
-			res.redirect(redirectUrl)
+			res.redirect(redirectUrl + 'true')
 		} catch (error) {
-			next(error)
+			res.redirect(redirectUrl + 'false')
 		}
 	}
 }
