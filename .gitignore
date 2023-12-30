@@ -80,6 +80,7 @@ pgdata
 .yarn/install-state.gz
 /coverage
 /.next/
+.next
 /out/
 /build
 .DS_Store
