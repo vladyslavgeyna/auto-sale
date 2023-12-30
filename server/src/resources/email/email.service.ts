@@ -20,7 +20,7 @@ class EmailService {
 		await this.transporter.sendMail({
 			from: String(process.env.SMTP_USER),
 			to: emailTo,
-			subject: `Account verifying on ${process.env.API_URL}`,
+			subject: `Account verifying on ${process.env.CLIENT_URL}`,
 			text: '',
 			html: `
                 <table align="center" cellpadding="15" cellspacing="0" width="100%" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; border: 3px solid rgb(112, 44, 249); border-radius: 30px; text-align: center; max-width: 600px; margin: 0 auto;overflow: hidden;">

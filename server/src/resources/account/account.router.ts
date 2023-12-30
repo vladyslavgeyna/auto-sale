@@ -18,4 +18,6 @@ accountRouter.post(
 	accountController.register,
 )
 
+accountRouter.get('/verify/:userId', accountController.verify)
+
 export default accountRouter

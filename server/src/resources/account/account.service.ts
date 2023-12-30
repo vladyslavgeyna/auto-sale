@@ -8,6 +8,12 @@ import RegisterInputDto from './dtos/register-input.dto'
 import RegisterOutputDto from './dtos/register-output.dto'
 
 class AccountService {
+	/**
+	 *
+	 * @param user User data to register from request body
+	 * @param image User image to register from request file (req.file), if Multer is used
+	 * @returns Registered user data
+	 */
 	async register(
 		user: RegisterInputDto,
 		image?: Express.Multer.File,
@@ -56,6 +62,14 @@ class AccountService {
 			phone: createdUser.phone,
 			imageName: createdImage?.name || null,
 		}
+	}
+
+	/**
+	 *
+	 * @param userId User id to verify. This id is taken from request params
+	 */
+	async verify(userId: string) {
+		await userService.verify(userId)
 	}
 }
 
