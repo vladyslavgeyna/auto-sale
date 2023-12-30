@@ -3,9 +3,13 @@ import HttpError from '../../utils/exceptions/http.error'
 import emailService from '../email/email.service'
 import { Image } from '../image/image.entity'
 import imageService from '../image/image.service'
+import TokenPayloadDto from '../token/dtos/token-payload.dto'
+import tokenService from '../token/token.service'
+import UserDto from '../user/dtos/user.dto'
 import userService from '../user/user.service'
+import LoginInputDto from './dtos/login-input.dto'
+import LoginOutputDto from './dtos/login-output.dto'
 import RegisterInputDto from './dtos/register-input.dto'
-import RegisterOutputDto from './dtos/register-output.dto'
 
 class AccountService {
 	/**
@@ -17,7 +21,7 @@ class AccountService {
 	async register(
 		user: RegisterInputDto,
 		image?: Express.Multer.File,
-	): Promise<RegisterOutputDto> {
+	): Promise<UserDto> {
 		const candidateByEmail = await userService.getByEmail(user.email)
 
 		if (candidateByEmail) {
@@ -70,6 +74,54 @@ class AccountService {
 	 */
 	async verify(userId: string) {
 		await userService.verify(userId)
+	}
+
+	async login(userCredentials: LoginInputDto): Promise<LoginOutputDto> {
+		const candidate = await userService.getByEmail(userCredentials.email)
+
+		if (!candidate) {
+			throw HttpError.BadRequest(
+				`User with email ${userCredentials.email} was not found`,
+			)
+		}
+
+		if (!candidate.isVerified) {
+			throw HttpError.Forbidden(
+				`User is not verified. Please, verify ${candidate.email} email address by following the link in received email`,
+			)
+		}
+
+		const isPasswordCorrect = await bcrypt.compare(
+			userCredentials.password,
+			candidate.password,
+		)
+
+		if (!isPasswordCorrect) {
+			throw HttpError.BadRequest('Password is incorrect')
+		}
+
+		const tokenPayload: TokenPayloadDto = {
+			id: candidate.id,
+			email: candidate.email,
+			phone: candidate.phone,
+			role: candidate.role,
+		}
+
+		const tokens = tokenService.generateTokens(tokenPayload)
+
+		await tokenService.save(candidate.id, tokens.refreshToken)
+
+		return {
+			tokens,
+			user: {
+				id: candidate.id,
+				email: candidate.email,
+				name: candidate.name,
+				surname: candidate.surname,
+				phone: candidate.phone,
+				imageName: candidate.image?.name || null,
+			},
+		}
 	}
 }
 

@@ -3,7 +3,9 @@ import {
 	RequestWithBody,
 	RequestWithParams,
 } from '../../utils/types/request.type'
+import tokenService from '../token/token.service'
 import accountService from './account.service'
+import LoginInputDto from './dtos/login-input.dto'
 import RegisterInputDto from './dtos/register-input.dto'
 import VerifyInputDto from './dtos/verify-input.dto'
 
@@ -22,10 +24,29 @@ class AccountController {
 		}
 	}
 
+	async login(
+		req: RequestWithBody<LoginInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const loginData = await accountService.login(req.body)
+
+			tokenService.saveRefreshTokenCookie(res, loginData.tokens.refreshToken)
+
+			res.json({
+				...loginData.user,
+				accessToken: loginData.tokens.accessToken,
+			})
+		} catch (error) {
+			next(error)
+		}
+	}
+
 	async verify(
 		req: RequestWithParams<VerifyInputDto>,
 		res: Response,
-		next: NextFunction,
+		_next: NextFunction,
 	) {
 		const clientUrl = String(process.env.CLIENT_URL)
 
