@@ -2,6 +2,7 @@ import { Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { Repository } from 'typeorm'
 import { appDataSource } from '../../data-source'
+import HttpError from '../../utils/exceptions/http.error'
 import GenerateTokensOutputDto from './dtos/generate-tokens-output.dto'
 import TokenPayloadDto from './dtos/token-payload.dto'
 import { Token } from './token.entity'
@@ -70,6 +71,24 @@ class TokenService {
 			httpOnly: true,
 			maxAge: 30 * 24 * 60 * 60 * 1000,
 		})
+	}
+
+	removeRefreshTokenCookie(res: Response) {
+		res.clearCookie('refreshToken')
+	}
+
+	/**
+	 * Removes refresh token from database
+	 * @param refreshToken refresh token to remove
+	 */
+	async remove(refreshToken: string) {
+		const token = await this.tokenRepository.findOneBy({ refreshToken })
+
+		if (!token) {
+			throw HttpError.UnauthorizedError()
+		}
+
+		await this.tokenRepository.delete(token.id)
 	}
 }
 

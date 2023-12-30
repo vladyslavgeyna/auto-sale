@@ -26,6 +26,8 @@ accountRouter.post(
 	accountController.login,
 )
 
+accountRouter.post('/logout', accountController.logout)
+
 accountRouter.get('/verify/:userId', accountController.verify)
 
 export default accountRouter

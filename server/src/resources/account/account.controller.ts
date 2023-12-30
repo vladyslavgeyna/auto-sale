@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express'
+import HttpStatusCode from '../../utils/enums/http-status-code'
 import {
 	RequestWithBody,
 	RequestWithParams,
@@ -60,6 +61,24 @@ class AccountController {
 			res.redirect(redirectUrl + 'true')
 		} catch (error) {
 			res.redirect(redirectUrl + 'false')
+		}
+	}
+
+	async logout(
+		req: RequestWithParams<VerifyInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const { refreshToken } = req.cookies
+
+			await accountService.logout(refreshToken)
+
+			tokenService.removeRefreshTokenCookie(res)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
+		} catch (error) {
+			next(error)
 		}
 	}
 }

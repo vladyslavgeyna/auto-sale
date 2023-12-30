@@ -76,6 +76,11 @@ class AccountService {
 		await userService.verify(userId)
 	}
 
+	/**
+	 *
+	 * @param userCredentials User credentials to login from request body
+	 * @returns Logged in user data and tokens
+	 */
 	async login(userCredentials: LoginInputDto): Promise<LoginOutputDto> {
 		const candidate = await userService.getByEmail(userCredentials.email)
 
@@ -122,6 +127,14 @@ class AccountService {
 				imageName: candidate.image?.name || null,
 			},
 		}
+	}
+
+	/**
+	 *
+	 * @param refreshToken User's, what is logging out, refresh token
+	 */
+	async logout(refreshToken: string) {
+		await tokenService.remove(refreshToken)
 	}
 }
 
