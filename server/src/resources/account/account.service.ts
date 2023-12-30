@@ -9,6 +9,7 @@ import UserDto from '../user/dtos/user.dto'
 import userService from '../user/user.service'
 import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
+import RefreshOutputDto from './dtos/refresh-output.dto'
 import RegisterInputDto from './dtos/register-input.dto'
 
 class AccountService {
@@ -135,6 +136,55 @@ class AccountService {
 	 */
 	async logout(refreshToken: string) {
 		await tokenService.remove(refreshToken)
+	}
+
+	/**
+	 * Refreshes user's tokens
+	 * @param refreshToken User's refresh token
+	 * @returns Refreshed user's tokens data and tokens
+	 */
+	async refresh(refreshToken: string): Promise<RefreshOutputDto> {
+		if (!refreshToken) {
+			throw HttpError.UnauthorizedError()
+		}
+
+		const userData = tokenService.validateRefreshToken(refreshToken)
+
+		const tokenFromDatabase = await tokenService.getByRefreshToken(refreshToken)
+
+		if (!tokenFromDatabase) {
+			throw HttpError.UnauthorizedError()
+		}
+
+		//Find user by id in database to get and store fresh user data
+		const freshUser = await userService.getById(userData.id)
+
+		if (!freshUser) {
+			throw HttpError.UnauthorizedError()
+		}
+
+		const tokenPayload: TokenPayloadDto = {
+			id: freshUser.id,
+			email: freshUser.email,
+			phone: freshUser.phone,
+			role: freshUser.role,
+		}
+
+		const tokens = tokenService.generateTokens(tokenPayload)
+
+		await tokenService.save(freshUser.id, tokens.refreshToken)
+
+		return {
+			tokens,
+			user: {
+				id: freshUser.id,
+				email: freshUser.email,
+				name: freshUser.name,
+				surname: freshUser.surname,
+				phone: freshUser.phone,
+				imageName: freshUser.image?.name || null,
+			},
+		}
 	}
 }
 

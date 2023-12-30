@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import HttpStatusCode from '../../utils/enums/http-status-code'
 import {
 	RequestWithBody,
@@ -64,11 +64,7 @@ class AccountController {
 		}
 	}
 
-	async logout(
-		req: RequestWithParams<VerifyInputDto>,
-		res: Response,
-		next: NextFunction,
-	) {
+	async logout(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { refreshToken } = req.cookies
 
@@ -77,6 +73,23 @@ class AccountController {
 			tokenService.removeRefreshTokenCookie(res)
 
 			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async refresh(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { refreshToken } = req.cookies
+
+			const userData = await accountService.refresh(refreshToken)
+
+			tokenService.saveRefreshTokenCookie(res, userData.tokens.refreshToken)
+
+			res.json({
+				...userData.user,
+				accessToken: userData.tokens.accessToken,
+			})
 		} catch (error) {
 			next(error)
 		}

@@ -30,4 +30,6 @@ accountRouter.post('/logout', accountController.logout)
 
 accountRouter.get('/verify/:userId', accountController.verify)
 
+accountRouter.get('/refresh', accountController.refresh)
+
 export default accountRouter
