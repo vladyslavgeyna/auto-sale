@@ -60,7 +60,9 @@ export const accountRegisterValidation = [
 					error.message.replace('string', 'password'),
 				)
 
-				throw new Error('Invalid password: ' + validationErrors.join('; '))
+				throw new Error(
+					'Invalid password: ' + validationErrors.join('; '),
+				)
 			}
 			return true
 		}),
