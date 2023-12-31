@@ -64,7 +64,7 @@ const RegistrationForm = () => {
 		},
 	})
 
-	const onSubmit: SubmitHandler<IRegisterInput> = async registerInputData => {
+	const onSubmit: SubmitHandler<IRegisterInput> = registerInputData => {
 		registerUser(registerInputData)
 	}
 

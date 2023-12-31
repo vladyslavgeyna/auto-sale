@@ -21,10 +21,12 @@ const ButtonsGroup = () => {
 			{isAuthenticated ? (
 				<>
 					<HeaderButton
+						href='/'
 						iconComponent={<BsPlusCircleFill />}
 						text='Create ad'
 					/>
 					<HeaderButton
+						href='/'
 						iconComponent={<BsBoxArrowRight />}
 						text='Log out'
 					/>
@@ -32,10 +34,12 @@ const ButtonsGroup = () => {
 			) : (
 				<>
 					<HeaderButton
+						href='/account/register'
 						iconComponent={<BsFillPersonPlusFill />}
 						text='Sign up'
 					/>
 					<HeaderButton
+						href='/account/login'
 						iconComponent={<BsFillPersonCheckFill />}
 						text='Sign in'
 					/>
