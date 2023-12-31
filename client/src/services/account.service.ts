@@ -1,4 +1,4 @@
-import { api } from '@/http/index'
+import { api, credentialsApi } from '@/http/index'
 import { ILoginInput } from '@/types/user/login-input.interface'
 import { ILoginOutput } from '@/types/user/login-output.interface'
 import { IRegisterInput } from '@/types/user/register-input.interface'
@@ -6,6 +6,10 @@ import { IUser } from '@/types/user/user.interface'
 
 class AccountService {
 	private URI_PREFIX = '/account'
+
+	checkAuthentication = async () => {
+		return credentialsApi.get<ILoginOutput>(`${this.URI_PREFIX}/refresh`)
+	}
 
 	register = async (userData: IRegisterInput) => {
 		const formData = new FormData()
@@ -27,9 +31,13 @@ class AccountService {
 	}
 
 	login = async (userData: ILoginInput) => {
-		return api.post<ILoginOutput>(`${this.URI_PREFIX}/login`, {
+		return credentialsApi.post<ILoginOutput>(`${this.URI_PREFIX}/login`, {
 			...userData,
 		})
+	}
+
+	logout = async () => {
+		return credentialsApi.post(`${this.URI_PREFIX}/logout`)
 	}
 }
 

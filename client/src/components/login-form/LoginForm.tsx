@@ -46,8 +46,6 @@ const LoginForm = () => {
 		mutationKey: ['login'],
 		mutationFn: accountService.login,
 		onSuccess: ({ data }) => {
-			console.log('data', data)
-
 			reset()
 			setCredentials(data)
 			router.push('/')

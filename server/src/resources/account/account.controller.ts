@@ -33,7 +33,10 @@ class AccountController {
 		try {
 			const loginData = await accountService.login(req.body)
 
-			tokenService.saveRefreshTokenCookie(res, loginData.tokens.refreshToken)
+			tokenService.saveRefreshTokenCookie(
+				res,
+				loginData.tokens.refreshToken,
+			)
 
 			res.json({
 				...loginData.user,
@@ -84,7 +87,10 @@ class AccountController {
 
 			const userData = await accountService.refresh(refreshToken)
 
-			tokenService.saveRefreshTokenCookie(res, userData.tokens.refreshToken)
+			tokenService.saveRefreshTokenCookie(
+				res,
+				userData.tokens.refreshToken,
+			)
 
 			res.json({
 				...userData.user,

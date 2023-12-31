@@ -8,22 +8,26 @@ interface IUserStore {
 	error: IHttpError | null
 	isLoading: boolean
 	isAuthenticated: boolean
-	setUser: (user: IUser) => void
-	setError: (error: IHttpError) => void
+	isCheckingAuthFinished: boolean
+	setUser: (user: IUser | null) => void
+	setError: (error: IHttpError | null) => void
 	setIsLoading: (isLoading: boolean) => void
+	setIsCheckingAuthFinished: (isCheckingAuthFinished: boolean) => void
 	setIsAuthenticated: (isAuthenticated: boolean) => void
 	setCredentials: (credentials: ILoginOutput) => void
+	removeCredentials: () => void
 }
 
 export const useUserStore = create<IUserStore>(set => ({
 	isLoading: false,
 	isAuthenticated: false,
+	isCheckingAuthFinished: false,
 	error: null,
 	user: null,
-	setUser: (user: IUser) => {
+	setUser: (user: IUser | null) => {
 		set(() => ({ user }))
 	},
-	setError: (error: IHttpError) => {
+	setError: (error: IHttpError | null) => {
 		set(() => ({ error }))
 	},
 	setIsLoading: (isLoading: boolean) => {
@@ -31,6 +35,9 @@ export const useUserStore = create<IUserStore>(set => ({
 	},
 	setIsAuthenticated: (isAuthenticated: boolean) => {
 		set(() => ({ isAuthenticated }))
+	},
+	setIsCheckingAuthFinished: (isCheckingAuthFinished: boolean) => {
+		set(() => ({ isCheckingAuthFinished }))
 	},
 	setCredentials: (credentials: ILoginOutput) => {
 		set(() => ({
@@ -45,5 +52,12 @@ export const useUserStore = create<IUserStore>(set => ({
 			isAuthenticated: true,
 		}))
 		localStorage.setItem('accessToken', credentials.accessToken)
+	},
+	removeCredentials: () => {
+		set(() => ({
+			user: null,
+			isAuthenticated: false,
+		}))
+		localStorage.removeItem('accessToken')
 	},
 }))

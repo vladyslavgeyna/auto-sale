@@ -1,6 +1,7 @@
 import Footer from '@/components/layout/footer/Footer'
 import Header from '@/components/layout/header/Header'
 import Wrapper from '@/hoc/Wrapper'
+import AuthProvider from '@/providers/AuthProvider'
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider'
 import type { Metadata } from 'next'
 import { Golos_Text } from 'next/font/google'
@@ -22,13 +23,15 @@ export default function RootLayout({
 		<html lang='en'>
 			<body className={fontFamily.className}>
 				<TanstackQueryProvider>
-					<Wrapper>
-						<Header />
-						<main className='flex-auto mt-16 container max-w-screen-2xl'>
-							{children}
-						</main>
-						<Footer />
-					</Wrapper>
+					<AuthProvider>
+						<Wrapper>
+							<Header />
+							<main className='flex-auto mt-16 container max-w-screen-2xl'>
+								{children}
+							</main>
+							<Footer />
+						</Wrapper>
+					</AuthProvider>
 				</TanstackQueryProvider>
 			</body>
 		</html>
