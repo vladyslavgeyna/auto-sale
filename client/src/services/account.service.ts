@@ -7,7 +7,7 @@ import { IUser } from '@/types/user/user.interface'
 class AccountService {
 	private URI_PREFIX = '/account'
 
-	checkAuthentication = async () => {
+	refresh = async () => {
 		return credentialsApi.get<ILoginOutput>(`${this.URI_PREFIX}/refresh`)
 	}
 

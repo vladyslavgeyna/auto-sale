@@ -28,7 +28,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		if (localStorage.getItem('accessToken')) {
 			setIsLoading(true)
 			accountService
-				.checkAuthentication()
+				.refresh()
 				.then(({ data }) => {
 					setError(null)
 					setUser({
