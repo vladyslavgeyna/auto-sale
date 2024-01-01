@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { BsFacebook, BsInstagram, BsTelegram } from 'react-icons/bs'
+import ContactList from './ContactList'
 
 const Footer = () => {
 	return (
@@ -21,27 +21,7 @@ const Footer = () => {
 						</a>
 					</span>
 				</div>
-				<ul className='flex items-center text-xl gap-2'>
-					<li>
-						<a target='_blank' href='https://t.me/what_is_lovechik'>
-							<BsTelegram />
-						</a>
-					</li>
-					<li>
-						<a
-							target='_blank'
-							href='https://www.instagram.com/_what_is_lovechik_/'>
-							<BsInstagram />
-						</a>
-					</li>
-					<li>
-						<a
-							target='_blank'
-							href='https://www.facebook.com/profile.php?id=100072210826751'>
-							<BsFacebook />
-						</a>
-					</li>
-				</ul>
+				<ContactList />
 			</div>
 		</footer>
 	)
