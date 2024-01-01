@@ -18,6 +18,7 @@ import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
 import HttpError from '../http-error/HttpError'
 import { Input } from '../ui/Input'
+import { Label } from '../ui/label'
 
 const RegistrationForm = () => {
 	const [httpError, setHttpError] = useState<IHttpError | null>(null)
@@ -195,9 +196,8 @@ const RegistrationForm = () => {
 				<div>
 					<Input
 						type='text'
-						placeholder='Phone'
+						placeholder='Phone (optional)'
 						{...register('phone', {
-							required: 'Phone is required',
 							pattern: {
 								value: PHONE_NUMBER_REGEXP,
 								message: 'Please enter a valid phone number',
@@ -210,9 +210,13 @@ const RegistrationForm = () => {
 					/>
 				</div>
 				<div>
+					<Label className='ml-3' htmlFor='image'>
+						Image (optional):
+					</Label>
 					<Input
+						id='image'
 						type='file'
-						className='cursor-pointer'
+						className='cursor-pointer mt-1'
 						{...register('image', {
 							validate: value => {
 								if (value?.length) {

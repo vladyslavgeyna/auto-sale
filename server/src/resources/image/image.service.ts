@@ -63,6 +63,37 @@ class ImageService {
 
 		return buffer
 	}
+
+	/**
+	 * Save image from url
+	 * @param url the url to save image from
+	 * @returns the saved image
+	 */
+	async saveFromUrl(url: string) {
+		const uniqueFileName = uuid.v4()
+
+		const res = await fetch(url)
+
+		const bufferArray = await res.arrayBuffer()
+
+		const resBuffer = await this.resizeImage(Buffer.from(bufferArray))
+
+		const fileData: UploadFileInputDto = {
+			fileName: uniqueFileName,
+			fileBuffer: resBuffer,
+			mimeType: this.IMAGE_MIME_TYPE,
+		}
+
+		await awsService.uploadImage(fileData)
+
+		const image = this.imageRepository.create({
+			name: uniqueFileName,
+		})
+
+		const newImage = await this.imageRepository.save(image)
+
+		return newImage
+	}
 }
 
 export default new ImageService()

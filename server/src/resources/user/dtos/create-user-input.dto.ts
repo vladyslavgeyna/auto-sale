@@ -4,7 +4,7 @@ export default interface CreateUserInputDto {
 	email: string
 	name: string
 	surname: string
-	password: string
-	phone: string
+	password: string | null
+	phone: string | null
 	image: Image | null
 }

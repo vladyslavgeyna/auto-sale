@@ -1,5 +1,6 @@
 import RegistrationForm from '@/components/registration-form/RegistrationForm'
 import Title from '@/components/ui/Title'
+import WithGoogle from '@/components/with-google/WithGoogle'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -22,6 +23,10 @@ const Register = () => {
 					Sign in
 				</Link>
 			</p>
+			<div className='text-center mt-3'>OR</div>
+			<div className='flex justify-center mt-3'>
+				<WithGoogle text='Sign up with Google' />
+			</div>
 		</div>
 	)
 }

@@ -1,6 +1,8 @@
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express from 'express'
+import session from 'express-session'
+import passport from 'passport'
 import { appDataSource } from './data-source'
 import errorMiddleware from './middlewares/error.middleware'
 import accountRouter from './resources/account/account.router'
@@ -30,6 +32,15 @@ class App {
 	private initializeMiddlewares() {
 		this.app.use(cookieParser())
 		this.app.use(express.json())
+		this.app.use(
+			session({
+				secret: String(process.env.SESSION_SECRET),
+				resave: false,
+				saveUninitialized: true,
+			}),
+		)
+		this.app.use(passport.initialize())
+		this.app.use(passport.session())
 		this.app.use(
 			cors({
 				credentials: true,

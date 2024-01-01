@@ -1,5 +1,6 @@
 import LoginForm from '@/components/login-form/LoginForm'
 import Title from '@/components/ui/Title'
+import WithGoogle from '@/components/with-google/WithGoogle'
 import Link from 'next/link'
 
 const Login = () => {
@@ -16,6 +17,10 @@ const Login = () => {
 					Sign up
 				</Link>
 			</p>
+			<div className='text-center mt-3'>OR</div>
+			<div className='flex justify-center mt-3'>
+				<WithGoogle text='Sign in with Google' />
+			</div>
 		</div>
 	)
 }

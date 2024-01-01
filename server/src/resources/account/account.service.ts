@@ -7,6 +7,7 @@ import TokenPayloadDto from '../token/dtos/token-payload.dto'
 import tokenService from '../token/token.service'
 import UserDto from '../user/dtos/user.dto'
 import userService from '../user/user.service'
+import GoogleLoginInputDto from './dtos/google-login-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
 import RefreshOutputDto from './dtos/refresh-output.dto'
@@ -26,13 +27,19 @@ class AccountService {
 		const candidateByEmail = await userService.getByEmail(user.email)
 
 		if (candidateByEmail) {
-			throw HttpError.BadRequest(`User with email ${user.email} already exists`)
+			throw HttpError.BadRequest(
+				`User with email ${user.email} already exists`,
+			)
 		}
 
-		const candidateByPhone = await userService.getByPhone(user.phone)
+		if (user.phone) {
+			const candidateByPhone = await userService.getByPhone(user.phone)
 
-		if (candidateByPhone) {
-			throw HttpError.BadRequest(`User with phone ${user.phone} already exists`)
+			if (candidateByPhone) {
+				throw HttpError.BadRequest(
+					`User with phone ${user.phone} already exists`,
+				)
+			}
 		}
 
 		let createdImage: Image | null = null
@@ -47,7 +54,7 @@ class AccountService {
 			email: user.email,
 			name: user.name,
 			surname: user.surname,
-			phone: user.phone,
+			phone: user.phone || null,
 			password: hashedPassword,
 			image: createdImage,
 		})
@@ -99,7 +106,7 @@ class AccountService {
 
 		const isPasswordCorrect = await bcrypt.compare(
 			userCredentials.password,
-			candidate.password,
+			candidate.password!,
 		)
 
 		if (!isPasswordCorrect) {
@@ -150,7 +157,9 @@ class AccountService {
 
 		const userData = tokenService.validateRefreshToken(refreshToken)
 
-		const tokenFromDatabase = await tokenService.getByRefreshToken(refreshToken)
+		const tokenFromDatabase = await tokenService.getByRefreshToken(
+			refreshToken,
+		)
 
 		if (!tokenFromDatabase) {
 			throw HttpError.UnauthorizedError()
@@ -184,6 +193,100 @@ class AccountService {
 				phone: freshUser.phone,
 				imageName: freshUser.image?.name || null,
 			},
+		}
+	}
+
+	/**
+	 * Logs in user with google account. If user with this email already exists, then just log in, otherwise create new user
+	 * @param userData User data from google login
+	 * @returns Logged in user data and tokens
+	 */
+	async googleLogin(userData?: Express.User): Promise<LoginOutputDto> {
+		if (
+			userData &&
+			'_json' in userData &&
+			typeof userData._json === 'object' &&
+			userData._json &&
+			'email' in userData._json &&
+			typeof userData._json.email === 'string' &&
+			'given_name' in userData._json &&
+			typeof userData._json.given_name === 'string' &&
+			'family_name' in userData._json &&
+			typeof userData._json.family_name === 'string' &&
+			'picture' in userData._json &&
+			typeof userData._json.picture === 'string'
+		) {
+			const user: GoogleLoginInputDto = {
+				email: userData._json.email,
+				name: userData._json.given_name,
+				surname: userData._json.family_name,
+				imageLink: userData._json.picture.split('=')[0],
+			}
+
+			const candidate = await userService.getByEmail(user.email)
+
+			if (!candidate) {
+				const createdImage = await imageService.saveFromUrl(
+					user.imageLink,
+				)
+
+				const createdUser = await userService.create({
+					email: user.email,
+					name: user.name,
+					surname: user.surname,
+					phone: null,
+					password: null,
+					image: createdImage,
+				})
+
+				const tokenPayload: TokenPayloadDto = {
+					id: createdUser.id,
+					email: createdUser.email,
+					phone: createdUser.phone,
+					role: createdUser.role,
+				}
+
+				const tokens = tokenService.generateTokens(tokenPayload)
+
+				await tokenService.save(createdUser.id, tokens.refreshToken)
+
+				return {
+					tokens,
+					user: {
+						id: createdUser.id,
+						email: createdUser.email,
+						name: createdUser.name,
+						surname: createdUser.surname,
+						phone: createdUser.phone,
+						imageName: createdImage.name,
+					},
+				}
+			}
+
+			const tokenPayload: TokenPayloadDto = {
+				id: candidate.id,
+				email: candidate.email,
+				phone: candidate.phone,
+				role: candidate.role,
+			}
+
+			const tokens = tokenService.generateTokens(tokenPayload)
+
+			await tokenService.save(candidate.id, tokens.refreshToken)
+
+			return {
+				tokens,
+				user: {
+					id: candidate.id,
+					email: candidate.email,
+					name: candidate.name,
+					surname: candidate.surname,
+					phone: candidate.phone,
+					imageName: candidate.image?.name || null,
+				},
+			}
+		} else {
+			throw HttpError.BadRequest('Invalid google user data')
 		}
 	}
 }

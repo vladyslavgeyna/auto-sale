@@ -6,6 +6,6 @@ export default interface UserDto {
 	email: string
 	name: string
 	surname: string
-	phone: string
+	phone: string | null
 	imageName: string | null
 }

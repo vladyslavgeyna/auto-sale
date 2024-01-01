@@ -17,7 +17,7 @@ export default interface TokenPayloadDto {
 	/**
 	 * User's phone number
 	 */
-	phone: string
+	phone: string | null
 
 	/**
 	 * User's role

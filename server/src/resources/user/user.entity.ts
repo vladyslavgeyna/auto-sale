@@ -23,11 +23,11 @@ export class User {
 	@Column()
 	surname: string
 
-	@Column()
-	password: string
+	@Column({ type: 'character varying', nullable: true })
+	password: string | null
 
-	@Column()
-	phone: string
+	@Column({ type: 'character varying', unique: true, nullable: true })
+	phone: string | null
 
 	@Column({ default: false })
 	isVerified: boolean

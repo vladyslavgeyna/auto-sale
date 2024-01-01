@@ -75,6 +75,12 @@ class AccountController {
 
 			tokenService.removeRefreshTokenCookie(res)
 
+			req.logout(error => {
+				if (error) {
+					return next(error)
+				}
+			})
+
 			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {
 			next(error)
@@ -98,6 +104,35 @@ class AccountController {
 			})
 		} catch (error) {
 			next(error)
+		}
+	}
+
+	async googleLogin(req: Request, res: Response, _next: NextFunction) {
+		try {
+			const loginData = await accountService.googleLogin(req.user)
+
+			tokenService.saveRefreshTokenCookie(
+				res,
+				loginData.tokens.refreshToken,
+			)
+
+			res.redirect(
+				`${
+					process.env.CLIENT_URL
+				}/account/success-google-login?accessToken=${
+					loginData.tokens.accessToken
+				}&id=${loginData.user.id}&email=${loginData.user.email}&name=${
+					loginData.user.name
+				}&surname=${loginData.user.surname}&phone=${
+					loginData.user.phone || ''
+				}&imageName=${loginData.user.imageName || ''}`,
+			)
+		} catch (error) {
+			res.redirect(
+				`${String(
+					process.env.API_URL,
+				)}/api/account/google-login/failed`,
+			)
 		}
 	}
 }
