@@ -32,7 +32,7 @@ const RegistrationForm = () => {
 		reset,
 		watch,
 		getValues,
-		formState: { errors, isValid },
+		formState: { errors, isValid, isDirty },
 	} = useForm<IRegisterInput>({
 		mode: 'onChange',
 	})
@@ -240,7 +240,7 @@ const RegistrationForm = () => {
 				</div>
 				<div>
 					<FormButton
-						isDisabled={!isValid}
+						isDisabled={!isValid && isDirty}
 						className='w-full'
 						isLoading={isPending}>
 						Register

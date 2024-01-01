@@ -33,7 +33,7 @@ const LoginForm = () => {
 		handleSubmit,
 		register,
 		reset,
-		formState: { errors, isValid },
+		formState: { errors, isValid, isDirty },
 	} = useForm<ILoginInput>({
 		mode: 'onChange',
 	})
@@ -122,7 +122,7 @@ const LoginForm = () => {
 				</div>
 				<div>
 					<FormButton
-						isDisabled={!isValid}
+						isDisabled={!isValid && isDirty}
 						className='w-full'
 						isLoading={isPending}>
 						Log in
