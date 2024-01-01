@@ -54,6 +54,7 @@ class AccountService {
 			email: user.email,
 			name: user.name,
 			surname: user.surname,
+			isVerified: false,
 			phone: user.phone || null,
 			password: hashedPassword,
 			image: createdImage,
@@ -235,6 +236,7 @@ class AccountService {
 					name: user.name,
 					surname: user.surname,
 					phone: null,
+					isVerified: true,
 					password: null,
 					image: createdImage,
 				})

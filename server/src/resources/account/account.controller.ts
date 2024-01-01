@@ -17,6 +17,8 @@ class AccountController {
 		next: NextFunction,
 	) {
 		try {
+			console.log('req.body', req.body)
+
 			const userData = await accountService.register(req.body, req.file)
 
 			res.json({ ...userData })

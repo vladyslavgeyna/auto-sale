@@ -3,7 +3,7 @@ import ContactItem from './ContactItem'
 
 const ContactList = () => {
 	return (
-		<ul className='flex items-center text-xl gap-2'>
+		<ul className='flex items-center text-xl gap-3'>
 			<ContactItem
 				link='https://t.me/what_is_lovechik'
 				iconComponent={<BsTelegram />}

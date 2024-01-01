@@ -6,5 +6,6 @@ export default interface CreateUserInputDto {
 	surname: string
 	password: string | null
 	phone: string | null
+	isVerified: boolean
 	image: Image | null
 }
