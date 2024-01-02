@@ -19,6 +19,12 @@ import FormError from '../form-error/FormError'
 import HttpError from '../http-error/HttpError'
 import { Input } from '../ui/Input'
 import { Label } from '../ui/Label'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '../ui/tooltip'
 
 const RegistrationForm = () => {
 	const [httpError, setHttpError] = useState<IHttpError | null>(null)
@@ -194,49 +200,78 @@ const RegistrationForm = () => {
 					/>
 				</div>
 				<div>
-					<Input
-						type='text'
-						placeholder='Phone (optional)'
-						{...register('phone', {
-							pattern: {
-								value: PHONE_NUMBER_REGEXP,
-								message: 'Please enter a valid phone number',
-							},
-						})}
-					/>
+					<TooltipProvider delayDuration={100}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Input
+									type='text'
+									placeholder='Phone (optional)'
+									{...register('phone', {
+										pattern: {
+											value: PHONE_NUMBER_REGEXP,
+											message:
+												'Please enter a valid phone number',
+										},
+									})}
+								/>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>
+									Enter the phone number as follows:
+									0671234567
+								</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
 					<FormError
 						className='ml-1 mt-1'
 						message={errors.phone?.message}
 					/>
 				</div>
+
 				<div>
 					<Label className='ml-3' htmlFor='image'>
 						Image (optional):
 					</Label>
-					<Input
-						id='image'
-						type='file'
-						className='cursor-pointer mt-1'
-						{...register('image', {
-							validate: value => {
-								if (value?.length) {
-									const file = value[0]
-									if (
-										!acceptImageTypes.some(
-											t => t === file.type,
-										)
-									) {
-										return 'Only png and jpeg files are valid.'
-									}
-									if (file.size > 5242880) {
-										return 'Too large file size. Max file size is 5MB.'
-									}
-								}
+					<TooltipProvider delayDuration={100}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Input
+									accept='.jpg, .jpeg, .png'
+									id='image'
+									type='file'
+									className='cursor-pointer mt-1'
+									{...register('image', {
+										validate: value => {
+											if (value?.length) {
+												const file = value[0]
+												if (
+													!acceptImageTypes.some(
+														t => t === file.type,
+													)
+												) {
+													return 'Only png and jpeg files are valid.'
+												}
+												if (file.size > 5242880) {
+													return 'Too large file size. Max file size is 5MB.'
+												}
+											}
 
-								return true
-							},
-						})}
-					/>
+											return true
+										},
+									})}
+								/>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>
+									Chose an image file. Accepted file
+									extensions: .png, .jpeg, .jpg. Max file
+									size: 5MB.
+								</p>
+							</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+
 					<FormError
 						className='ml-1 mt-1'
 						message={errors.image?.message}
