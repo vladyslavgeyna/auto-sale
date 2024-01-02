@@ -35,7 +35,7 @@ class AWSService {
 	}
 
 	/**
-	 *
+	 * Get the url of the file. The url is signed and will expire in 3 days
 	 * @param fileName the name of the file to get the url
 	 * @returns the url of the file
 	 */
@@ -45,7 +45,9 @@ class AWSService {
 			Key: fileName,
 		})
 
-		const imageUrl = await getSignedUrl(this.s3, command, { expiresIn: 3600 })
+		const imageUrl = await getSignedUrl(this.s3, command, {
+			expiresIn: 259200,
+		})
 
 		return imageUrl
 	}

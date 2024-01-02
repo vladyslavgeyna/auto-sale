@@ -4,5 +4,5 @@ export interface IUser {
 	name: string
 	surname: string
 	phone: string | null
-	imageName: string | null
+	imageLink: string | null
 }

@@ -17,7 +17,14 @@ class UserService {
 	 * @returns User if found, otherwise null
 	 */
 	async getById(id: string) {
-		const user = await this.userRepository.findOneBy({ id })
+		const user = await this.userRepository.findOne({
+			where: {
+				id,
+			},
+			relations: {
+				image: true,
+			},
+		})
 
 		return user
 	}
@@ -44,7 +51,14 @@ class UserService {
 	 * @returns User if found, otherwise null
 	 */
 	async getByEmail(email: string) {
-		const user = await this.userRepository.findOneBy({ email })
+		const user = await this.userRepository.findOne({
+			where: {
+				email,
+			},
+			relations: {
+				image: true,
+			},
+		})
 
 		return user
 	}
@@ -55,7 +69,14 @@ class UserService {
 	 * @returns User if found, otherwise null
 	 */
 	async getByPhone(phone: string) {
-		const user = await this.userRepository.findOneBy({ phone })
+		const user = await this.userRepository.findOne({
+			where: {
+				phone,
+			},
+			relations: {
+				image: true,
+			},
+		})
 
 		return user
 	}

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import HttpError from '../../utils/exceptions/http.error'
+import awsService from '../aws/aws.service'
 import emailService from '../email/email.service'
 import { Image } from '../image/image.entity'
 import imageService from '../image/image.service'
@@ -67,13 +68,19 @@ class AccountService {
 			verificationLink,
 		)
 
+		let imageLink: string | null = null
+
+		if (createdImage) {
+			imageLink = await awsService.getImageUrl(createdImage.name)
+		}
+
 		return {
 			id: createdUser.id,
 			email: createdUser.email,
 			name: createdUser.name,
 			surname: createdUser.surname,
 			phone: createdUser.phone,
-			imageName: createdImage?.name || null,
+			imageLink,
 		}
 	}
 
@@ -125,6 +132,12 @@ class AccountService {
 
 		await tokenService.save(candidate.id, tokens.refreshToken)
 
+		let imageLink: string | null = null
+
+		if (candidate.image) {
+			imageLink = await awsService.getImageUrl(candidate.image.name)
+		}
+
 		return {
 			tokens,
 			user: {
@@ -133,7 +146,7 @@ class AccountService {
 				name: candidate.name,
 				surname: candidate.surname,
 				phone: candidate.phone,
-				imageName: candidate.image?.name || null,
+				imageLink,
 			},
 		}
 	}
@@ -184,6 +197,12 @@ class AccountService {
 
 		await tokenService.save(freshUser.id, tokens.refreshToken)
 
+		let imageLink: string | null = null
+
+		if (freshUser.image) {
+			imageLink = await awsService.getImageUrl(freshUser.image.name)
+		}
+
 		return {
 			tokens,
 			user: {
@@ -192,7 +211,7 @@ class AccountService {
 				name: freshUser.name,
 				surname: freshUser.surname,
 				phone: freshUser.phone,
-				imageName: freshUser.image?.name || null,
+				imageLink,
 			},
 		}
 	}
@@ -254,6 +273,12 @@ class AccountService {
 
 			await tokenService.save(candidate.id, tokens.refreshToken)
 
+			let imageLink: string | null = null
+
+			if (candidate.image) {
+				imageLink = await awsService.getImageUrl(candidate.image.name)
+			}
+
 			return {
 				tokens,
 				user: {
@@ -262,7 +287,7 @@ class AccountService {
 					name: candidate.name,
 					surname: candidate.surname,
 					phone: candidate.phone,
-					imageName: candidate.image?.name || null,
+					imageLink,
 				},
 			}
 		} else {

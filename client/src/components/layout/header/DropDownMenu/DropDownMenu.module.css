@@ -1,0 +1,11 @@
+.button svg {
+	transition: all 0.3s ease-in-out;
+}
+.button[data-state='close'] svg {
+	transform: rotate(0);
+	transition: all 0.3s ease-in-out;
+}
+.button[data-state='open'] svg {
+	transition: all 0.3s ease-in-out;
+	transform: rotate(180deg);
+}

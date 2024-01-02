@@ -13,8 +13,8 @@ type PropsType = {
 		email: string
 		name: string
 		surname: string
-		phone?: string
-		imageName?: string
+		phone: string
+		imageLink?: string
 	}
 }
 
@@ -46,7 +46,9 @@ const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
 			name: searchParams.name,
 			surname: searchParams.surname,
 			phone: searchParams.phone || null,
-			imageName: searchParams.imageName || null,
+			imageLink: searchParams.imageLink
+				? decodeURIComponent(searchParams?.imageLink)
+				: null,
 		})
 
 		return router.push('/')

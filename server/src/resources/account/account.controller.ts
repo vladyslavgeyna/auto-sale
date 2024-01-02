@@ -118,6 +118,11 @@ class AccountController {
 				loginData.tokens.refreshToken,
 			)
 
+			let encodedImageLink: string | null = null
+			if (loginData.user.imageLink) {
+				encodedImageLink = encodeURIComponent(loginData.user.imageLink)
+			}
+
 			res.redirect(
 				`${
 					process.env.CLIENT_URL
@@ -127,7 +132,7 @@ class AccountController {
 					loginData.user.name
 				}&surname=${loginData.user.surname}&phone=${
 					loginData.user.phone || ''
-				}&imageName=${loginData.user.imageName || ''}`,
+				}&imageLink=${encodedImageLink || ''}`,
 			)
 		} catch (error) {
 			res.redirect(
