@@ -1,4 +1,8 @@
+.button {
+	@apply focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-ring focus-visible:ring-offset-0;
+}
 .button svg {
+	outline: none !important;
 	transition: all 0.3s ease-in-out;
 }
 .button[data-state='close'] svg {

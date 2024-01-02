@@ -29,7 +29,8 @@ import accountService from '@/services/account.service'
 import { useUserStore } from '@/store/user'
 import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
+import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import styles from './DropDownMenu.module.css'
 
@@ -41,14 +42,14 @@ function DropdownMenu() {
 		})),
 	)
 
-	const router = useRouter()
+	const [isOpened, setIsOpened] = useState(false)
 
 	const { mutate: logout, isPending } = useMutation({
 		mutationKey: ['logout'],
 		mutationFn: accountService.logout,
 		onSuccess: () => {
 			removeCredentials()
-			router.push('/')
+			redirect('/')
 		},
 	})
 
@@ -56,8 +57,12 @@ function DropdownMenu() {
 		logout()
 	}
 
+	const onOpenChange = (open: boolean) => {
+		setIsOpened(open)
+	}
+
 	return (
-		<DropdownMenuShadcn>
+		<DropdownMenuShadcn open={isOpened} onOpenChange={onOpenChange}>
 			<DropdownMenuTrigger asChild>
 				<Button
 					className={
@@ -76,7 +81,10 @@ function DropdownMenu() {
 			<DropdownMenuContent className='w-56'>
 				<DropdownMenuGroup>
 					<DropdownMenuItem className='hover:cursor-pointer'>
-						<Link className='w-full flex items-center' href={'/'}>
+						<Link
+							onClick={() => onOpenChange(false)}
+							className='w-full flex items-center'
+							href={'/account/profile'}>
 							<User className='mr-2 h-4 w-4' />
 							<span>Profile</span>
 						</Link>

@@ -92,7 +92,7 @@ const LoginForm = () => {
 				method='post'>
 				<div>
 					<Input
-						type='text'
+						type='email'
 						placeholder='Email'
 						{...register('email', {
 							required: 'Email is required',
