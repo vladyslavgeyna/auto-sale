@@ -203,6 +203,7 @@ class AccountService {
 	 * @returns Logged in user data and tokens
 	 */
 	async googleLogin(userData?: Express.User): Promise<LoginOutputDto> {
+		//Just typescript stuff. Checking if data is valid
 		if (
 			userData &&
 			'_json' in userData &&
@@ -224,14 +225,14 @@ class AccountService {
 				imageLink: userData._json.picture.split('=')[0],
 			}
 
-			const candidate = await userService.getByEmail(user.email)
+			let candidate = await userService.getByEmail(user.email)
 
 			if (!candidate) {
 				const createdImage = await imageService.saveFromUrl(
 					user.imageLink,
 				)
 
-				const createdUser = await userService.create({
+				candidate = await userService.create({
 					email: user.email,
 					name: user.name,
 					surname: user.surname,
@@ -240,29 +241,6 @@ class AccountService {
 					password: null,
 					image: createdImage,
 				})
-
-				const tokenPayload: TokenPayloadDto = {
-					id: createdUser.id,
-					email: createdUser.email,
-					phone: createdUser.phone,
-					role: createdUser.role,
-				}
-
-				const tokens = tokenService.generateTokens(tokenPayload)
-
-				await tokenService.save(createdUser.id, tokens.refreshToken)
-
-				return {
-					tokens,
-					user: {
-						id: createdUser.id,
-						email: createdUser.email,
-						name: createdUser.name,
-						surname: createdUser.surname,
-						phone: createdUser.phone,
-						imageName: createdImage.name,
-					},
-				}
 			}
 
 			const tokenPayload: TokenPayloadDto = {

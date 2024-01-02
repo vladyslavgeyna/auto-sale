@@ -17,15 +17,47 @@ class ImageService {
 		this.imageRepository = appDataSource.getRepository(Image)
 	}
 
+	private generateUniqueFileName() {
+		return uuid.v4()
+	}
+
 	/**
 	 *
 	 * @param file the file to save. Can be taken from req.file
 	 * @returns the saved image
 	 */
 	async save(file: Express.Multer.File): Promise<Image> {
-		const uniqueFileName = uuid.v4()
+		const createdImage = await this.storingImageProcessing(file.buffer)
 
-		const buffer = await this.resizeImage(file.buffer)
+		return createdImage
+	}
+
+	/**
+	 * Save image from url
+	 * @param url the url to save image from
+	 * @returns the saved image
+	 */
+	async saveFromUrl(url: string) {
+		const res = await fetch(url)
+
+		const bufferArray = await res.arrayBuffer()
+
+		const createdImage = await this.storingImageProcessing(
+			Buffer.from(bufferArray),
+		)
+
+		return createdImage
+	}
+
+	/**
+	 * Helper function to store image. Save image to AWS S3 and create Image entity in database
+	 * @param imageBuffer the buffer of the image to store
+	 * @returns the saved image
+	 */
+	private async storingImageProcessing(imageBuffer: Buffer) {
+		const uniqueFileName = this.generateUniqueFileName()
+
+		const buffer = await this.resizeImage(imageBuffer)
 
 		const fileData: UploadFileInputDto = {
 			fileName: uniqueFileName,
@@ -62,37 +94,6 @@ class ImageService {
 			.toBuffer()
 
 		return buffer
-	}
-
-	/**
-	 * Save image from url
-	 * @param url the url to save image from
-	 * @returns the saved image
-	 */
-	async saveFromUrl(url: string) {
-		const uniqueFileName = uuid.v4()
-
-		const res = await fetch(url)
-
-		const bufferArray = await res.arrayBuffer()
-
-		const resBuffer = await this.resizeImage(Buffer.from(bufferArray))
-
-		const fileData: UploadFileInputDto = {
-			fileName: uniqueFileName,
-			fileBuffer: resBuffer,
-			mimeType: this.IMAGE_MIME_TYPE,
-		}
-
-		await awsService.uploadImage(fileData)
-
-		const image = this.imageRepository.create({
-			name: uniqueFileName,
-		})
-
-		const newImage = await this.imageRepository.save(image)
-
-		return newImage
 	}
 }
 
