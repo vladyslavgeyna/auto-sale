@@ -112,9 +112,13 @@ class AccountService {
 			)
 		}
 
+		if (!candidate.password) {
+			throw HttpError.BadRequest('Password is incorrect')
+		}
+
 		const isPasswordCorrect = await bcrypt.compare(
 			userCredentials.password,
-			candidate.password!,
+			candidate.password,
 		)
 
 		if (!isPasswordCorrect) {
