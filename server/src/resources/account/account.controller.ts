@@ -17,8 +17,6 @@ class AccountController {
 		next: NextFunction,
 	) {
 		try {
-			console.log('req.body', req.body)
-
 			const userData = await accountService.register(req.body, req.file)
 
 			res.json({ ...userData })
@@ -118,6 +116,8 @@ class AccountController {
 				loginData.tokens.refreshToken,
 			)
 
+			// Encode image link to be able to send it as a query parameter because it may contain special characters
+			// On frontend side, decode it with decodeURIComponent()
 			let encodedImageLink: string | null = null
 			if (loginData.user.imageLink) {
 				encodedImageLink = encodeURIComponent(loginData.user.imageLink)

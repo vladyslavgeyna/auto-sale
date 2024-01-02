@@ -18,7 +18,7 @@ import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
 import HttpError from '../http-error/HttpError'
 import { Input } from '../ui/Input'
-import { Label } from '../ui/label'
+import { Label } from '../ui/Label'
 
 const RegistrationForm = () => {
 	const [httpError, setHttpError] = useState<IHttpError | null>(null)

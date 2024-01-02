@@ -12,10 +12,16 @@ class AccountService {
 	}
 
 	register = async (userData: IRegisterInput) => {
+		console.log('userData', userData)
+
 		const formData = new FormData()
 
 		if (userData?.image && userData?.image.length) {
 			formData.append('image', userData.image[0])
+		}
+
+		if (userData?.phone) {
+			formData.append('phone', userData.phone)
 		}
 
 		formData.append('name', userData.name)
@@ -23,7 +29,6 @@ class AccountService {
 		formData.append('email', userData.email)
 		formData.append('password', userData.password)
 		formData.append('passwordConfirm', userData.passwordConfirm)
-		formData.append('phone', userData.phone)
 
 		return api.post<IUser>(`${this.URI_PREFIX}/register`, formData, {
 			headers: { 'Content-Type': 'multipart/form-data' },
