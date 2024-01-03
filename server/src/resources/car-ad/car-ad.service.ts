@@ -15,6 +15,12 @@ class CarAdService {
 		this.carAdRepository = appDataSource.getRepository(CarAd)
 	}
 
+	/**
+	 *
+	 * @param carAd Car ad to create. Also contains userId of user who is creating car ad
+	 * @param images An array of images to save. Taken from req.files if using multer
+	 * @returns Created car ad
+	 */
 	async create(
 		carAd: CreateCarAdInputDto & { userId: string },
 		images: Express.Multer.File[],
