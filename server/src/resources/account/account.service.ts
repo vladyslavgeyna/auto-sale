@@ -126,7 +126,8 @@ class AccountService {
 			}
 		}
 
-		const editedUser = await userService.edit(candidate.id, {
+		const editedUser = await userService.edit({
+			id: candidate.id,
 			name: user.name,
 			surname: user.surname,
 			phone: user.phone || null,

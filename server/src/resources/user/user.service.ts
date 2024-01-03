@@ -92,15 +92,11 @@ class UserService {
 
 	/**
 	 * Edit user
-	 * @param userId User id to edit
 	 * @param user User data to edit
 	 * @returns Edited user
 	 */
-	async edit(userId: string, user: EditUserInputDto) {
-		const editedUser = await this.userRepository.save({
-			...user,
-			id: userId,
-		})
+	async edit(user: EditUserInputDto) {
+		const editedUser = await this.userRepository.save(user)
 
 		return editedUser
 	}
