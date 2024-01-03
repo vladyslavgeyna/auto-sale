@@ -128,7 +128,6 @@ class AccountService {
 		const tokenPayload: TokenPayloadDto = {
 			id: candidate.id,
 			email: candidate.email,
-			phone: candidate.phone,
 			role: candidate.role,
 		}
 
@@ -193,7 +192,6 @@ class AccountService {
 		const tokenPayload: TokenPayloadDto = {
 			id: freshUser.id,
 			email: freshUser.email,
-			phone: freshUser.phone,
 			role: freshUser.role,
 		}
 
@@ -269,7 +267,6 @@ class AccountService {
 			const tokenPayload: TokenPayloadDto = {
 				id: candidate.id,
 				email: candidate.email,
-				phone: candidate.phone,
 				role: candidate.role,
 			}
 

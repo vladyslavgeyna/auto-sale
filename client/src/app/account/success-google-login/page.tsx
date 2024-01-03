@@ -13,7 +13,7 @@ type PropsType = {
 		email: string
 		name: string
 		surname: string
-		phone: string
+		phone?: string
 		imageLink?: string
 	}
 }

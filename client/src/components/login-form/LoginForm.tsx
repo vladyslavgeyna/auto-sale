@@ -1,33 +1,21 @@
 'use client'
 
-import accountService from '@/services/account.service'
-import { useUserStore } from '@/store/user'
-import { IHttpError } from '@/types/http-error.interface'
+import { useHttpError } from '@/hooks/useHttpError'
+import { useLogin } from '@/hooks/useLogin'
 import { ILoginInput } from '@/types/user/login-input.interface'
 import { EMAIL_REGEXP } from '@/utils/validation'
-import { useMutation } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useShallow } from 'zustand/react/shallow'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
 import HttpError from '../http-error/HttpError'
 import { Input } from '../ui/Input'
+import SuccessAccountVerifying from './SuccessAccountVerifying'
 
 const LoginForm = () => {
-	const [httpError, setHttpError] = useState<IHttpError | null>(null)
-
-	const { setCredentials } = useUserStore(
-		useShallow(state => ({
-			setCredentials: state.setCredentials,
-		})),
-	)
+	const { handleHttpError, httpError } = useHttpError()
 
 	const searchParams = useSearchParams()
-
-	const router = useRouter()
 
 	const {
 		handleSubmit,
@@ -42,50 +30,26 @@ const LoginForm = () => {
 		mutate: login,
 		isError,
 		isPending,
-	} = useMutation({
-		mutationKey: ['login'],
-		mutationFn: accountService.login,
-		onSuccess: ({ data }) => {
-			reset()
-			setCredentials(data)
-			router.push('/')
-		},
-		onError: (error: AxiosError) => {
-			const errorData = error.response?.data
-
-			if (
-				IHttpError.isHttpError(errorData) &&
-				error.response?.status &&
-				error.response?.status < 500
-			) {
-				setHttpError(errorData)
-			} else {
-				router.push('/error')
-			}
-		},
-	})
+	} = useLogin(handleHttpError, reset)
 
 	const onSubmit: SubmitHandler<ILoginInput> = loginInputData => {
 		login(loginInputData)
 	}
 
+	const isAccountVerified =
+		searchParams.get('verified') && searchParams.get('verified') === 'true'
+
+	const isHttpError = httpError && isError
+
 	return (
 		<>
-			{isError && httpError && (
+			{isHttpError && (
 				<HttpError
 					className='mt-7 max-w-lg mx-auto'
 					httpError={httpError}
 				/>
 			)}
-			{searchParams.get('verified') &&
-				searchParams.get('verified') === 'true' && (
-					<div className='mt-7 max-w-lg mx-auto text-center'>
-						<p className='text-lg'>
-							Your email address is successfully verified <br />
-							Now you can log in
-						</p>
-					</div>
-				)}
+			{isAccountVerified && <SuccessAccountVerifying />}
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className='max-w-lg mx-auto mt-7 flex flex-col gap-3'

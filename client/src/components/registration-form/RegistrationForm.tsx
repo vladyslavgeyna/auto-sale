@@ -1,17 +1,15 @@
 'use client'
 
-import accountService from '@/services/account.service'
-import { IHttpError } from '@/types/http-error.interface'
+import { useHttpError } from '@/hooks/useHttpError'
+import { useRegister } from '@/hooks/useRegister'
 import { IRegisterInput } from '@/types/user/register-input.interface'
 import {
 	EMAIL_REGEXP,
 	PASSWORD_REGEXP,
 	PHONE_NUMBER_REGEXP,
 	acceptImageTypes,
+	maxFileSize,
 } from '@/utils/validation'
-import { useMutation } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import FormButton from '../form-button/FormButton'
@@ -25,13 +23,12 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '../ui/Tooltip'
+import SuccessRegister from './SuccessRegister'
 
 const RegistrationForm = () => {
-	const [httpError, setHttpError] = useState<IHttpError | null>(null)
+	const { handleHttpError, httpError } = useHttpError()
 
 	const [email, setEmail] = useState<string>('')
-
-	const router = useRouter()
 
 	const {
 		handleSubmit,
@@ -49,48 +46,23 @@ const RegistrationForm = () => {
 		isError,
 		isPending,
 		isSuccess,
-	} = useMutation({
-		mutationKey: ['register'],
-		mutationFn: accountService.register,
-		onSuccess: () => {
-			setEmail(getValues('email'))
-			reset()
-		},
-		onError: (error: AxiosError) => {
-			const errorData = error.response?.data
-
-			if (
-				IHttpError.isHttpError(errorData) &&
-				error.response?.status &&
-				error.response?.status < 500
-			) {
-				setHttpError(errorData)
-			} else {
-				router.push('/error')
-			}
-		},
-	})
+	} = useRegister(handleHttpError, reset, () => setEmail(getValues('email')))
 
 	const onSubmit: SubmitHandler<IRegisterInput> = registerInputData => {
 		registerUser(registerInputData)
 	}
 
+	const isHttpError = httpError && isError
+
 	return (
 		<>
-			{isError && httpError && (
+			{isHttpError && (
 				<HttpError
 					className='mt-7 max-w-lg mx-auto'
 					httpError={httpError}
 				/>
 			)}
-			{isSuccess && (
-				<div className='mt-7 max-w-lg mx-auto text-center'>
-					<p className='text-lg'>
-						You have successfully registered. Please check your{' '}
-						{email} email to confirm your account
-					</p>
-				</div>
-			)}
+			{isSuccess && <SuccessRegister email={email} />}
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className='max-w-lg mx-auto mt-7 flex flex-col gap-3'
@@ -228,7 +200,6 @@ const RegistrationForm = () => {
 						message={errors.phone?.message}
 					/>
 				</div>
-
 				<div>
 					<Label className='ml-3' htmlFor='image'>
 						Image (optional):
@@ -252,7 +223,7 @@ const RegistrationForm = () => {
 												) {
 													return 'Only png and jpeg files are valid.'
 												}
-												if (file.size > 5242880) {
+												if (file.size > maxFileSize) {
 													return 'Too large file size. Max file size is 5MB.'
 												}
 											}
@@ -271,7 +242,6 @@ const RegistrationForm = () => {
 							</TooltipContent>
 						</Tooltip>
 					</TooltipProvider>
-
 					<FormError
 						className='ml-1 mt-1'
 						message={errors.image?.message}

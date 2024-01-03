@@ -1,18 +1,8 @@
 'use client'
-import Title from '@/components/ui/Title'
+import ServerError from '@/components/server-error/ServerError'
 
 const Error = () => {
-	return (
-		<div className='text-center'>
-			<Title className='mt-5'>500 Server Error</Title>
-			<p className='mt-3 text-lg'>
-				Sorry, there were an error on this page.
-			</p>
-			<p className='text-lg'>
-				Please try again later. We are working on it.
-			</p>
-		</div>
-	)
+	return <ServerError />
 }
 
 export default Error

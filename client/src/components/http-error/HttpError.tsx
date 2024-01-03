@@ -6,7 +6,7 @@ type PropsType = {
 	className?: string
 }
 
-const HttpError = ({ httpError, className = '' }: PropsType) => {
+const IHttpError = ({ httpError, className = '' }: PropsType) => {
 	return (
 		<Card className={'text-center p-2 ' + className}>
 			<div className='font-bold text-lg'>{httpError.message}</div>
@@ -21,4 +21,4 @@ const HttpError = ({ httpError, className = '' }: PropsType) => {
 	)
 }
 
-export default HttpError
+export default IHttpError

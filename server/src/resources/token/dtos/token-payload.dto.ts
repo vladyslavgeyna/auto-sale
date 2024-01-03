@@ -15,11 +15,6 @@ export default interface TokenPayloadDto {
 	email: string
 
 	/**
-	 * User's phone number
-	 */
-	phone: string | null
-
-	/**
 	 * User's role
 	 */
 	role: UserRole

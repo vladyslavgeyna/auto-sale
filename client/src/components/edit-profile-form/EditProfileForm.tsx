@@ -12,14 +12,16 @@ import {
 } from '@/utils/validation'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { FaCamera } from 'react-icons/fa6'
 import { useShallow } from 'zustand/react/shallow'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
-import HttpError from '../http-error/HttpError'
 import { Avatar, AvatarImage } from '../ui/Avatar'
+import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
 import {
 	Tooltip,
@@ -121,7 +123,7 @@ const EditProfileForm = () => {
 	return (
 		<>
 			{isError && httpError && (
-				<HttpError
+				<IHttpError
 					className='mt-7 max-w-lg mx-auto'
 					httpError={httpError}
 				/>
@@ -134,171 +136,188 @@ const EditProfileForm = () => {
 					</p>
 				</div>
 			)}
-			<form
-				onSubmit={handleSubmit(onSubmit)}
-				className='max-w-lg mx-auto mt-10 flex flex-col gap-3'
-				encType='multipart/form-data'
-				method='post'>
-				<div>
-					<TooltipProvider delayDuration={100}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Avatar
-									onClick={e => {
-										e.preventDefault()
-										fileInputRef.current?.click()
-									}}
-									className='h-32 w-32 m-auto hover:cursor-pointer'>
-									<AvatarImage
-										src={
-											user?.imageLink ||
-											'/default_avatar.svg'
-										}
-										alt='User avatar'
+			<div className='max-w-lg mx-auto mt-10 '>
+				<form
+					onSubmit={handleSubmit(onSubmit)}
+					className='flex flex-col gap-3'
+					encType='multipart/form-data'
+					method='post'>
+					<div>
+						<TooltipProvider delayDuration={100}>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Avatar
+										onClick={e => {
+											e.preventDefault()
+											fileInputRef.current?.click()
+										}}
+										className='h-32 w-32 m-auto hover:cursor-pointer relative !overflow-visible'>
+										<AvatarImage
+											className='rounded-full'
+											src={
+												user?.imageLink ||
+												'/default_avatar.svg'
+											}
+											alt='User avatar'
+										/>
+										<div className='hover:scale-105 transition-all p-1.5 rounded-xl absolute w-10 h-10 bg-white -bottom-3 left-1/2 -translate-x-2/4'>
+											<FaCamera className='w-full h-full' />
+										</div>
+									</Avatar>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>
+										Click to chose an image file. Accepted
+										file extensions: .png, .jpeg, .jpg. Max
+										file size: 5MB.
+									</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+					</div>
+					<div>
+						<Input
+							accept='.jpg, .jpeg, .png'
+							id='image'
+							type='file'
+							className='hidden'
+							ref={fileInputRef}
+							onChange={handleImageChange}
+						/>
+						<FormError
+							className='ml-1 mt-1 text-center'
+							message={errors.image?.message}
+						/>
+						{image && (
+							<p className='ml-1 mt-1 text-center font-bold text-lg'>
+								{formatFileName(image.name)}
+							</p>
+						)}
+					</div>
+					<div className='mt-6'>
+						<TooltipProvider delayDuration={100}>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Input
+										readOnly
+										disabled
+										type='email'
+										placeholder='Email'
+										{...register('email', {
+											disabled: true,
+											required: 'Email is required',
+											pattern: {
+												value: EMAIL_REGEXP,
+												message:
+													'Please enter a valid email',
+											},
+										})}
 									/>
-								</Avatar>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>
-									Chose an image file. Accepted file
-									extensions: .png, .jpeg, .jpg. Max file
-									size: 5MB.
-								</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-				</div>
-				<div>
-					<Input
-						accept='.jpg, .jpeg, .png'
-						id='image'
-						type='file'
-						className='hidden'
-						ref={fileInputRef}
-						onChange={handleImageChange}
-					/>
-					<FormError
-						className='ml-1 mt-1 text-center'
-						message={errors.image?.message}
-					/>
-					{image && (
-						<p className='ml-1 mt-1 text-center font-bold text-lg'>
-							{formatFileName(image.name)}
-						</p>
-					)}
-				</div>
-				<div>
-					<Input
-						type='text'
-						placeholder='Name'
-						{...register('name', {
-							required: 'Name is required',
-							minLength: {
-								value: 2,
-								message: 'Name should be at least 2 symbols',
-							},
-							maxLength: {
-								value: 100,
-								message: 'Max name length is 100 symbols',
-							},
-						})}
-					/>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.name?.message}
-					/>
-				</div>
-				<div>
-					<Input
-						type='text'
-						placeholder='Surname'
-						{...register('surname', {
-							required: 'Surname is required',
-							minLength: {
-								value: 2,
-								message: 'Surname should be at least 2 symbols',
-							},
-							maxLength: {
-								value: 100,
-								message: 'Max surname length is 100 symbols',
-							},
-						})}
-					/>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.surname?.message}
-					/>
-				</div>
-				<div>
-					<TooltipProvider delayDuration={100}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Input
-									readOnly
-									disabled
-									type='email'
-									placeholder='Email'
-									{...register('email', {
-										disabled: true,
-										required: 'Email is required',
-										pattern: {
-											value: EMAIL_REGEXP,
-											message:
-												'Please enter a valid email',
-										},
-									})}
-								/>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>Email cannot be changed</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.email?.message}
-					/>
-				</div>
-				<div>
-					<TooltipProvider delayDuration={100}>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<Input
-									type='text'
-									placeholder='Phone (optional)'
-									{...register('phone', {
-										pattern: {
-											value: PHONE_NUMBER_REGEXP,
-											message:
-												'Please enter a valid phone number',
-										},
-									})}
-								/>
-							</TooltipTrigger>
-							<TooltipContent>
-								<p>
-									Enter the phone number as follows:
-									0671234567
-								</p>
-							</TooltipContent>
-						</Tooltip>
-					</TooltipProvider>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.phone?.message}
-					/>
-				</div>
-				<div>
-					<FormButton
-						isDisabled={!isValid && isDirty}
-						className='w-full'
-						isLoading={isPending}>
-						Save changes
-					</FormButton>
-				</div>
-			</form>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Email cannot be changed</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						<FormError
+							className='ml-1 mt-1'
+							message={errors.email?.message}
+						/>
+					</div>
+					<div>
+						<Input
+							type='text'
+							placeholder='Name'
+							{...register('name', {
+								required: 'Name is required',
+								minLength: {
+									value: 2,
+									message:
+										'Name should be at least 2 symbols',
+								},
+								maxLength: {
+									value: 100,
+									message: 'Max name length is 100 symbols',
+								},
+							})}
+						/>
+						<FormError
+							className='ml-1 mt-1'
+							message={errors.name?.message}
+						/>
+					</div>
+					<div>
+						<Input
+							type='text'
+							placeholder='Surname'
+							{...register('surname', {
+								required: 'Surname is required',
+								minLength: {
+									value: 2,
+									message:
+										'Surname should be at least 2 symbols',
+								},
+								maxLength: {
+									value: 100,
+									message:
+										'Max surname length is 100 symbols',
+								},
+							})}
+						/>
+						<FormError
+							className='ml-1 mt-1'
+							message={errors.surname?.message}
+						/>
+					</div>
+					<div>
+						<TooltipProvider delayDuration={100}>
+							<Tooltip>
+								<TooltipTrigger asChild>
+									<Input
+										type='text'
+										placeholder='Phone (optional)'
+										{...register('phone', {
+											pattern: {
+												value: PHONE_NUMBER_REGEXP,
+												message:
+													'Please enter a valid phone number',
+											},
+										})}
+									/>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>
+										Enter the phone number as follows:
+										0671234567
+									</p>
+								</TooltipContent>
+							</Tooltip>
+						</TooltipProvider>
+						<FormError
+							className='ml-1 mt-1'
+							message={errors.phone?.message}
+						/>
+					</div>
+					<div>
+						<FormButton
+							isDisabled={!isValid && isDirty}
+							className='w-full'
+							isLoading={isPending}>
+							Save changes
+						</FormButton>
+					</div>
+				</form>
+				<hr className='mt-3 mb-3' />
+				<Button variant='secondary' className='w-full'>
+					<Link href={'/account/change-password'}>
+						Change password
+					</Link>
+				</Button>
+			</div>
 		</>
 	)
 }
 
 export default EditProfileForm
+
+// КАРОЧЕ ЗАКІНЧИВ НА ТОМУ ЩО РОБЛЮ СТОРІНКУ РЕДАГУВАННЯ ПРОФІЛЮ
