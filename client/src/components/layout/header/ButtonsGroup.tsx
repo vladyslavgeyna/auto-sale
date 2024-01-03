@@ -27,7 +27,7 @@ const ButtonsGroup = () => {
 			) : isAuthenticated ? (
 				<>
 					<HeaderButton
-						href='/'
+						href='/car-ad/create'
 						iconComponent={<BsPlusCircleFill className='text-lg' />}
 						text='Create ad'
 					/>

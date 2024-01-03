@@ -1,7 +1,13 @@
 import LoginForm from '@/components/login-form/LoginForm'
 import Title from '@/components/ui/Title'
 import WithGoogle from '@/components/with-google/WithGoogle'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+	title: 'Auto Sale | Login',
+	description: 'Sign in to Auto Sale',
+}
 
 const Login = () => {
 	return (
