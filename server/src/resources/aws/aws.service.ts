@@ -64,6 +64,17 @@ class AWSService {
 
 		await this.s3.send(command)
 	}
+
+	/**
+	 * Update image. Delete old image and upload new image
+	 * @param oldImageName Old image name to delete
+	 * @param newFileData New image data to upload
+	 */
+	async updateImage(oldImageName: string, newFileData: UploadFileInputDto) {
+		await this.deleteImage(oldImageName)
+
+		await this.uploadImage(newFileData)
+	}
 }
 
 export default new AWSService()

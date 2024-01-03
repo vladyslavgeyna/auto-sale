@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import HttpStatusCode from '../../utils/enums/http-status-code'
+import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
 	RequestWithParams,
 } from '../../utils/types/request.type'
 import tokenService from '../token/token.service'
 import accountService from './account.service'
+import EditInputDto from './dtos/edit-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import RegisterInputDto from './dtos/register-input.dto'
 import VerifyInputDto from './dtos/verify-input.dto'
@@ -18,6 +20,28 @@ class AccountController {
 	) {
 		try {
 			const userData = await accountService.register(req.body, req.file)
+
+			res.json({ ...userData })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async edit(
+		req: RequestWithBody<EditInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			const userData = await accountService.edit(
+				req.body,
+				req.authUser.id,
+				req.file,
+			)
 
 			res.json({ ...userData })
 		} catch (error) {

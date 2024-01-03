@@ -2,6 +2,7 @@ import sharp from 'sharp'
 import { Repository } from 'typeorm'
 import * as uuid from 'uuid'
 import { appDataSource } from '../../data-source'
+import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
 import UploadFileInputDto from '../aws/dtos/upload-file-input.dto'
 import { Image } from './image.entity'
@@ -22,7 +23,7 @@ class ImageService {
 	}
 
 	/**
-	 *
+	 * Save image from file
 	 * @param file the file to save. Can be taken from req.file
 	 * @returns the saved image
 	 */
@@ -30,6 +31,38 @@ class ImageService {
 		const createdImage = await this.storingImageProcessing(file.buffer)
 
 		return createdImage
+	}
+
+	/**
+	 * Update image
+	 * @param oldImageId Old image id to update
+	 * @param newFile the new file to save. Can be taken from req.file
+	 * @returns
+	 */
+	async update(oldImageId: number, newFile: Express.Multer.File) {
+		const oldImage = await this.getById(oldImageId)
+
+		if (!oldImage) {
+			throw HttpError.NotFound('Image not found')
+		}
+
+		const uniqueFileName = this.generateUniqueFileName()
+
+		const buffer = await this.resizeImage(newFile.buffer)
+
+		const fileData: UploadFileInputDto = {
+			fileName: uniqueFileName,
+			fileBuffer: buffer,
+			mimeType: this.IMAGE_MIME_TYPE,
+		}
+
+		await awsService.updateImage(oldImage.name, fileData)
+
+		oldImage.name = uniqueFileName
+
+		const updatedImage = await this.imageRepository.save(oldImage)
+
+		return updatedImage
 	}
 
 	/**
@@ -94,6 +127,17 @@ class ImageService {
 			.toBuffer()
 
 		return buffer
+	}
+
+	/**
+	 *
+	 * @param id the id of the image to get
+	 * @returns Image if found, otherwise null
+	 */
+	async getById(id: number) {
+		const image = await this.imageRepository.findOneBy({ id })
+
+		return image
 	}
 }
 

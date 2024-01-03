@@ -8,6 +8,7 @@ import TokenPayloadDto from '../token/dtos/token-payload.dto'
 import tokenService from '../token/token.service'
 import UserDto from '../user/dtos/user.dto'
 import userService from '../user/user.service'
+import EditInputDto from './dtos/edit-input.dto'
 import GoogleLoginInputDto from './dtos/google-login-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
@@ -80,6 +81,70 @@ class AccountService {
 			name: createdUser.name,
 			surname: createdUser.surname,
 			phone: createdUser.phone,
+			imageLink,
+		}
+	}
+
+	/**
+	 *
+	 * @param user User data to edit from request body
+	 * @param userId User id to edit
+	 * @param image User image to edit from request file (req.file), if Multer is used
+	 * @returns Edited user data
+	 */
+	async edit(
+		user: EditInputDto,
+		userId: string,
+		image?: Express.Multer.File,
+	): Promise<UserDto> {
+		const candidate = await userService.getById(userId)
+
+		if (!candidate) {
+			throw HttpError.UnauthorizedError()
+		}
+
+		if (user.phone) {
+			const candidateByPhone = await userService.getByPhone(user.phone)
+
+			if (candidateByPhone && candidateByPhone.id !== candidate.id) {
+				throw HttpError.BadRequest(
+					`User with phone ${user.phone} already exists`,
+				)
+			}
+		}
+
+		let updatedImage = candidate.image
+
+		if (image) {
+			if (candidate.image) {
+				updatedImage = await imageService.update(
+					candidate.image.id,
+					image,
+				)
+			} else {
+				updatedImage = await imageService.save(image)
+			}
+		}
+
+		const editedUser = await userService.edit(candidate.id, {
+			name: user.name,
+			surname: user.surname,
+			phone: user.phone || null,
+			image: updatedImage,
+		})
+
+		let imageLink: string | null = null
+
+		if (updatedImage) {
+			imageLink = await awsService.getImageUrl(updatedImage.name)
+		}
+
+		return {
+			id: editedUser.id,
+			email: editedUser.email,
+			name: editedUser.name,
+			surname: editedUser.surname,
+			phone: editedUser.phone,
 			imageLink,
 		}
 	}

@@ -1,4 +1,5 @@
-import { api, credentialsApi } from '@/http/index'
+import { api, authApi, credentialsApi } from '@/http/index'
+import { IEditProfileInput } from '@/types/user/edit-profile-input.interface'
 import { ILoginInput } from '@/types/user/login-input.interface'
 import { ILoginOutput } from '@/types/user/login-output.interface'
 import { IRegisterInput } from '@/types/user/register-input.interface'
@@ -12,15 +13,13 @@ class AccountService {
 	}
 
 	register = async (userData: IRegisterInput) => {
-		console.log('userData', userData)
-
 		const formData = new FormData()
 
-		if (userData?.image && userData?.image.length) {
+		if (userData.image && userData.image.length) {
 			formData.append('image', userData.image[0])
 		}
 
-		if (userData?.phone) {
+		if (userData.phone) {
 			formData.append('phone', userData.phone)
 		}
 
@@ -43,6 +42,29 @@ class AccountService {
 
 	logout = async () => {
 		return credentialsApi.post(`${this.URI_PREFIX}/logout`)
+	}
+
+	edit = async (
+		userData: Omit<Omit<IEditProfileInput, 'image'>, 'email'> & {
+			image?: File | null
+		},
+	) => {
+		const formData = new FormData()
+
+		if (userData.image) {
+			formData.append('image', userData.image)
+		}
+
+		if (userData.phone) {
+			formData.append('phone', userData.phone)
+		}
+
+		formData.append('name', userData.name)
+		formData.append('surname', userData.surname)
+
+		return authApi.put<IUser>(`${this.URI_PREFIX}/user`, formData, {
+			headers: { 'Content-Type': 'multipart/form-data' },
+		})
 	}
 }
 

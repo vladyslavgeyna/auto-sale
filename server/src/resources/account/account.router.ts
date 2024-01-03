@@ -2,11 +2,13 @@ import { Router } from 'express'
 import passport from 'passport'
 import checkValidationMiddleware from '../../middlewares/check-validation.middleware'
 import { imageUploadMiddleware } from '../../middlewares/image-upload.middleware'
+import requireAuthMiddleware from '../../middlewares/require-auth.middleware'
 import HttpStatusCode from '../../utils/enums/http-status-code'
 import { imageExtensionValidation } from '../image/validation/image-extension.validation'
 import { imageSizeValidation } from '../image/validation/image-size.validation'
 import accountController from './account.controller'
 import './passport'
+import { accountEditValidation } from './validation/account-edit.validation'
 import { accountLoginValidation } from './validation/account-login.validation'
 import { accountRegisterValidation } from './validation/account-register.validation'
 
@@ -35,6 +37,18 @@ accountRouter.get('/verify/:userId', accountController.verify)
 
 accountRouter.get('/refresh', accountController.refresh)
 
+accountRouter.put(
+	'/user',
+	requireAuthMiddleware,
+	imageUploadMiddleware.single('image'),
+	imageSizeValidation(5, false),
+	imageExtensionValidation(false),
+	accountEditValidation,
+	checkValidationMiddleware,
+	accountController.edit,
+)
+
+// Google login routes
 accountRouter.get(
 	'/google-login',
 	passport.authenticate('google', {

@@ -1,23 +1,22 @@
 'use client'
 
-import accountService from '@/services/account.service'
+import { useEditProfile } from '@/hooks/useEditProfile'
+import { useHttpError } from '@/hooks/useHttpError'
 import { useUserStore } from '@/store/user'
-import { IHttpError } from '@/types/http-error.interface'
 import { IEditProfileInput } from '@/types/user/edit-profile-input.interface'
 import { formatFileName } from '@/utils/utils'
 import {
 	EMAIL_REGEXP,
 	PHONE_NUMBER_REGEXP,
 	acceptImageTypes,
+	maxFileSize,
 } from '@/utils/validation'
-import { useMutation } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaCamera } from 'react-icons/fa6'
 import { useShallow } from 'zustand/react/shallow'
+import HttpError from '../../components/http-error/HttpError'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
 import { Avatar, AvatarImage } from '../ui/Avatar'
@@ -37,9 +36,7 @@ const EditProfileForm = () => {
 		})),
 	)
 
-	const [httpError, setHttpError] = useState<IHttpError | null>(null)
-
-	const router = useRouter()
+	const { handleHttpError, httpError } = useHttpError()
 
 	const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -49,8 +46,6 @@ const EditProfileForm = () => {
 		handleSubmit,
 		register,
 		reset,
-		watch,
-		getValues,
 		setError,
 		clearErrors,
 		formState: { errors, isValid, isDirty },
@@ -65,38 +60,25 @@ const EditProfileForm = () => {
 	})
 
 	const {
-		mutate: registerUser,
+		mutate: editProfile,
 		isError,
 		isPending,
-		isSuccess,
-	} = useMutation({
-		mutationKey: ['edit-profile'],
-		mutationFn: accountService.register,
-		onSuccess: () => {
-			reset()
-		},
-		onError: (error: AxiosError) => {
-			const errorData = error.response?.data
-
-			if (
-				IHttpError.isHttpError(errorData) &&
-				error.response?.status &&
-				error.response?.status < 500
-			) {
-				setHttpError(errorData)
-			} else {
-				router.push('/error')
-			}
-		},
+	} = useEditProfile(handleHttpError, reset, () => {
+		setImage(null)
+		clearErrors('image')
 	})
 
-	const onSubmit: SubmitHandler<IEditProfileInput> = registerInputData => {
-		//registerUser(registerInputData)
+	const onSubmit: SubmitHandler<IEditProfileInput> = editInputData => {
+		editProfile({
+			name: editInputData.name,
+			surname: editInputData.surname,
+			phone: editInputData.phone,
+			image,
+		})
 	}
 
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
-
 		if (file) {
 			if (!acceptImageTypes.some(t => t === file.type)) {
 				setError('image', {
@@ -105,13 +87,14 @@ const EditProfileForm = () => {
 				setImage(null)
 				return
 			}
-			if (file.size > 5242880) {
+			if (file.size > maxFileSize) {
 				setError('image', {
 					message: 'Too large file size. Max file size is 5MB.',
 				})
 				setImage(null)
 				return
 			}
+			clearErrors('image')
 			setImage(file)
 		} else {
 			clearErrors('image')
@@ -123,18 +106,10 @@ const EditProfileForm = () => {
 	return (
 		<>
 			{isError && httpError && (
-				<IHttpError
+				<HttpError
 					className='mt-7 max-w-lg mx-auto'
 					httpError={httpError}
 				/>
-			)}
-			{isSuccess && (
-				<div className='mt-7 max-w-lg mx-auto text-center'>
-					<p className='text-lg'>
-						You have successfully registered. Please check your{' '}
-						email to confirm your account
-					</p>
-				</div>
 			)}
 			<div className='max-w-lg mx-auto mt-10 '>
 				<form
@@ -319,5 +294,3 @@ const EditProfileForm = () => {
 }
 
 export default EditProfileForm
-
-// КАРОЧЕ ЗАКІНЧИВ НА ТОМУ ЩО РОБЛЮ СТОРІНКУ РЕДАГУВАННЯ ПРОФІЛЮ

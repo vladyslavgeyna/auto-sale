@@ -2,6 +2,7 @@ import { Repository } from 'typeorm'
 import { appDataSource } from '../../data-source'
 import HttpError from '../../utils/exceptions/http.error'
 import CreateUserInputDto from './dtos/create-user-input.dto'
+import EditUserInputDto from './dtos/edit-user-input.dto'
 import { User } from './user.entity'
 
 class UserService {
@@ -87,6 +88,21 @@ class UserService {
 		const createdUser = await this.userRepository.save(newUser)
 
 		return createdUser
+	}
+
+	/**
+	 * Edit user
+	 * @param userId User id to edit
+	 * @param user User data to edit
+	 * @returns Edited user
+	 */
+	async edit(userId: string, user: EditUserInputDto) {
+		const editedUser = await this.userRepository.save({
+			...user,
+			id: userId,
+		})
+
+		return editedUser
 	}
 }
 

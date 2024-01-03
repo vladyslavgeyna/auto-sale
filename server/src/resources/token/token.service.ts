@@ -46,7 +46,9 @@ class TokenService {
 	 * @returns Saved refresh token entity
 	 */
 	async save(userId: string, refreshToken: string) {
-		const token = await this.tokenRepository.findOneBy({ user: { id: userId } })
+		const token = await this.tokenRepository.findOneBy({
+			user: { id: userId },
+		})
 
 		if (token) {
 			token.refreshToken = refreshToken
@@ -106,6 +108,23 @@ class TokenService {
 			const jwtRefreshSecret = String(process.env.JWT_REFRESH_SECRET)
 
 			const userData = jwt.verify(refreshToken, jwtRefreshSecret)
+
+			return userData as TokenPayloadDto
+		} catch (error) {
+			throw HttpError.UnauthorizedError()
+		}
+	}
+
+	/**
+	 * Validates access token
+	 * @param accessToken refresh token to validate
+	 * @returns token payload - user data, if access token is valid
+	 */
+	validateAccessToken(accessToken: string) {
+		try {
+			const jwtAccessSecret = String(process.env.JWT_ACCESS_SECRET)
+
+			const userData = jwt.verify(accessToken, jwtAccessSecret)
 
 			return userData as TokenPayloadDto
 		} catch (error) {
