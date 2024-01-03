@@ -25,11 +25,9 @@ import {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
-import accountService from '@/services/account.service'
+import { useLogout } from '@/hooks/useLogout'
 import { useUserStore } from '@/store/user'
-import { useMutation } from '@tanstack/react-query'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import styles from './DropDownMenu.module.css'
@@ -44,14 +42,7 @@ function DropdownMenu() {
 
 	const [isOpened, setIsOpened] = useState(false)
 
-	const { mutate: logout, isPending } = useMutation({
-		mutationKey: ['logout'],
-		mutationFn: accountService.logout,
-		onSuccess: () => {
-			removeCredentials()
-			redirect('/')
-		},
-	})
+	const { mutate: logout, isPending } = useLogout(removeCredentials)
 
 	const handleLogout = () => {
 		logout()
@@ -117,8 +108,10 @@ function DropdownMenu() {
 					</DropdownMenuSub>
 				</DropdownMenuGroup>
 				<DropdownMenuSeparator />
-				<div onClick={handleLogout}>
-					<DropdownMenuItem className='hover:cursor-pointer'>
+				<DropdownMenuGroup>
+					<DropdownMenuItem
+						onClick={handleLogout}
+						className='hover:cursor-pointer'>
 						{!isPending ? (
 							<>
 								<LogOut className='mr-2 h-4 w-4' />
@@ -128,7 +121,7 @@ function DropdownMenu() {
 							<Loader2 className='h-5 w-5 animate-spin' />
 						)}
 					</DropdownMenuItem>
-				</div>
+				</DropdownMenuGroup>
 			</DropdownMenuContent>
 		</DropdownMenuShadcn>
 	)
