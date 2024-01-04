@@ -9,8 +9,10 @@ type PropsType = {
 
 const HeaderButton = ({ iconComponent, text, href }: PropsType) => {
 	return (
-		<Button type='button' variant='default'>
-			<Link href={href} className='text-base flex items-center gap-2'>
+		<Button className='!p-0' type='button' variant='default'>
+			<Link
+				href={href}
+				className='text-base flex items-center gap-2 px-4 py-2'>
 				{text}
 				{iconComponent}
 			</Link>
