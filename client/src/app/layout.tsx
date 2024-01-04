@@ -7,7 +7,11 @@ import type { Metadata } from 'next'
 import { Golos_Text } from 'next/font/google'
 import './globals.css'
 
-const fontFamily = Golos_Text({ subsets: ['latin', 'cyrillic'] })
+const fontFamily = Golos_Text({
+	subsets: ['latin', 'cyrillic'],
+	display: 'swap',
+	adjustFontFallback: false,
+})
 
 export const metadata: Metadata = {
 	title: 'Auto Sale',
