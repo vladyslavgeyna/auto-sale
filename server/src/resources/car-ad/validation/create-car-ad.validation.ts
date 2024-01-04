@@ -21,12 +21,11 @@ export const createCarAdValidation = [
 		.isLength({ min: 10, max: 1000 })
 		.withMessage(`Text length should be from 5 to 1000 characters`),
 	body('additionalOptions')
+		.optional()
 		.trim()
 		.escape()
-		.isLength({ max: 150 })
-		.withMessage(
-			`Additional options should be less than 150 characters long`,
-		),
+		.isLength({ min: 2, max: 150 })
+		.withMessage(`Additional options should be from 2 to 150 characters`),
 	body('yearOfProduction')
 		.trim()
 		.notEmpty()
@@ -93,8 +92,8 @@ export const createCarAdValidation = [
 		.trim()
 		.notEmpty()
 		.escape()
-		.isInt()
-		.withMessage('Invalid price'),
+		.isInt({ min: 1, max: 100000000 })
+		.withMessage('Price should be from 1 to 100000000'),
 	body('carBrandId')
 		.trim()
 		.notEmpty()

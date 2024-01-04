@@ -1,5 +1,6 @@
 import Footer from '@/components/layout/footer/Footer'
 import Header from '@/components/layout/header/Header'
+import { Toaster } from '@/components/ui/Toaster'
 import Wrapper from '@/hoc/Wrapper'
 import AuthProvider from '@/providers/AuthProvider'
 import TanstackQueryProvider from '@/providers/TanstackQueryProvider'
@@ -37,6 +38,7 @@ export default function RootLayout({
 						</Wrapper>
 					</AuthProvider>
 				</TanstackQueryProvider>
+				<Toaster />
 			</body>
 		</html>
 	)

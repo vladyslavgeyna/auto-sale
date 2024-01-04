@@ -6,6 +6,8 @@ export const PHONE_NUMBER_REGEXP =
 
 export const PASSWORD_REGEXP = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/
 
-export const acceptImageTypes = ['image/jpeg', 'image/jpg', 'image/png']
+export const ACCEPT_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
-export const maxFileSize = 1024 * 1024 * 5
+export const MAX_FILE_SIZE = 1024 * 1024 * 5
+
+export const MAX_IMAGES_COUNT = 5

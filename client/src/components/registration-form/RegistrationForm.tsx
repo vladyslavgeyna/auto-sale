@@ -4,11 +4,11 @@ import { useHttpError } from '@/hooks/useHttpError'
 import { useRegister } from '@/hooks/useRegister'
 import { IRegisterInput } from '@/types/user/register-input.interface'
 import {
+	ACCEPT_IMAGE_TYPES,
 	EMAIL_REGEXP,
+	MAX_FILE_SIZE,
 	PASSWORD_REGEXP,
 	PHONE_NUMBER_REGEXP,
-	acceptImageTypes,
-	maxFileSize,
 } from '@/utils/validation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -217,13 +217,13 @@ const RegistrationForm = () => {
 											if (value?.length) {
 												const file = value[0]
 												if (
-													!acceptImageTypes.some(
+													!ACCEPT_IMAGE_TYPES.some(
 														t => t === file.type,
 													)
 												) {
 													return 'Only png and jpeg files are valid.'
 												}
-												if (file.size > maxFileSize) {
+												if (file.size > MAX_FILE_SIZE) {
 													return 'Too large file size. Max file size is 5MB.'
 												}
 											}
@@ -235,7 +235,7 @@ const RegistrationForm = () => {
 							</TooltipTrigger>
 							<TooltipContent>
 								<p>
-									Chose an image file. Accepted file
+									Choose an image file. Accepted file
 									extensions: .png, .jpeg, .jpg. Max file
 									size: 5MB.
 								</p>

@@ -3,7 +3,7 @@ import ContactList from './ContactList'
 
 const Footer = () => {
 	return (
-		<footer className='container max-w-screen-2xl py-3 border-t border-border/40'>
+		<footer className='container max-w-screen-2xl py-3 border-t border-border/40 mt-16'>
 			<div className='flex justify-between items-center'>
 				<div>
 					<span>

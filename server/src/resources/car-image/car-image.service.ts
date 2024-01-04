@@ -25,10 +25,16 @@ class CarImageService {
 		for (const image of images) {
 			const createdImage = await imageService.save(image)
 
+			// if image contains cyrillic characters, file name is in bad format
+			const originalImageFileName = Buffer.from(
+				image.originalname,
+				'latin1',
+			).toString('utf8')
+
 			const newCarImage = this.carImageRepository.create({
 				car,
 				image: createdImage,
-				isMain: mainImageName === image.originalname,
+				isMain: mainImageName === originalImageFileName,
 			})
 
 			await this.carImageRepository.save(newCarImage)

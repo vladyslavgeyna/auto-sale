@@ -9,3 +9,13 @@ export const formatFileName = (name: string): string => {
 	}
 	return name
 }
+
+export const CURRENT_YEAR = new Date().getFullYear()
+
+export const getArrayInRange = (start: number, end: number): number[] => {
+	const list = []
+	for (var i = start; i <= end; i++) {
+		list.push(i)
+	}
+	return list
+}

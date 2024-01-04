@@ -6,10 +6,10 @@ import { useUserStore } from '@/store/user'
 import { IEditProfileInput } from '@/types/user/edit-profile-input.interface'
 import { formatFileName } from '@/utils/utils'
 import {
+	ACCEPT_IMAGE_TYPES,
 	EMAIL_REGEXP,
+	MAX_FILE_SIZE,
 	PHONE_NUMBER_REGEXP,
-	acceptImageTypes,
-	maxFileSize,
 } from '@/utils/validation'
 import Link from 'next/link'
 import { useRef, useState } from 'react'
@@ -80,14 +80,14 @@ const EditProfileForm = () => {
 	const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const file = event.target.files?.[0]
 		if (file) {
-			if (!acceptImageTypes.some(t => t === file.type)) {
+			if (!ACCEPT_IMAGE_TYPES.some(t => t === file.type)) {
 				setError('image', {
 					message: 'Only png and jpeg files are valid.',
 				})
 				setImage(null)
 				return
 			}
-			if (file.size > maxFileSize) {
+			if (file.size > MAX_FILE_SIZE) {
 				setError('image', {
 					message: 'Too large file size. Max file size is 5MB.',
 				})
@@ -142,7 +142,7 @@ const EditProfileForm = () => {
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>
-										Click to chose an image file. Accepted
+										Click to choose an image file. Accepted
 										file extensions: .png, .jpeg, .jpg. Max
 										file size: 5MB.
 									</p>
