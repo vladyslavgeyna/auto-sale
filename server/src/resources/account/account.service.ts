@@ -330,6 +330,12 @@ class AccountService {
 				})
 			}
 
+			//If user is not verified, then verify him
+			//This is needed because user can be created by default registration, but not verified
+			if (!candidate.isVerified) {
+				await this.verify(candidate.id)
+			}
+
 			const tokenPayload: TokenPayloadDto = {
 				id: candidate.id,
 				email: candidate.email,
