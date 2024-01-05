@@ -22,4 +22,6 @@ carAdRouter.post(
 	carAdController.create,
 )
 
+carAdRouter.get('/', carAdController.getAll)
+
 export default carAdRouter

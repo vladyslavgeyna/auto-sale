@@ -1,9 +1,14 @@
-import { authApi } from '@/http/index'
+import { api, authApi } from '@/http/index'
 import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { ICreateCarAdOutput } from '@/types/car-ad/create-car-ad-output.interface'
+import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
 
 class CarAdService {
 	private URI_PREFIX = '/car-ad'
+
+	public getAll = async () => {
+		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)
+	}
 
 	create = async (carAdData: ICreateCarAdInput) => {
 		const formData = new FormData()

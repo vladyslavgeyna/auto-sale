@@ -1,14 +1,21 @@
 import { Repository } from 'typeorm'
 import { getFormattedDate } from '../../utils/date.utils'
 import HttpError from '../../utils/exceptions/http.error'
+import awsService from '../aws/aws.service'
 import carImageService from '../car-image/car-image.service'
 import carModelService from '../car-model/car-model.service'
 import carService from '../car/car.service'
 import CreateCarInputDto from '../car/dtos/create-car-input.dto'
+import { Fuel } from '../car/enums/fuel.enum'
+import { Transmission } from '../car/enums/transmission.enum'
+import { WheelDrive } from '../car/enums/wheel-drive.enum'
 import { appDataSource } from './../../data-source'
 import { CarAd } from './car-ad.entity'
+import { getAllCarAdsOptions } from './car-ad.utils'
+import { CarAdDto } from './dtos/car-ad.dto'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
 import CreateCarOutputDto from './dtos/create-car-ad-output.dto'
+import { GetAllCarAdsOutputDto } from './dtos/get-all-car-ads-output.dto'
 
 class CarAdService {
 	private carAdRepository: Repository<CarAd>
@@ -93,6 +100,33 @@ class CarAdService {
 			price: createdCarAd.car.price,
 			dateOfCreation: getFormattedDate(createdCarAd.dateOfCreation),
 		}
+	}
+
+	async getAll(): Promise<GetAllCarAdsOutputDto> {
+		const carAdsFromDatabase = await this.carAdRepository.findAndCount({
+			...getAllCarAdsOptions,
+		})
+
+		const carAds: CarAdDto[] = await Promise.all(
+			carAdsFromDatabase[0].map(async item => {
+				const imageLink = await awsService.getImageUrl(
+					item.car.carImages[0].image.name,
+				)
+				return {
+					id: item.id,
+					title: item.title,
+					price: item.car.price,
+					image: imageLink,
+					engineCapacity: item.car.engineCapacity,
+					fuel: Fuel[item.car.fuel],
+					transmission: Transmission[item.car.transmission],
+					wheelDrive: WheelDrive[item.car.wheelDrive],
+					mileage: item.car.mileage,
+				}
+			}),
+		)
+
+		return { carAds, count: carAdsFromDatabase[1] }
 	}
 }
 

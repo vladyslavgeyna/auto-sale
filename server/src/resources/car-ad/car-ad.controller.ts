@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import HttpError from '../../utils/exceptions/http.error'
 import { RequestWithBody } from '../../utils/types/request.type'
 import carAdService from './car-ad.service'
@@ -30,6 +30,16 @@ class CarAdController {
 			)
 
 			return res.json(createdCarAd)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async getAll(req: Request, res: Response, next: NextFunction) {
+		try {
+			const data = await carAdService.getAll()
+
+			return res.json(data)
 		} catch (error) {
 			next(error)
 		}
