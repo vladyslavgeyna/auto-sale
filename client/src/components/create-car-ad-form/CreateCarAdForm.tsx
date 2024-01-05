@@ -437,6 +437,10 @@ const CreateCarAdForm = () => {
 						type='text'
 						placeholder='Example: ABS, ESP, Air conditioning'
 						{...register('additionalOptions', {
+							pattern: {
+								value: /^([a-zA-Z0-9 -]+(?:,\s*[a-zA-Z0-9 -]+)*)?$/,
+								message: `Invalid format. Options should be separated by commas and contain only letters, digits, dashes and spaces`,
+							},
 							minLength: {
 								value: 2,
 								message:
