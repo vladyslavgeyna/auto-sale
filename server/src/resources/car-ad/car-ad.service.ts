@@ -1,6 +1,8 @@
 import { Repository } from 'typeorm'
 import { getFormattedDate } from '../../utils/date.utils'
+import HttpError from '../../utils/exceptions/http.error'
 import carImageService from '../car-image/car-image.service'
+import carModelService from '../car-model/car-model.service'
 import carService from '../car/car.service'
 import CreateCarInputDto from '../car/dtos/create-car-input.dto'
 import { appDataSource } from './../../data-source'
@@ -25,6 +27,18 @@ class CarAdService {
 		carAd: CreateCarAdInputDto & { userId: string },
 		images: Express.Multer.File[],
 	): Promise<CreateCarOutputDto> {
+		if (!images.some(image => image.originalname === carAd.mainImageName)) {
+			throw HttpError.BadRequest(
+				`Invalid main image. Main image with filename ${carAd.mainImageName} was not found in the provided images`,
+			)
+		}
+
+		const carModel = await carModelService.getById(carAd.carModelId)
+
+		if (!carModel || carModel.carBrand.id !== Number(carAd.carBrandId)) {
+			throw HttpError.BadRequest(`Invalid car model`)
+		}
+
 		const createCarInputDto: CreateCarInputDto = {
 			carBrand: { id: carAd.carBrandId },
 			carModel: { id: carAd.carBrandId },

@@ -16,6 +16,17 @@ class CarModelService {
 
 		return carModels
 	}
+
+	async getById(id: number) {
+		const carModel = await this.carModelRepository.findOne({
+			where: { id },
+			relations: {
+				carBrand: true,
+			},
+		})
+
+		return carModel
+	}
 }
 
 export default new CarModelService()

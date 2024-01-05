@@ -19,3 +19,39 @@ export const getArrayInRange = (start: number, end: number): number[] => {
 	}
 	return list
 }
+
+export function generateRandomString() {
+	let result = ''
+	const characters =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	const charactersLength = characters.length
+	let counter = 0
+	while (counter < 16) {
+		result += characters.charAt(
+			Math.floor(Math.random() * charactersLength),
+		)
+		counter += 1
+	}
+	return result
+}
+
+export function getExtension(fileName: string) {
+	return fileName.split('.').pop()
+}
+
+export function renameFile(originalFile: File, newName: string) {
+	return new File([originalFile], newName, {
+		type: originalFile.type,
+		lastModified: originalFile.lastModified,
+	})
+}
+
+export const renameFiles = (files: FileList): FileList => {
+	const dataTransfer = new DataTransfer()
+	for (let i = 0; i < files.length; i++) {
+		const newFileName =
+			generateRandomString() + `.${getExtension(files[i].name)}`
+		dataTransfer.items.add(renameFile(files[i], newFileName))
+	}
+	return dataTransfer.files
+}

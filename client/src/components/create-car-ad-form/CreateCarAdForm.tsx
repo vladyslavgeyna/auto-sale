@@ -5,7 +5,7 @@ import { useGetCarAdditionalData } from '@/hooks/useGetCarAdditionalData'
 import carModelService from '@/services/car-model.service'
 import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { IEnum } from '@/types/enum.interface'
-import { CURRENT_YEAR, getArrayInRange } from '@/utils/utils'
+import { CURRENT_YEAR, getArrayInRange, renameFiles } from '@/utils/utils'
 import { MAX_IMAGES_COUNT, validateImages } from '@/utils/validation'
 import { redirect } from 'next/navigation'
 import React, { useState } from 'react'
@@ -88,8 +88,12 @@ const CreateCarAdForm = () => {
 			})
 			setImages(null)
 		} else {
-			clearErrors('images')
-			setImages(files)
+			if (files) {
+				clearErrors('images')
+
+				//rename files to avoid duplicate names and encoding problems
+				setImages(renameFiles(files))
+			}
 		}
 	}
 
