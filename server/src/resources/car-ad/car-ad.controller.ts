@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
+import redisClient from '../../redis'
 import HttpError from '../../utils/exceptions/http.error'
 import { RequestWithBody } from '../../utils/types/request.type'
 import carAdService from './car-ad.service'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
-
 class CarAdController {
 	async create(
 		req: RequestWithBody<CreateCarAdInputDto>,
@@ -38,6 +38,12 @@ class CarAdController {
 	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
 			const data = await carAdService.getAll()
+
+			if (data.count > 0) {
+				const key = redisClient.constructKey('car-ad')
+
+				await redisClient.set(key, data)
+			}
 
 			return res.json(data)
 		} catch (error) {

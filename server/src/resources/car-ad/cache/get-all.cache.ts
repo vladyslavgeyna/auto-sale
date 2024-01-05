@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express'
 import redisClient from '../../../redis'
-import { EnumDto } from '../../../utils/enums/enum.dto'
 import { RequestWithQuery } from '../../../utils/types/request.type'
+import { GetAllCarAdsOutputDto } from '../dtos/get-all-car-ads-output.dto'
 
 export const getAllCache = async (
 	req: RequestWithQuery<{ carBrandId?: string }>,
@@ -9,20 +9,9 @@ export const getAllCache = async (
 	next: NextFunction,
 ) => {
 	try {
-		const carBrandIdParam = req.query.carBrandId
-			? Number(req.query.carBrandId)
-			: undefined
+		const key = redisClient.constructKey('car-ad')
 
-		const carBrandId = carBrandIdParam || undefined
-
-		const key = redisClient.constructKey(
-			'car-model',
-			undefined,
-			'car-brand',
-			carBrandId,
-		)
-
-		const data = await redisClient.get<EnumDto[]>(key)
+		const data = await redisClient.get<GetAllCarAdsOutputDto>(key)
 		if (data) {
 			res.json(data)
 		} else {
