@@ -540,7 +540,7 @@ const CreateCarAdForm = () => {
 						isDisabled={!isValid && isDirty}
 						className='w-full'
 						isLoading={isPending}>
-						Register
+						Create
 					</FormButton>
 				</div>
 			</form>
