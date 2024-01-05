@@ -335,22 +335,23 @@ const CreateCarAdForm = () => {
 							<TooltipTrigger asChild>
 								<Input
 									type='text'
-									placeholder='Engine capacity (in liters)'
+									placeholder='Engine capacity (in liters) or power (in kW), if engine is electric'
 									{...register('engineCapacity', {
-										required: 'Engine capacity is required',
+										required:
+											'Engine capacity or power is required',
 										min: {
 											value: 0,
 											message:
-												'Engine capacity should be at least 0',
+												'Engine capacity or power should be at least 0',
 										},
 										max: {
-											value: 50,
-											message: `Engine capacity should be maximum 50`,
+											value: 1000,
+											message: `Engine capacity or power should be maximum 1000`,
 										},
 										pattern: {
-											value: /^(?:[0-9]|[1-4][0-9]|50)(?:\.\d{1})?$/,
+											value: /^(?:[0-9]|[1-9][0-9]{1,2}|1000)(?:\.\d{1})?$/,
 											message:
-												'Invalid engine capacity format. It should be a number with one decimal place. And use a dot as a separator.',
+												'Invalid engine capacity or power format. It should be a number with one decimal place. And use a dot as a separator.',
 										},
 									})}
 								/>

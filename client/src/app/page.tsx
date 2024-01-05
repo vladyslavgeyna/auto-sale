@@ -1,7 +1,7 @@
 'use client'
 
 import CarAdsList from '@/components/car-ads-list/CarAdsList'
-import Loader from '@/components/loader/Loader'
+import CarAdsListSkeleton from '@/components/car-ads-list/CarAdsListSkeleton'
 import { useGetCarAds } from '@/hooks/useGetCarAds'
 import { redirect } from 'next/navigation'
 
@@ -14,11 +14,7 @@ export default function Home() {
 	} = useGetCarAds()
 
 	if (areCarAdsLoading) {
-		return (
-			<div className='flex justify-center my-5'>
-				<Loader />
-			</div>
-		)
+		return <CarAdsListSkeleton />
 	}
 
 	if (!isGettingCarAdsSuccess || isGettingCarAdsError) {

@@ -47,7 +47,7 @@ const CarAdItem = ({ carAd }: PropsType) => {
 					</Link>
 				</div>
 				<div>
-					<h2 className='text-lg font-bold'>
+					<h2 className='text-lg font-bold mt-2'>
 						<Link className='hover:underline' href={carAdLink}>
 							{carAd.title}
 						</Link>

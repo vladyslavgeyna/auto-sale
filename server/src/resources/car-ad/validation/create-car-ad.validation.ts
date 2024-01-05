@@ -121,9 +121,9 @@ export const createCarAdValidation = [
 		.trim()
 		.notEmpty()
 		.escape()
-		.isFloat({ min: 0, max: 50 })
+		.isFloat({ min: 0, max: 1000 })
 		.withMessage(
-			'Invalid engine capacity. Engine capacity should be from 0 to 50',
+			'Invalid engine capacity or power. It should be from 0 to 1000',
 		),
 	body('numberOfSeats')
 		.trim()
