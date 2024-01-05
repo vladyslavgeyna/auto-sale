@@ -29,6 +29,26 @@ class RedisClient {
 		this.redis = Redis.getInstance().redis
 	}
 
+	public constructKey(
+		mainKey: string,
+		mainId?: number,
+		subKey?: string,
+		subId?: number,
+	) {
+		let key = mainKey
+		if (mainId) {
+			key += `:${mainId}`
+		}
+		if (subKey) {
+			key += `/${subKey}`
+		}
+		if (subId && subKey) {
+			key += `:${subId}`
+		}
+
+		return key
+	}
+
 	public async getString(key: string): Promise<string | null> {
 		const data = await this.redis.get(key)
 		return data
