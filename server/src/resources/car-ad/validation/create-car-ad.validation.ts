@@ -25,7 +25,18 @@ export const createCarAdValidation = [
 		.trim()
 		.escape()
 		.isLength({ min: 2, max: 150 })
-		.withMessage(`Additional options should be from 2 to 150 characters`),
+		.withMessage(`Additional options should be from 2 to 150 characters`)
+		.custom(value => {
+			if (
+				value &&
+				!/^([a-zA-Z0-9 -]+(?:,\s*[a-zA-Z0-9 -]+)*)?$/.test(value)
+			) {
+				throw new Error(
+					'Not valid additional options format. They should be separated by commas and contain only letters, digits, dashes and spaces',
+				)
+			}
+			return true
+		}),
 	body('yearOfProduction')
 		.trim()
 		.notEmpty()
