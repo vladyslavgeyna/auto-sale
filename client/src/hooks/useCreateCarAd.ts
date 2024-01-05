@@ -1,26 +1,24 @@
-import { useToast } from '@/components/ui/useToast'
 import carAdService from '@/services/car-ad.service'
+import { IHttpError } from '@/types/http-error.interface'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
+import { useErrorToast } from './useErrorToast'
+import { useSuccessToast } from './useSuccessToast'
 
-export const useCreateCarAd = (
-	handleHttpError: (error: AxiosError) => void,
-	resetForm: () => void,
-) => {
-	const { toast } = useToast()
+export const useCreateCarAd = (resetForm: () => void) => {
+	const { errorToast } = useErrorToast()
+	const { successToast } = useSuccessToast()
 
 	return useMutation({
 		mutationKey: ['create-car-ad'],
 		mutationFn: carAdService.create,
 		onSuccess: () => {
 			resetForm()
-			toast({
-				variant: 'success',
-				description: 'Car ad is created successfully!',
-			})
+			successToast('The ad is created successfully!')
 		},
 		onError: (error: AxiosError) => {
-			handleHttpError(error)
+			const httpError = IHttpError.toIHttpError(error)
+			errorToast(httpError)
 		},
 	})
 }

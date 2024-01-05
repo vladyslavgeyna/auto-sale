@@ -1,12 +1,12 @@
 import { IHttpError } from '@/types/http-error.interface'
-import { Card } from '../ui/card'
+import { Card } from '../ui/Card'
 
 type PropsType = {
 	httpError: IHttpError
 	className?: string
 }
 
-const IHttpError = ({ httpError, className = '' }: PropsType) => {
+const HttpError = ({ httpError, className = '' }: PropsType) => {
 	return (
 		<Card className={'text-center p-2 ' + className}>
 			<div className='font-bold text-lg'>{httpError.message}</div>
@@ -21,4 +21,4 @@ const IHttpError = ({ httpError, className = '' }: PropsType) => {
 	)
 }
 
-export default IHttpError
+export default HttpError

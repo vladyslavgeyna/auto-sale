@@ -13,7 +13,10 @@ class CarModelController {
 			const carBrandId = req.query.carBrandId
 				? Number(req.query.carBrandId)
 				: undefined
-			const carModels = await carModelService.getAll(carBrandId)
+
+			const carModels = await carModelService.getAll(
+				carBrandId || undefined,
+			)
 
 			const carModelsResponse: EnumDto[] = carModels.map(carModel => ({
 				id: carModel.id,

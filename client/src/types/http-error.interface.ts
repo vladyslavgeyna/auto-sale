@@ -12,4 +12,16 @@ export class IHttpError {
 	static isClientError(error: AxiosError) {
 		return error.response?.status && error.response?.status < 500
 	}
+
+	static toIHttpError(error: AxiosError): IHttpError | null {
+		const errorData = error.response?.data
+		if (
+			IHttpError.isHttpError(errorData) &&
+			IHttpError.isClientError(error)
+		) {
+			return errorData
+		} else {
+			return null
+		}
+	}
 }

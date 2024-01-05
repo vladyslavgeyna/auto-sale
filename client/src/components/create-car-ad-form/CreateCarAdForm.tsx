@@ -2,22 +2,16 @@
 
 import { useCreateCarAd } from '@/hooks/useCreateCarAd'
 import { useGetCarAdditionalData } from '@/hooks/useGetCarAdditionalData'
-import { useHttpError } from '@/hooks/useHttpError'
 import carModelService from '@/services/car-model.service'
 import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { IEnum } from '@/types/enum.interface'
 import { CURRENT_YEAR, getArrayInRange } from '@/utils/utils'
-import {
-	ACCEPT_IMAGE_TYPES,
-	MAX_FILE_SIZE,
-	MAX_IMAGES_COUNT,
-} from '@/utils/validation'
+import { MAX_IMAGES_COUNT, validateImages } from '@/utils/validation'
 import { redirect } from 'next/navigation'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
-import HttpError from '../http-error/HttpError'
 import Loader from '../loader/Loader'
 import { Input } from '../ui/Input'
 import { Label } from '../ui/Label'
@@ -34,8 +28,6 @@ import FormSeparator from './FormSeparator'
 import ImagePreview from './ImagePreview'
 
 const CreateCarAdForm = () => {
-	const { handleHttpError, httpError } = useHttpError()
-
 	const [images, setImages] = useState<FileList | null>(null)
 
 	const [isGetCarModelsError, setIsGetCarModelsError] = useState(false)
@@ -60,12 +52,7 @@ const CreateCarAdForm = () => {
 		isError: isGettingAdditionalDataError,
 	} = useGetCarAdditionalData()
 
-	const {
-		mutate: createCarAd,
-		isError,
-		isPending,
-		isSuccess,
-	} = useCreateCarAd(handleHttpError, () => {
+	const { mutate: createCarAd, isPending } = useCreateCarAd(() => {
 		reset()
 		setImages(null)
 		setCarModel([])
@@ -93,43 +80,18 @@ const CreateCarAdForm = () => {
 	const handleImagesChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = event.target.files
 
-		if (files && files.length > 0) {
-			if (files.length > MAX_IMAGES_COUNT) {
-				setError('images', {
-					message: `Maximum images count is ${MAX_IMAGES_COUNT}.`,
-				})
-				setImages(null)
-				return
-			}
-			for (let i = 0; i < files.length; i++) {
-				if (!ACCEPT_IMAGE_TYPES.some(t => t === files[0].type)) {
-					setError('images', {
-						message: 'Only png and jpeg files are valid.',
-					})
-					setImages(null)
-					return
-				}
-				if (files[0].size > MAX_FILE_SIZE) {
-					setError('images', {
-						message:
-							'One or more files are too large. Max file size is 5MB.',
-					})
-					setImages(null)
-					return
-				}
-			}
-			clearErrors('images')
-			setImages(files)
-		} else {
+		const errorMessage = validateImages(files)
+
+		if (errorMessage) {
 			setError('images', {
-				message: 'Images are required.',
+				message: errorMessage,
 			})
 			setImages(null)
-			return
+		} else {
+			clearErrors('images')
+			setImages(files)
 		}
 	}
-
-	const isHttpError = httpError && isError
 
 	if (isLoading) {
 		return (
@@ -149,12 +111,6 @@ const CreateCarAdForm = () => {
 
 	return (
 		<>
-			{isHttpError && (
-				<HttpError
-					className='mt-7 max-w-lg mx-auto'
-					httpError={httpError}
-				/>
-			)}
 			<form
 				onSubmit={handleSubmit(onSubmit)}
 				className='max-w-5xl mx-auto mt-7 flex flex-col gap-3'
