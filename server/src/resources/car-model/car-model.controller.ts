@@ -11,11 +11,10 @@ class CarModelController {
 		next: NextFunction,
 	) {
 		try {
-			const carBrandIdParam = req.query.carBrandId
-				? Number(req.query.carBrandId)
+			const carBrandId = req.query.carBrandId
+				? Number(req.query.carBrandId) || undefined
 				: undefined
 
-			const carBrandId = carBrandIdParam || undefined
 			const carModels = await carModelService.getAll(carBrandId)
 
 			const carModelsResponse: EnumDto[] = carModels.map(carModel => ({

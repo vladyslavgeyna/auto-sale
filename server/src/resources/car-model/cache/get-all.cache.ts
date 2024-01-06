@@ -9,11 +9,9 @@ export const getAllCache = async (
 	next: NextFunction,
 ) => {
 	try {
-		const carBrandIdParam = req.query.carBrandId
-			? Number(req.query.carBrandId)
+		const carBrandId = req.query.carBrandId
+			? Number(req.query.carBrandId) || undefined
 			: undefined
-
-		const carBrandId = carBrandIdParam || undefined
 
 		const key = redisClient.constructKey(
 			'car-model',
