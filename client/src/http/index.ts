@@ -1,20 +1,20 @@
 import accountService from '@/services/account.service'
 import axios from 'axios'
 
-const API_URL = String(process.env.NEXT_PUBLIC_API_URL)
+const API_URL = String(process.env.NEXT_PUBLIC_API_URL) + '/api'
 
 export const api = axios.create({
-	baseURL: API_URL + '/api',
+	baseURL: API_URL,
 	withCredentials: false,
 })
 
 export const credentialsApi = axios.create({
-	baseURL: API_URL + '/api',
+	baseURL: API_URL,
 	withCredentials: true,
 })
 
 export const authApi = axios.create({
-	baseURL: API_URL + '/api',
+	baseURL: API_URL,
 	withCredentials: false,
 })
 
