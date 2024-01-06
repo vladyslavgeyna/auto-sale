@@ -1,0 +1,40 @@
+.swiper-scrollbar {
+	display: none !important;
+}
+.swiper-button-next {
+	color: rgb(15, 23, 42) !important;
+	transition: all 0.3s ease;
+	font-size: 30px !important;
+	color: (15, 23, 42) !important;
+	right: 10px;
+	z-index: 1000;
+}
+.swiper-button-prev {
+	transition: all 0.3s ease;
+	color: rgb(15, 23, 42) !important;
+	font-size: 50px !important;
+	left: 10px;
+}
+.swiper-button-prev::after {
+	content: '' !important;
+}
+.swiper-button-next::after {
+	content: '' !important;
+}
+.slider-arrow {
+	position: absolute;
+	width: 60px;
+	height: 60px;
+}
+.swiper-pagination-bullet {
+	border: 1px solid white;
+	width: 13px;
+	height: 13px;
+}
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
+	background-color: rgb(15, 23, 42);
+}
+.swiper-slide img {
+	overflow: hidden;
+	border-radius: 15px;
+}

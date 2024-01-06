@@ -1,6 +1,7 @@
 import { api, authApi } from '@/http/index'
 import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { ICreateCarAdOutput } from '@/types/car-ad/create-car-ad-output.interface'
+import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
 import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
 
 class CarAdService {
@@ -8,6 +9,10 @@ class CarAdService {
 
 	public getAll = async () => {
 		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)
+	}
+
+	public getById = async (carAdId: number) => {
+		return authApi.get<IGetCarAdByIdOutput>(`${this.URI_PREFIX}/${carAdId}`)
 	}
 
 	create = async (carAdData: ICreateCarAdInput) => {

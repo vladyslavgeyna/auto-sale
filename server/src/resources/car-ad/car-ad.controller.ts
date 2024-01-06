@@ -60,10 +60,18 @@ class CarAdController {
 		next: NextFunction,
 	) {
 		try {
+			const carAdId = req.params.id
+				? Number(req.params.id) || undefined
+				: undefined
+
+			if (!carAdId) {
+				return next(HttpError.BadRequest(`Invalid car ad id`))
+			}
+
 			const authenticatedUserId = req.authUser?.id
 
 			const carAd = await carAdService.getById(
-				Number(req.params.id),
+				carAdId,
 				authenticatedUserId,
 			)
 

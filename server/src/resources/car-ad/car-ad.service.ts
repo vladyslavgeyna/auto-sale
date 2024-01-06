@@ -138,7 +138,7 @@ class CarAdService {
 		)
 
 		if (!carAdFromDatabase) {
-			throw HttpError.NotFound(`Car ad with id ${id} was not found`)
+			throw HttpError.NotFound(`Car ad was not found`)
 		}
 
 		if (
@@ -147,7 +147,9 @@ class CarAdService {
 				!carAdFromDatabase.isActive) ||
 			(!authenticatedUserId && !carAdFromDatabase.isActive)
 		) {
-			throw HttpError.Forbidden(`Forbidden`)
+			throw HttpError.Forbidden(
+				`The ad you are looking for is not active at the moment`,
+			)
 		}
 
 		const images: string[] = []

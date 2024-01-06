@@ -38,6 +38,7 @@ const CarAdItem = ({ carAd }: PropsType) => {
 					className='overflow-hidden rounded-lg relative'>
 					<Link href={carAdLink}>
 						<Image
+							priority={true}
 							className='object-cover absolute top-0 left-0 h-full w-full hover:scale-[1.03] transition-all duration-300'
 							width={1280}
 							height={1280}
