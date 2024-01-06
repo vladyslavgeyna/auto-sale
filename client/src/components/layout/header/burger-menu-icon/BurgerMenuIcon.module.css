@@ -1,0 +1,46 @@
+.headerBurger span {
+	position: absolute;
+	height: 3px;
+	background-color: #000;
+	left: 0;
+	width: 100%;
+	top: 11px;
+	transition: all 0.3s ease 0s;
+	border-radius: 5px;
+}
+.headerBurger {
+	display: block;
+	position: relative;
+	width: 35px;
+	height: 25px;
+	z-index: 3;
+}
+.headerBurger:before,
+.headerBurger:after {
+	content: '';
+	background-color: #000;
+	position: absolute;
+	width: 100%;
+	height: 3px;
+	left: 0;
+	transition: all 0.3s ease 0s;
+	border-radius: 5px;
+}
+.headerBurger:before {
+	top: 0;
+}
+.headerBurger:after {
+	bottom: 0;
+}
+
+.active span {
+	transform: scale(0);
+}
+.active:before {
+	transform: rotate(45deg);
+	top: 10px;
+}
+.active:after {
+	transform: rotate(-45deg);
+	bottom: 12px;
+}
