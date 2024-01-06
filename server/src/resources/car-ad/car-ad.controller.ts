@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import redisClient from '../../redis'
 import HttpError from '../../utils/exceptions/http.error'
-import { RequestWithBody } from '../../utils/types/request.type'
+import {
+	RequestWithBody,
+	RequestWithParams,
+} from '../../utils/types/request.type'
 import carAdService from './car-ad.service'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
 class CarAdController {
@@ -37,15 +40,43 @@ class CarAdController {
 
 	async getAll(req: Request, res: Response, next: NextFunction) {
 		try {
-			const data = await carAdService.getAll()
+			const carAds = await carAdService.getAll()
 
-			if (data.count > 0) {
+			if (carAds.count > 0) {
 				const key = redisClient.constructKey('car-ad')
 
-				await redisClient.set(key, data)
+				await redisClient.set(key, carAds)
 			}
 
-			return res.json(data)
+			return res.json(carAds)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async getById(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const authenticatedUserId = req.authUser?.id
+
+			const carAd = await carAdService.getById(
+				Number(req.params.id),
+				authenticatedUserId,
+			)
+
+			if (carAd.isActive) {
+				const key = redisClient.constructKey(
+					'car-ad',
+					Number(req.params.id),
+				)
+
+				await redisClient.set(key, carAd)
+			}
+
+			return res.json(carAd)
 		} catch (error) {
 			next(error)
 		}

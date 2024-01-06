@@ -6,16 +6,19 @@ import carImageService from '../car-image/car-image.service'
 import carModelService from '../car-model/car-model.service'
 import carService from '../car/car.service'
 import CreateCarInputDto from '../car/dtos/create-car-input.dto'
+import { Color } from '../car/enums/color.enum'
 import { Fuel } from '../car/enums/fuel.enum'
+import { Region } from '../car/enums/region.enum'
 import { Transmission } from '../car/enums/transmission.enum'
 import { WheelDrive } from '../car/enums/wheel-drive.enum'
 import { appDataSource } from './../../data-source'
 import { CarAd } from './car-ad.entity'
-import { getAllCarAdsOptions } from './car-ad.utils'
+import { getAllCarAdsOptions, getCarAdByIdOptions } from './car-ad.utils'
 import { CarAdDto } from './dtos/car-ad.dto'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
 import CreateCarOutputDto from './dtos/create-car-ad-output.dto'
 import { GetAllCarAdsOutputDto } from './dtos/get-all-car-ads-output.dto'
+import { GetCarAdByIdOutput } from './dtos/get-car-ad-by-id-output.dto'
 
 class CarAdService {
 	private carAdRepository: Repository<CarAd>
@@ -127,6 +130,69 @@ class CarAdService {
 		)
 
 		return { carAds, count: carAdsFromDatabase[1] }
+	}
+
+	async getById(id: number, authenticatedUserId?: string) {
+		const carAdFromDatabase = await this.carAdRepository.findOne(
+			getCarAdByIdOptions(id),
+		)
+
+		if (!carAdFromDatabase) {
+			throw HttpError.NotFound(`Car ad with id ${id} was not found`)
+		}
+
+		if (
+			(authenticatedUserId &&
+				authenticatedUserId != carAdFromDatabase.user.id &&
+				!carAdFromDatabase.isActive) ||
+			(!authenticatedUserId && !carAdFromDatabase.isActive)
+		) {
+			throw HttpError.Forbidden(`Forbidden`)
+		}
+
+		const images: string[] = []
+		let userImage: string | null = null
+
+		for (const carImage of carAdFromDatabase.car.carImages) {
+			const imageLink = await awsService.getImageUrl(carImage.image.name)
+			images.push(imageLink)
+		}
+
+		if (carAdFromDatabase.user.image?.name) {
+			userImage = await awsService.getImageUrl(
+				carAdFromDatabase.user.image.name,
+			)
+		}
+
+		const carAd: GetCarAdByIdOutput = {
+			id: carAdFromDatabase.id,
+			additionalOptions: carAdFromDatabase.car.additionalOptions,
+			carBrand: carAdFromDatabase.car.carBrand.name,
+			carModel: carAdFromDatabase.car.carModel.name,
+			engineCapacity: carAdFromDatabase.car.engineCapacity,
+			fuel: Fuel[carAdFromDatabase.car.fuel],
+			transmission: Transmission[carAdFromDatabase.car.transmission],
+			wheelDrive: WheelDrive[carAdFromDatabase.car.wheelDrive],
+			color: Color[carAdFromDatabase.car.color],
+			region: Region[carAdFromDatabase.car.region],
+			mileage: carAdFromDatabase.car.mileage,
+			title: carAdFromDatabase.title,
+			text: carAdFromDatabase.text,
+			price: carAdFromDatabase.car.price,
+			images,
+			yearOfProduction: carAdFromDatabase.car.yearOfProduction,
+			numberOfSeats: carAdFromDatabase.car.numberOfSeats,
+			dateOfCreation: getFormattedDate(carAdFromDatabase.dateOfCreation),
+			userId: carAdFromDatabase.user.id,
+			isActive: carAdFromDatabase.isActive,
+			userName: carAdFromDatabase.user.name,
+			userSurname: carAdFromDatabase.user.surname,
+			userPhone: carAdFromDatabase.user.phone,
+			userEmail: carAdFromDatabase.user.email,
+			userImage,
+		}
+
+		return carAd
 	}
 }
 
