@@ -28,5 +28,6 @@ export const getAllCarAdsOptions: FindManyOptions<CarAd> = {
 				isMain: true,
 			},
 		},
+		isActive: true,
 	},
 }

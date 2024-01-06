@@ -183,12 +183,10 @@ const CreateCarAdForm = () => {
 						register={register('carBrandId', {
 							required: 'Car brand is required',
 						})}
-						items={carAdditionalData.carBrands
-							.map(item => ({
-								key: item.id.toString(),
-								value: item.value,
-							}))
-							.concat({ key: '3', value: 'Volks' })}
+						items={carAdditionalData.carBrands.map(item => ({
+							key: item.id.toString(),
+							value: item.value,
+						}))}
 						placeholder='Select car brand'
 					/>
 					<FormError
