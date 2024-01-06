@@ -2,7 +2,7 @@ import { api } from '@/http/index'
 import { IGetAdditionalDataOutput } from '@/types/car/get-additonal-data-output.interface'
 
 class CarService {
-	private URI_PREFIX = '/car'
+	private URI_PREFIX = '/cars'
 
 	getAdditionalData = async () => {
 		return api.get<IGetAdditionalDataOutput>(

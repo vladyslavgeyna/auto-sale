@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export const useGetCarAdditionalData = () => {
 	return useQuery({
-		queryKey: ['car-additional-data'],
+		queryKey: ['cars-additional-data'],
 		queryFn: async () => {
 			const response = await carService.getAdditionalData()
 			return response.data

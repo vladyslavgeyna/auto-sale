@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export const useGetCarAdById = (carAdId: number) => {
 	return useQuery({
-		queryKey: ['car-ad', carAdId],
+		queryKey: ['car-ads', carAdId],
 		queryFn: async () => {
 			const response = await carAdService.getById(carAdId)
 			return response.data

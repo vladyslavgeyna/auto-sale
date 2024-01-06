@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export const useGetCarAds = () => {
 	return useQuery({
-		queryKey: ['car-ad'],
+		queryKey: ['car-ads'],
 		queryFn: async () => {
 			const response = await carAdService.getAll()
 			return response.data

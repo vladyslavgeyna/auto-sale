@@ -5,7 +5,7 @@ import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.inte
 import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
 
 class CarAdService {
-	private URI_PREFIX = '/car-ad'
+	private URI_PREFIX = '/car-ads'
 
 	public getAll = async () => {
 		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)

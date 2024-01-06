@@ -30,9 +30,9 @@ class App {
 
 	private initializeRoutes() {
 		this.app.use(this.getRouteUri('account'), accountRouter)
-		this.app.use(this.getRouteUri('car-ad'), carAdRouter)
-		this.app.use(this.getRouteUri('car'), carRouter)
-		this.app.use(this.getRouteUri('car-model'), carModelRouter)
+		this.app.use(this.getRouteUri('car-ads'), carAdRouter)
+		this.app.use(this.getRouteUri('cars'), carRouter)
+		this.app.use(this.getRouteUri('car-models'), carModelRouter)
 	}
 
 	private initializeMiddlewares() {

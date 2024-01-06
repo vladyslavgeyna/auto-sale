@@ -16,7 +16,7 @@ export const useCreateCarAd = (resetForm: () => void) => {
 		onSuccess: () => {
 			resetForm()
 			successToast('The ad is created successfully!')
-			queryClient.invalidateQueries({ queryKey: ['car-ad'] })
+			queryClient.invalidateQueries({ queryKey: ['car-ads'] })
 		},
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)
