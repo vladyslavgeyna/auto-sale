@@ -2,7 +2,7 @@
 
 ## Project Description
 
-The Auto Sale app is a full-stack application designed for selling cars, providing a platform similar to [AUTO.RIA](https://auto.ria.com/uk/). The project is structured with a client-side application and a server-side API. At the moment Docker is utilized for managing the PostgreSQL database and Redis.
+The Auto Sale app is a full-stack application designed for selling cars, providing a platform similar to [AUTO.RIA](https://auto.ria.com/uk/). The project is structured with a client-side application and a server-side API. The entire project is containerized using Docker to enhance portability and scalability.
 
 ## Technologies Used
 
@@ -28,6 +28,10 @@ The Auto Sale app is a full-stack application designed for selling cars, providi
 -   **UI Libraries**: Swiper
 -   **Dev Tools**: TypeScript
 
+#### Nginx
+
+-   **Proxy Server**: Nginx is used as a reverse proxy to route requests to the appropriate services.
+
 ## Prerequisites
 
 Before you begin, make sure you have the following software installed on your machine:
@@ -35,7 +39,13 @@ Before you begin, make sure you have the following software installed on your ma
 -   [Docker](https://www.docker.com/get-started)
 -   [Node.js](https://nodejs.org/)
 
-## How to Run the Project
+## Notes on SSL Configuration
+
+-   Certbot is used to obtain and renew SSL certificates from Let's Encrypt.
+-   Nginx is configured to use these SSL certificates for secure communication.
+-   SSL certificates are stored and managed in the `./certbot` directory.
+
+## How to Run the Project (Development / Local mode)
 
 1. Clone the repository:
 
