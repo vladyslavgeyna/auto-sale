@@ -1,0 +1,15 @@
+.git
+*Dockerfile*
+*docker-compose*
+node_modules
+npm-debug.log
+build
+docs
+.env
+README.md
+LICENSE
+.vscode
+.next
+.gitignore
+dist
+.dockerignore
