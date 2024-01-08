@@ -1,24 +1,27 @@
-import carComparisonService from '@/services/car-comparison.service'
+import favoriteAdService from '@/services/favorite-ad.service'
 import { IHttpError } from '@/types/http-error.interface'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useErrorToast } from './useErrorToast'
 import { useSuccessToast } from './useSuccessToast'
 
-export const useToggleCarComparison = (carAdId: number) => {
+export const useToggleFavoriteAd = (carAdId: number) => {
 	const { errorToast } = useErrorToast()
 	const { successToast } = useSuccessToast()
 	const queryClient = useQueryClient()
 
 	return useMutation({
-		mutationKey: ['toggle-car-comparison', carAdId],
-		mutationFn: carComparisonService.toggle,
+		mutationKey: ['toggle-favorite-ad', carAdId],
+		mutationFn: favoriteAdService.toggle,
 		onSuccess: ({ data }) => {
 			successToast(
 				`The ad is ${data.added ? 'added' : 'removed'} successfully!`,
 			)
 			queryClient.invalidateQueries({
-				queryKey: ['car-comparison-exists', carAdId],
+				queryKey: ['favorite-ad-exists', carAdId],
+			})
+			queryClient.invalidateQueries({
+				queryKey: ['favorite-ad-count', carAdId],
 			})
 		},
 		onError: (error: AxiosError) => {

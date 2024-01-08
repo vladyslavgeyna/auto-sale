@@ -5,6 +5,8 @@ import { useShallow } from 'zustand/react/shallow'
 import Title from '../ui/Title'
 import AboutCar from './AboutCar'
 import ActionLinks from './ActionLinks'
+import CarAdAdditionalInfo from './CarAdAdditionalInfo'
+import Heart from './Heart'
 import SellerInfo from './SellerInfo'
 import Slider from './slider/Slider'
 
@@ -16,9 +18,15 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 		})),
 	)
 
+	const isUserAuthenticatedAndNotUserAd =
+		isAuthenticated && user?.id !== carAd.userId
+
 	return (
-		<div>
-			<div>
+		<div className='mt-7'>
+			<div className='flex items-center gap-3'>
+				{isUserAuthenticatedAndNotUserAd && (
+					<Heart carAdId={carAd.id} />
+				)}
 				<Title>{carAd.title}</Title>
 			</div>
 			<div className='flex lg:flex-row flex-col-reverse gap-7 mt-8'>
@@ -51,17 +59,12 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 					</div>
 					<ActionLinks
 						carAdId={carAd.id}
-						isNotCurrentUserAd={
-							isAuthenticated && user?.id !== carAd.userId
-						}
+						isNotCurrentUserAd={isUserAuthenticatedAndNotUserAd}
 					/>
-					<div className='text-sm mt-3'>
-						The ad has been created at:{' '}
-						<strong>{carAd.dateOfCreation}</strong>
-					</div>
-					<div className='text-sm mt-3'>
-						Saved to favorites: <strong>{12}</strong>
-					</div>
+					<CarAdAdditionalInfo
+						carAdId={carAd.id}
+						carAdDateOfCreation={carAd.dateOfCreation}
+					/>
 				</div>
 				<div className='xl:w-[70%] lg:w-[60%] w-full'>
 					<div>

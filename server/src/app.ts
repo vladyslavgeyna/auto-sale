@@ -10,6 +10,7 @@ import carAdRouter from './resources/car-ad/car-ad.router'
 import carComparisonRouter from './resources/car-comparison/car-comparison.router'
 import carModelRouter from './resources/car-model/car-model.router'
 import carRouter from './resources/car/car.router'
+import favoriteAdRouter from './resources/favorite-ad/favorite-ad.router'
 
 class App {
 	private port: number
@@ -35,6 +36,7 @@ class App {
 		this.app.use(this.getRouteUri('cars'), carRouter)
 		this.app.use(this.getRouteUri('car-models'), carModelRouter)
 		this.app.use(this.getRouteUri('car-comparisons'), carComparisonRouter)
+		this.app.use(this.getRouteUri('favorite-ads'), favoriteAdRouter)
 	}
 
 	private initializeMiddlewares() {

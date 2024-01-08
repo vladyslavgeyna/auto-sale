@@ -1,11 +1,9 @@
 import { useExistsCarComparison } from '@/hooks/useExistsCarComparison'
 import { useToggleCarComparison } from '@/hooks/useToggleCarComparison'
-import { useUserStore } from '@/store/user'
 import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { FaRegComment, FaRegComments } from 'react-icons/fa'
 import { FaScaleBalanced } from 'react-icons/fa6'
-import { useShallow } from 'zustand/react/shallow'
 import { Button } from '../ui/Button'
 import ActionLink from './ActionLink'
 
@@ -15,13 +13,6 @@ type PropsType = {
 }
 
 const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
-	const { user, isAuthenticated } = useUserStore(
-		useShallow(state => ({
-			user: state.user,
-			isAuthenticated: state.isAuthenticated,
-		})),
-	)
-
 	const {
 		data: exists,
 		isLoading: isCheckingCarComparisonLoading,
