@@ -25,7 +25,7 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 		<div className='mt-7'>
 			<div className='flex items-center gap-3'>
 				{isUserAuthenticatedAndNotUserAd && (
-					<Heart carAdId={carAd.id} />
+					<Heart className='w-10 h-10' carAdId={carAd.id} />
 				)}
 				<Title>{carAd.title}</Title>
 			</div>

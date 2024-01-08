@@ -10,7 +10,12 @@ import {
 	TooltipTrigger,
 } from '../ui/Tooltip'
 
-const Heart = ({ carAdId }: { carAdId: number }) => {
+type PropsType = {
+	carAdId: number
+	className?: string
+}
+
+const Heart = ({ carAdId, className = '' }: PropsType) => {
 	const {
 		data: exists,
 		isLoading: isCheckingCarComparisonLoading,
@@ -21,7 +26,7 @@ const Heart = ({ carAdId }: { carAdId: number }) => {
 	const { mutate: toggle, isPending } = useToggleFavoriteAd(carAdId)
 
 	if (isCheckingCarComparisonLoading || isPending) {
-		return <Loader2 className='w-10 h-10 animate-spin' />
+		return <Loader2 className={'animate-spin ' + className} />
 	}
 
 	if (!isCheckingCarComparisonSuccess || isCheckingCarComparisonError) {
@@ -40,12 +45,18 @@ const Heart = ({ carAdId }: { carAdId: number }) => {
 						{exists ? (
 							<FaHeart
 								onClick={handleToggleToFavorites}
-								className='transition-all w-10 h-10 duration-200 cursor-pointer text-[#ff0000] active:scale-90'
+								className={
+									'transition-all duration-200 cursor-pointer text-[#ff0000] active:scale-90 ' +
+									className
+								}
 							/>
 						) : (
 							<FaRegHeart
 								onClick={handleToggleToFavorites}
-								className='transition-all w-10 h-10 duration-200 cursor-pointer text-[#ff0000] active:scale-90'
+								className={
+									'transition-all duration-200 cursor-pointer text-[#ff0000] active:scale-90 ' +
+									className
+								}
 							/>
 						)}
 					</div>
