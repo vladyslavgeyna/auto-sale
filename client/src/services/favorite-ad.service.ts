@@ -11,7 +11,6 @@ class FavoriteAd {
 	}
 
 	exists = async (carAdId: number) => {
-		console.log('exists fav ad')
 		return authApi.get<boolean>(
 			`${this.URI_PREFIX}/exists/car-ads/${carAdId}`,
 		)

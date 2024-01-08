@@ -1,13 +1,13 @@
-import Image from 'next/image'
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import { Swiper } from 'swiper/react'
 import 'swiper/swiper-bundle.css'
 
+import Slide from './Slide'
 import './Slider.css'
 
 const Slider = ({ images }: { images: string[] }) => {
@@ -26,21 +26,7 @@ const Slider = ({ images }: { images: string[] }) => {
 			pagination={{ clickable: true }}
 			scrollbar={{ draggable: true }}>
 			{images.map((image, index) => (
-				<SwiperSlide key={image}>
-					<a
-						href={image}
-						target='_blank'
-						className='flex items-center h-full'>
-						<Image
-							priority={index === 0}
-							width={1280}
-							height={720}
-							className='lg:object-cover object-contain w-full h-full rounded-lg'
-							src={image}
-							alt='Car image'
-						/>
-					</a>
-				</SwiperSlide>
+				<Slide key={index} image={image} index={index} />
 			))}
 			<div className='slider-controller'>
 				<div className='swiper-button-prev slider-arrow'>
