@@ -33,8 +33,10 @@ const Slider = ({ images }: { images: string[] }) => {
 						className='flex items-center w-full h-full relative'>
 						<span
 							style={{
-								background: `url("${image}") no-repeat center`,
+								backgroundImage: `url("${image}")`,
 								backgroundSize: 'cover',
+								backgroundRepeat: 'no-repeat',
+								backgroundPosition: 'center',
 							}}
 							className='absolute top-0 blur-md left-0 w-full h-full'></span>
 						<Image

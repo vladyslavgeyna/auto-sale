@@ -1,4 +1,4 @@
-import { NextFunction, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
@@ -74,6 +74,19 @@ class FavoriteAdController {
 				req.body.carAdId,
 			)
 			res.json(response)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async getAll(req: Request, res: Response, next: NextFunction) {
+		try {
+			if (!req.authUser) {
+				throw HttpError.UnauthorizedError()
+			}
+
+			const favoriteAds = await favoriteAdService.getAll(req.authUser.id)
+			res.json(favoriteAds)
 		} catch (error) {
 			next(error)
 		}

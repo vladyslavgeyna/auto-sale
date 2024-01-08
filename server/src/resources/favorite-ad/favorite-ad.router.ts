@@ -25,4 +25,6 @@ favoriteAdRouter.post(
 	favoriteAdController.toggle,
 )
 
+favoriteAdRouter.get('/', requireAuthMiddleware, favoriteAdController.getAll)
+
 export default favoriteAdRouter
