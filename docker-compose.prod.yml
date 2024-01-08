@@ -89,3 +89,7 @@ services:
             - ./certbot/www:/var/www/certbot
         depends_on:
             - nginx
+# run command: docker-compose -f docker-compose.prod.yml --env-file server/.env up -d
+# run with build command: docker-compose -f docker-compose.prod.yml --env-file server/.env up -d --build
+# build command: docker-compose -f docker-compose.prod.yml --env-file server/.env build
+# stop command: docker-compose -f docker-compose.prod.yml down
