@@ -23,6 +23,9 @@ export const useToggleFavoriteAd = (carAdId: number) => {
 			queryClient.invalidateQueries({
 				queryKey: ['favorite-ad-count', carAdId],
 			})
+			queryClient.invalidateQueries({
+				queryKey: ['favorite-ads'],
+			})
 		},
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)

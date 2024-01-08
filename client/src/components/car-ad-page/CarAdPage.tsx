@@ -31,7 +31,9 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 			</div>
 			<div className='flex lg:flex-row flex-col-reverse gap-7 mt-8'>
 				<div className='xl:w-[30%] lg:w-[40%] w-full'>
-					<div className='p-2 text-4xl bg-primary text-white font-bold rounded-lg border'>
+					<div
+						style={{ letterSpacing: '1px' }}
+						className='p-2 text-4xl bg-primary text-white font-bold rounded-lg border'>
 						{carAd.price}$
 					</div>
 					<div className='flex gap-3 rounded-lg p-2 bg-primary text-white mt-3'>

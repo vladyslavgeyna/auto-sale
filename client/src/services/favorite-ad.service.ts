@@ -1,4 +1,5 @@
 import { api, authApi } from '@/http/index'
+import { IGetFavoriteAdsOutput } from '@/types/favorite-ad/get-favorite-ads-output.interface'
 import { IToggleFavoriteAdOutput } from '@/types/favorite-ad/toggle-favorite-ad-output.interface'
 
 class FavoriteAd {
@@ -21,6 +22,11 @@ class FavoriteAd {
 			`${this.URI_PREFIX}/toggle`,
 			{ carAdId },
 		)
+	}
+
+	getAll = async () => {
+		await new Promise(resolve => setTimeout(resolve, 2000))
+		return authApi.get<IGetFavoriteAdsOutput>(`${this.URI_PREFIX}`)
 	}
 }
 

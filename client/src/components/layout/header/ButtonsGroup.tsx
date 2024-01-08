@@ -39,7 +39,7 @@ const ButtonsGroup = () => {
 					text='Comparison'
 				/>
 				<HeaderButton
-					href='/'
+					href='/favorite-ads'
 					iconComponent={<FaHeart className='text-lg' />}
 					text='Favorite'
 				/>
