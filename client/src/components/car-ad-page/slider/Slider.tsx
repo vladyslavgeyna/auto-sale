@@ -4,10 +4,10 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules'
-import { Swiper } from 'swiper/react'
+import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/swiper-bundle.css'
 
-import Slide from './Slide'
+import Image from 'next/image'
 import './Slider.css'
 
 const Slider = ({ images }: { images: string[] }) => {
@@ -26,7 +26,27 @@ const Slider = ({ images }: { images: string[] }) => {
 			pagination={{ clickable: true }}
 			scrollbar={{ draggable: true }}>
 			{images.map((image, index) => (
-				<Slide key={index} image={image} index={index} />
+				<SwiperSlide key={index}>
+					<a
+						href={image}
+						target='_blank'
+						className='flex items-center w-full h-full relative'>
+						<span
+							style={{
+								background: `url("${image}") no-repeat center`,
+								backgroundSize: 'cover',
+							}}
+							className='absolute top-0 blur-md left-0 w-full h-full'></span>
+						<Image
+							priority={index === 0}
+							width={1280}
+							height={720}
+							className='object-contain w-full h-full rounded-lg z-10 bg-opacity-0'
+							src={image}
+							alt='Car image'
+						/>
+					</a>
+				</SwiperSlide>
 			))}
 			<div className='slider-controller'>
 				<div className='swiper-button-prev slider-arrow'>

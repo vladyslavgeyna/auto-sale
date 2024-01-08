@@ -9,7 +9,7 @@ import { Token } from './token.entity'
 
 class TokenService {
 	private tokenRepository: Repository<Token>
-	private ACCESS_TOKEN_EXPIRES_IN = '30m'
+	private ACCESS_TOKEN_EXPIRES_IN = '15m'
 	private REFRESH_TOKEN_EXPIRES_IN = '30d'
 
 	constructor() {

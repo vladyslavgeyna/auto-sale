@@ -46,6 +46,10 @@ authApi.interceptors.response.use(
 			}
 		}
 
+		await accountService.logout()
+
+		localStorage.removeItem('accessToken')
+
 		throw error
 	},
 )
