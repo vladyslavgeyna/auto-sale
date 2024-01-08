@@ -1,24 +1,20 @@
 import { useUserStore } from '@/store/user'
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
 import Image from 'next/image'
-import { FaRegComment, FaRegComments } from 'react-icons/fa'
-import { FaPhone, FaScaleBalanced } from 'react-icons/fa6'
-import { IoMail } from 'react-icons/io5'
 import { useShallow } from 'zustand/react/shallow'
 import Title from '../ui/Title'
 import AboutCar from './AboutCar'
-import ActionLink from './ActionLink'
-import UserContact from './UserContact'
+import ActionLinks from './ActionLinks'
+import SellerInfo from './SellerInfo'
 import Slider from './slider/Slider'
 
 const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
-	const { user } = useUserStore(
+	const { user, isAuthenticated } = useUserStore(
 		useShallow(state => ({
 			user: state.user,
+			isAuthenticated: state.isAuthenticated,
 		})),
 	)
-
-	const isCurrentUserAd = user && user.id === carAd.userId
 
 	return (
 		<div>
@@ -45,31 +41,19 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 							</div>
 						</div>
 						<div className='w-[70%] flex flex-col gap-2'>
-							<div>
-								<strong>
-									Seller {isCurrentUserAd && '(You)'}
-								</strong>
-							</div>
-							<div>
-								{carAd.userName} {carAd.userSurname}
-							</div>
-							<UserContact
-								type={carAd.userPhone ? 'phone' : 'none'}
-								text={carAd.userPhone || 'Not specified'}
-								icon={<FaPhone />}
-							/>
-							<UserContact
-								type='email'
-								text={carAd.userEmail}
-								icon={<IoMail />}
+							<SellerInfo
+								isCurrentUserAd={
+									isAuthenticated && user?.id === carAd.userId
+								}
+								carAd={carAd}
 							/>
 						</div>
 					</div>
-					<ActionLink text='All reviews' icon={<FaRegComments />} />
-					<ActionLink text='Leave a review' icon={<FaRegComment />} />
-					<ActionLink
-						text='Add car to comparison'
-						icon={<FaScaleBalanced />}
+					<ActionLinks
+						carAdId={carAd.id}
+						isNotCurrentUserAd={
+							isAuthenticated && user?.id !== carAd.userId
+						}
 					/>
 					<div className='text-sm mt-3'>
 						The ad has been created at:{' '}
