@@ -8,7 +8,10 @@ class Redis {
 	public redis: IORedis
 
 	private constructor() {
-		this.redis = new IORedis()
+		this.redis = new IORedis(
+			Number(process.env.REDIS_PORT),
+			String(process.env.REDIS_HOST),
+		)
 	}
 
 	public static getInstance(): Redis {

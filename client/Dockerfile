@@ -14,11 +14,12 @@ FROM node:20.10-alpine
 
 WORKDIR /app
 
+COPY --from=build /app/next.config.js ./
 COPY --from=build /app/.next ./.next
 COPY --from=build /app/public ./public
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 EXPOSE 3000
 

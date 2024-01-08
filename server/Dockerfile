@@ -18,7 +18,7 @@ COPY --from=build /app/dist ./dist
 
 COPY package*.json ./
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 EXPOSE 5000
 
