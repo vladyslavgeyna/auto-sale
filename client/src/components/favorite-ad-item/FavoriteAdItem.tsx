@@ -1,4 +1,6 @@
+import { useToggleFavoriteAd } from '@/hooks/useToggleFavoriteAd'
 import { IFavoriteAd } from '@/types/favorite-ad/favorite-ad.interface'
+import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { FaTrash } from 'react-icons/fa6'
@@ -8,6 +10,14 @@ import SellerInfo from './SellerInfo'
 
 const FavoriteAdItem = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
 	const carAdLink = `/car-ad/${favoriteAd.carAdId}`
+
+	const { mutate: toggle, isPending } = useToggleFavoriteAd(
+		favoriteAd.carAdId,
+	)
+
+	const handleOnRemoveFavoriteAd = () => {
+		toggle(favoriteAd.carAdId)
+	}
 
 	return (
 		<div className='h-full border rounded p-4'>
@@ -50,9 +60,18 @@ const FavoriteAdItem = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
 							surname={favoriteAd.surname}
 						/>
 						<div className='self-stretch'>
-							<Button className='flex items-center gap-2 w-full'>
-								<FaTrash />
-								<span>Remove from favorites</span>
+							<Button
+								type='button'
+								onClick={handleOnRemoveFavoriteAd}
+								className='flex items-center gap-2 w-full min-w-[229px]'>
+								{isPending ? (
+									<Loader2 className='animate-spin h-6 w-6' />
+								) : (
+									<>
+										<FaTrash />
+										<span>Remove from favorites</span>
+									</>
+								)}
 							</Button>
 						</div>
 					</div>

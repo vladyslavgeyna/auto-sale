@@ -18,13 +18,13 @@ export const useToggleFavoriteAd = (carAdId: number) => {
 				`The ad is ${data.added ? 'added' : 'removed'} successfully!`,
 			)
 			queryClient.invalidateQueries({
+				queryKey: ['favorite-ads'],
+			})
+			queryClient.invalidateQueries({
 				queryKey: ['favorite-ad-exists', carAdId],
 			})
 			queryClient.invalidateQueries({
 				queryKey: ['favorite-ad-count', carAdId],
-			})
-			queryClient.invalidateQueries({
-				queryKey: ['favorite-ads'],
 			})
 		},
 		onError: (error: AxiosError) => {
