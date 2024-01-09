@@ -20,6 +20,10 @@ class FavoriteAdService {
 		this.favoriteAdRepository = appDataSource.getRepository(FavoriteAd)
 	}
 
+	async deleteByCarAdId(carAdId: number) {
+		await this.favoriteAdRepository.delete({ carAd: { id: carAdId } })
+	}
+
 	async getCountByCarAdId(carAdId: number) {
 		const count = await this.favoriteAdRepository.countBy({
 			carAd: { id: carAdId },

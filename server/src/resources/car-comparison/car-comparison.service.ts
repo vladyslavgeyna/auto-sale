@@ -22,6 +22,10 @@ class CarComparisonService {
 		return carComparison
 	}
 
+	async deleteByCarAdId(carAdId: number) {
+		await this.carComparisonRepository.delete({ carAd: { id: carAdId } })
+	}
+
 	async toggle(
 		userId: string,
 		carAdId: number,

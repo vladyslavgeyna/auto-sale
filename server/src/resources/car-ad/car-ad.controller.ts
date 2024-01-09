@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import redisClient from '../../redis'
+import HttpStatusCode from '../../utils/enums/http-status-code'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
@@ -66,7 +67,7 @@ class CarAdController {
 				: undefined
 
 			if (!carAdId) {
-				return next(HttpError.BadRequest(`Invalid car ad id`))
+				return next(HttpError.BadRequest(`Invalid car ad`))
 			}
 
 			const authenticatedUserId = req.authUser?.id
@@ -125,6 +126,32 @@ class CarAdController {
 				req.body.carAdId,
 			)
 			res.json(response)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async delete(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			const carAdId = req.params.id
+				? Number(req.params.id) || undefined
+				: undefined
+
+			if (!carAdId) {
+				return next(HttpError.BadRequest(`Invalid car ad`))
+			}
+
+			await carAdService.delete(carAdId, req.authUser.id)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {
 			next(error)
 		}

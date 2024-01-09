@@ -1,3 +1,4 @@
+import { useDeleteCarAd } from '@/hooks/useDeleteCarAd'
 import { useToggleCarAdActive } from '@/hooks/useToggleCarAdActive'
 import { IGetAllUserCarAd } from '@/types/car-ad/get-user-car-ads-output.interface'
 import { Loader2 } from 'lucide-react'
@@ -24,7 +25,13 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 	const { mutate: toggle, isPending: isTogglingPending } =
 		useToggleCarAdActive(carAd.id)
 
-	const handleDeleteCarAd = () => {}
+	const { mutate: remove, isPending: isDeletePending } = useDeleteCarAd(
+		carAd.id,
+	)
+
+	const handleDeleteCarAd = () => {
+		remove(carAd.id)
+	}
 
 	const handleToggleCarAdActive = () => {
 		toggle(carAd.id)
@@ -78,7 +85,17 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 							</Button>
 							<AlertDialog defaultOpen={false}>
 								<AlertDialogTrigger asChild>
-									<Button type='button'>Delete</Button>
+									<Button
+										className='min-w-[83px]'
+										type='button'>
+										{isDeletePending ? (
+											<Loader2 className='animate-spin h-6 w-6' />
+										) : (
+											<>
+												<span>Delete</span>
+											</>
+										)}
+									</Button>
 								</AlertDialogTrigger>
 								<AlertDialogContent>
 									<AlertDialogCancel className='hover:bg-inherit hover:text-slate-700 border-none absolute top-0 right-0'>

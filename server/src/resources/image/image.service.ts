@@ -139,6 +139,16 @@ class ImageService {
 
 		return image
 	}
+
+	/**
+	 * Deletes image by name. Also deletes image from AWS S3
+	 * @param imageName the name of the image to delete
+	 */
+	async deleteByName(imageName: string) {
+		await awsService.deleteImage(imageName)
+
+		await this.imageRepository.delete({ name: imageName })
+	}
 }
 
 export default new ImageService()

@@ -61,9 +61,13 @@ const MyAdsPage = () => {
 					<MyAdsList carAds={userCarAdsData.carAds} />
 				</div>
 			) : (
-				<Title>
-					You haven't created any car ad yet. But you can{' '}
-					<Link href={'/car-ad/create'}>create one</Link>
+				<Title className='text-center'>
+					You haven't created any car ad yet.
+					<br />
+					But you can{' '}
+					<Link className='underline' href={'/car-ad/create'}>
+						create one
+					</Link>
 				</Title>
 			)}
 		</div>

@@ -44,4 +44,6 @@ carAdRouter.post(
 
 carAdRouter.get('/:id', getByIdCache, authMiddleware, carAdController.getById)
 
+carAdRouter.delete('/:id', requireAuthMiddleware, carAdController.delete)
+
 export default carAdRouter

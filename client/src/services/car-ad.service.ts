@@ -9,6 +9,10 @@ import { IToggleActiveOutput } from '@/types/car-ad/toggle-active-output.interfa
 class CarAdService {
 	private URI_PREFIX = '/car-ads'
 
+	public delete = async (carAdId: number) => {
+		return authApi.delete(`${this.URI_PREFIX}/${carAdId}`)
+	}
+
 	public getAll = async () => {
 		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)
 	}
@@ -30,7 +34,7 @@ class CarAdService {
 		return authApi.get<IGetCarAdByIdOutput>(`${this.URI_PREFIX}/${carAdId}`)
 	}
 
-	create = async (carAdData: ICreateCarAdInput) => {
+	public create = async (carAdData: ICreateCarAdInput) => {
 		const formData = new FormData()
 
 		if (carAdData.images && carAdData.images.length) {

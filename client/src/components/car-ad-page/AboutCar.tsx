@@ -65,7 +65,7 @@ const AboutCar = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 						<TableCell className='flex items-center gap-3'>
 							{carAd.color}
 							<span
-								className='rounded w-4 h-4'
+								className='rounded border w-4 h-4'
 								style={{
 									backgroundColor:
 										carAd.color === 'Multicolored'

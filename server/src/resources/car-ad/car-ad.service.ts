@@ -2,6 +2,7 @@ import { Repository } from 'typeorm'
 import { getFormattedDate } from '../../utils/date.utils'
 import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
+import carComparisonService from '../car-comparison/car-comparison.service'
 import carImageService from '../car-image/car-image.service'
 import carModelService from '../car-model/car-model.service'
 import carService from '../car/car.service'
@@ -11,6 +12,7 @@ import { Fuel } from '../car/enums/fuel.enum'
 import { Region } from '../car/enums/region.enum'
 import { Transmission } from '../car/enums/transmission.enum'
 import { WheelDrive } from '../car/enums/wheel-drive.enum'
+import favoriteAdService from '../favorite-ad/favorite-ad.service'
 import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { CarAd } from './car-ad.entity'
@@ -193,6 +195,47 @@ class CarAdService {
 		return {
 			isActivated: !currentStatus,
 		}
+	}
+
+	async delete(id: number, userId: string) {
+		const carAd = await this.carAdRepository.findOne({
+			relations: {
+				car: true,
+			},
+			where: {
+				id,
+			},
+			select: {
+				car: {
+					id: true,
+				},
+			},
+		})
+
+		if (!carAd) {
+			throw HttpError.NotFound(`Car ad was not found`)
+		}
+
+		const isCurrentUserCarAd = await this.existsByCarAdIdAndUserId(
+			id,
+			userId,
+		)
+
+		if (!isCurrentUserCarAd) {
+			throw HttpError.Forbidden(
+				`You are not allowed to perform this action`,
+			)
+		}
+
+		await carComparisonService.deleteByCarAdId(id)
+
+		await favoriteAdService.deleteByCarAdId(id)
+
+		await this.carAdRepository.delete(id)
+
+		await carImageService.deleteByCarId(carAd.car.id)
+
+		await carService.delete(carAd.car.id)
 	}
 
 	async getById(id: number, authenticatedUserId?: string) {

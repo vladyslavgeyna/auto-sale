@@ -46,6 +46,10 @@ class CarService {
 			colors,
 		}
 	}
+
+	async delete(id: number) {
+		await this.carRepository.delete(id)
+	}
 }
 
 export default new CarService()

@@ -5,9 +5,9 @@ export const useLogout = (removeCredentials: () => void) => {
 	return useMutation({
 		mutationKey: ['logout'],
 		mutationFn: accountService.logout,
-		onSuccess: () => {
+		onSettled: () => {
 			removeCredentials()
-			location.href = `${String(process.env.NEXT_PUBLIC_CLIENT_URL)}/`
+			location.href = `${String(process.env.NEXT_PUBLIC_CLIENT_URL)}`
 		},
 	})
 }

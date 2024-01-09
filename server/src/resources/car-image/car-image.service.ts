@@ -12,6 +12,31 @@ class CarImageService {
 	}
 
 	/**
+	 * Deletes all images of a car including the images from the storage (AWS S3) and the database
+	 * @param carId car id to delete its images
+	 */
+	async deleteByCarId(carId: number) {
+		const carImages = await this.carImageRepository.find({
+			relations: {
+				image: true,
+			},
+			where: { car: { id: carId } },
+			select: {
+				id: true,
+				image: {
+					name: true,
+				},
+			},
+		})
+
+		await this.carImageRepository.remove(carImages)
+
+		for (const carImage of carImages) {
+			await imageService.deleteByName(carImage.image.name)
+		}
+	}
+
+	/**
 	 *
 	 * @param images Array of images to save
 	 * @param car Car to which the images belong
