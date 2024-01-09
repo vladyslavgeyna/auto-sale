@@ -7,6 +7,7 @@ import {
 	Mail,
 	MessageSquare,
 	PlusCircle,
+	Table,
 	User,
 	UserPlus,
 } from 'lucide-react'
@@ -78,6 +79,17 @@ function DropdownMenu() {
 							href={'/account/profile'}>
 							<User className='mr-2 h-4 w-4' />
 							<span>Profile</span>
+						</Link>
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
+				<DropdownMenuGroup>
+					<DropdownMenuItem className='hover:cursor-pointer'>
+						<Link
+							onClick={() => onOpenChange(false)}
+							className='w-full flex items-center'
+							href={'/car-ad/my-ads'}>
+							<Table className='mr-2 h-4 w-4 -mb-0.5' />
+							<span>My ads</span>
 						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>

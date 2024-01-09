@@ -51,7 +51,14 @@ const FavoriteAdItem = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
 							{favoriteAd.price}$
 						</div>
 					</div>
-					<Characteristics favoriteAd={favoriteAd} />
+					<Characteristics
+						fuel={favoriteAd.fuel}
+						engineCapacity={favoriteAd.engineCapacity}
+						mileage={favoriteAd.mileage}
+						region={favoriteAd.region}
+						transmission={favoriteAd.transmission}
+						wheelDrive={favoriteAd.wheelDrive}
+					/>
 					<div className='flex-col sm:flex-row flex items-center justify-between gap-2'>
 						<SellerInfo
 							email={favoriteAd.email}

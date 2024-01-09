@@ -27,6 +27,12 @@ carAdRouter.post(
 
 carAdRouter.get('/', getAllCache, carAdController.getAll)
 
+carAdRouter.get(
+	'/users/:userId',
+	authMiddleware,
+	carAdController.getAllUserCarAds,
+)
+
 carAdRouter.get('/:id', getByIdCache, authMiddleware, carAdController.getById)
 
 export default carAdRouter

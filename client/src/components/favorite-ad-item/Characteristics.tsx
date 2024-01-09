@@ -1,4 +1,3 @@
-import { IFavoriteAd } from '@/types/favorite-ad/favorite-ad.interface'
 import { FaMapLocationDot } from 'react-icons/fa6'
 import { GiCarWheel } from 'react-icons/gi'
 import { MdOutlineElectricBolt } from 'react-icons/md'
@@ -7,44 +6,43 @@ import { SlSpeedometer } from 'react-icons/sl'
 import { TbAutomaticGearbox, TbManualGearbox } from 'react-icons/tb'
 import Characteristic from '../car-ad-item/Characteristic'
 
-const Characteristics = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
+type PropsType = {
+	mileage: number
+	fuel: string
+	engineCapacity: number
+	transmission: string
+	wheelDrive: string
+	region: string
+}
+
+const Characteristics = ({
+	engineCapacity,
+	fuel,
+	mileage,
+	region,
+	transmission,
+	wheelDrive,
+}: PropsType) => {
 	const engineIcon =
-		favoriteAd.fuel === 'Electric' ? (
-			<MdOutlineElectricBolt />
-		) : (
-			<PiGasCan />
-		)
+		fuel === 'Electric' ? <MdOutlineElectricBolt /> : <PiGasCan />
 
-	let engineText = `${favoriteAd.fuel}, ${favoriteAd.engineCapacity} `
+	let engineText = `${fuel}, ${engineCapacity} `
 
-	engineText += favoriteAd.fuel === 'Electric' ? 'kW' : 'L'
+	engineText += fuel === 'Electric' ? 'kW' : 'L'
 
 	const transmissionIcon =
-		favoriteAd.transmission === 'Manual' ? (
-			<TbManualGearbox />
-		) : (
-			<TbAutomaticGearbox />
-		)
+		transmission === 'Manual' ? <TbManualGearbox /> : <TbAutomaticGearbox />
 
 	return (
 		<div className='flex flex-col gap-2'>
 			<Characteristic
 				icon={<SlSpeedometer />}
-				text={`${favoriteAd.mileage} thousand km.`}
+				text={`${mileage} thousand km.`}
 			/>
 			<Characteristic text={engineText} icon={engineIcon} />
-			<Characteristic
-				text={`${favoriteAd.transmission}`}
-				icon={transmissionIcon}
-			/>
-			<Characteristic
-				text={`${favoriteAd.wheelDrive}`}
-				icon={<GiCarWheel />}
-			/>
-			<Characteristic
-				icon={<FaMapLocationDot />}
-				text={favoriteAd.region}
-			/>
+			<Characteristic text={`${transmission}`} icon={transmissionIcon} />
+			<Characteristic text={`${wheelDrive}`} icon={<GiCarWheel />} />
+			<Characteristic icon={<FaMapLocationDot />} text={region} />
 		</div>
 	)
 }

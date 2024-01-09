@@ -82,6 +82,16 @@ class UserService {
 		return user
 	}
 
+	async exists(id: string) {
+		try {
+			const exists = await this.userRepository.exist({ where: { id } })
+
+			return exists
+		} catch (error) {
+			throw HttpError.NotFound('User was not found')
+		}
+	}
+
 	async create(user: CreateUserInputDto) {
 		const newUser = this.userRepository.create(user)
 

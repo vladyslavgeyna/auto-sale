@@ -101,3 +101,47 @@ export const getCarAdByIdOptions = (
 		},
 	},
 })
+
+export const getAllUserCarAdsOptions = (
+	userId: string,
+	onlyActive: boolean,
+): FindOneOptions<CarAd> => ({
+	where: {
+		user: { id: userId },
+		car: { carImages: { isMain: true } },
+		isActive: onlyActive ? true : undefined,
+	},
+	relations: {
+		user: true,
+		car: {
+			carImages: {
+				image: true,
+			},
+		},
+	},
+	select: {
+		id: true,
+		dateOfCreation: true,
+		title: true,
+		isActive: true,
+		user: {
+			name: true,
+			surname: true,
+		},
+		car: {
+			price: true,
+			wheelDrive: true,
+			region: true,
+			transmission: true,
+			mileage: true,
+			engineCapacity: true,
+			fuel: true,
+			carImages: {
+				id: true,
+				image: {
+					name: true,
+				},
+			},
+		},
+	},
+})

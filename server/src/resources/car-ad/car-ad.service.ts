@@ -11,13 +11,21 @@ import { Fuel } from '../car/enums/fuel.enum'
 import { Region } from '../car/enums/region.enum'
 import { Transmission } from '../car/enums/transmission.enum'
 import { WheelDrive } from '../car/enums/wheel-drive.enum'
+import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { CarAd } from './car-ad.entity'
-import { getAllCarAdsOptions, getCarAdByIdOptions } from './car-ad.utils'
+import {
+	getAllCarAdsOptions,
+	getAllUserCarAdsOptions,
+	getCarAdByIdOptions,
+} from './car-ad.utils'
 import { CarAdDto } from './dtos/car-ad.dto'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
 import CreateCarOutputDto from './dtos/create-car-ad-output.dto'
 import { GetAllCarAdsOutputDto } from './dtos/get-all-car-ads-output.dto'
+import GetAllUserCarAdsOutputDto, {
+	GetAllUserCarAdDto,
+} from './dtos/get-all-user-car-ads-output.dto'
 import { GetCarAdByIdOutput } from './dtos/get-car-ad-by-id-output.dto'
 
 class CarAdService {
@@ -201,6 +209,56 @@ class CarAdService {
 		}
 
 		return carAd
+	}
+
+	/**
+	 * Gets all car ads of a user. If currentUserId is provided, and userId equals currentUserId then all user's car ads will be returned. Otherwise, only active car ads will be returned
+	 * @param userId user id of user whose car ads to get
+	 * @param currentUserId user id of user who is requesting car ads. If currentUserId is not provided, then only active car ads will be returned
+	 * @returns User's car ads
+	 */
+	async getAllUserCarAds(
+		userId: string,
+		currentUserId?: string,
+	): Promise<GetAllUserCarAdsOutputDto> {
+		const exists = await userService.exists(userId)
+
+		if (!exists) {
+			throw HttpError.NotFound(`User was not found`)
+		}
+
+		const carAdsData = await this.carAdRepository.findAndCount(
+			getAllUserCarAdsOptions(
+				userId,
+				currentUserId ? userId !== currentUserId : true,
+			),
+		)
+
+		const carAds: GetAllUserCarAdDto[] = await Promise.all(
+			carAdsData[0].map(async item => {
+				const imageLink = await awsService.getImageUrl(
+					item.car.carImages[0].image.name,
+				)
+				return {
+					id: item.id,
+					dateOfCreation: getFormattedDate(item.dateOfCreation),
+					region: Region[item.car.region],
+					userName: item.user.name,
+					userSurname: item.user.surname,
+					title: item.title,
+					price: item.car.price,
+					mileage: item.car.mileage,
+					fuel: Fuel[item.car.fuel],
+					engineCapacity: item.car.engineCapacity,
+					wheelDrive: WheelDrive[item.car.wheelDrive],
+					transmission: Transmission[item.car.transmission],
+					image: imageLink,
+					isActive: item.isActive,
+				}
+			}),
+		)
+
+		return { carAds, count: carAdsData[1] }
 	}
 }
 

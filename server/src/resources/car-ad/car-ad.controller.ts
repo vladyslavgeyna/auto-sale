@@ -89,6 +89,25 @@ class CarAdController {
 			next(error)
 		}
 	}
+
+	async getAllUserCarAds(
+		req: RequestWithParams<{ userId: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const currentUserId = req.authUser?.id
+
+			const ads = await carAdService.getAllUserCarAds(
+				req.params.userId,
+				currentUserId,
+			)
+
+			return res.json(ads)
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 export default new CarAdController()
