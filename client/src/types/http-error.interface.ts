@@ -6,6 +6,9 @@ export class IHttpError {
 	status?: number
 
 	static isHttpError(error: any): error is IHttpError {
+		if (!error) {
+			return false
+		}
 		return 'message' in error && 'errors' in error
 	}
 

@@ -1,5 +1,7 @@
 import { Repository } from 'typeorm'
 import { appDataSource } from '../../data-source'
+import HttpError from '../../utils/exceptions/http.error'
+import carAdService from '../car-ad/car-ad.service'
 import { CarComparison } from './car-comparison.entity'
 import ToggleCarComparisonOutputDto from './dtos/toggle-car-comparison-output.dto'
 
@@ -24,6 +26,12 @@ class CarComparisonService {
 		userId: string,
 		carAdId: number,
 	): Promise<ToggleCarComparisonOutputDto> {
+		const exists = await carAdService.exists(carAdId)
+
+		if (!exists) {
+			throw HttpError.BadRequest('Invalid car ad')
+		}
+
 		const candidate = await this.carComparisonRepository.findOneBy({
 			user: { id: userId },
 			carAd: { id: carAdId },

@@ -1,6 +1,8 @@
 import { Repository } from 'typeorm'
 import { appDataSource } from '../../data-source'
+import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
+import carAdService from '../car-ad/car-ad.service'
 import { Fuel } from '../car/enums/fuel.enum'
 import { Region } from '../car/enums/region.enum'
 import { Transmission } from '../car/enums/transmission.enum'
@@ -37,6 +39,12 @@ class FavoriteAdService {
 		userId: string,
 		carAdId: number,
 	): Promise<ToggleFavoriteAdOutputDto> {
+		const exists = await carAdService.exists(carAdId)
+
+		if (!exists) {
+			throw HttpError.BadRequest('Invalid car ad')
+		}
+
 		const candidate = await this.favoriteAdRepository.findOneBy({
 			user: { id: userId },
 			carAd: { id: carAdId },

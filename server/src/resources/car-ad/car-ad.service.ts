@@ -132,6 +132,12 @@ class CarAdService {
 		return { carAds, count: carAdsFromDatabase[1] }
 	}
 
+	async exists(id: number) {
+		const exists = await this.carAdRepository.exist({ where: { id } })
+
+		return exists
+	}
+
 	async getById(id: number, authenticatedUserId?: string) {
 		const carAdFromDatabase = await this.carAdRepository.findOne(
 			getCarAdByIdOptions(id),
