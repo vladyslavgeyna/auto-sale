@@ -29,7 +29,18 @@ class CarComparisonService {
 		const exists = await carAdService.exists(carAdId)
 
 		if (!exists) {
-			throw HttpError.BadRequest('Invalid car ad')
+			throw HttpError.NotFound('Car ad was not found')
+		}
+
+		const isTheSameUserAd = await carAdService.existsByCarAdIdAndUserId(
+			carAdId,
+			userId,
+		)
+
+		if (isTheSameUserAd) {
+			throw HttpError.BadRequest(
+				'You are not allowed to compare your own car ad',
+			)
 		}
 
 		const candidate = await this.carComparisonRepository.findOneBy({

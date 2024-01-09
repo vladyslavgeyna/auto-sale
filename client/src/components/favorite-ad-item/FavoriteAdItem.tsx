@@ -1,11 +1,11 @@
 import { useToggleFavoriteAd } from '@/hooks/useToggleFavoriteAd'
 import { IFavoriteAd } from '@/types/favorite-ad/favorite-ad.interface'
 import { Loader2 } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { FaTrash } from 'react-icons/fa6'
+import CarAdTitle from '../car-ad/CarAdTitle'
+import Characteristics from '../car-ad/Characteristics'
+import ImageBlock from '../car-ad/ImageBlock'
 import { Button } from '../ui/Button'
-import Characteristics from './Characteristics'
 import SellerInfo from './SellerInfo'
 
 const FavoriteAdItem = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
@@ -23,28 +23,18 @@ const FavoriteAdItem = ({ favoriteAd }: { favoriteAd: IFavoriteAd }) => {
 		<div className='h-full border rounded p-4'>
 			<div className='flex flex-col md:flex-row md:items-center gap-6	'>
 				<div className='md:w-[40%] lg:w-1/3'>
-					<div
-						style={{ paddingBottom: '50%' }}
-						className='overflow-hidden rounded-lg relative'>
-						<Link href={carAdLink}>
-							<Image
-								priority={true}
-								className='object-cover absolute top-0 left-0 h-full w-full hover:scale-[1.03] transition-all duration-300'
-								width={1280}
-								height={1280}
-								alt={favoriteAd.title}
-								src={favoriteAd.image}
-							/>
-						</Link>
-					</div>
+					<ImageBlock
+						image={favoriteAd.image}
+						alt={favoriteAd.title}
+						carAdLink={carAdLink}
+					/>
 				</div>
 				<div className='md:w-[60%] lg:w-4/6 flex gap-2 flex-col justify-between self-stretch'>
 					<div className='flex items-center justify-between gap-3'>
-						<h2 className='font-bold text-lg'>
-							<Link className='hover:underline' href={carAdLink}>
-								{favoriteAd.title}
-							</Link>
-						</h2>
+						<CarAdTitle
+							carAdLink={carAdLink}
+							title={favoriteAd.title}
+						/>
 						<div
 							style={{ letterSpacing: '0.5px' }}
 							className='bg-primary text-white p-2 text-lg rounded-md'>

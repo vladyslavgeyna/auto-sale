@@ -1,9 +1,10 @@
 import { useToggleCarAdActive } from '@/hooks/useToggleCarAdActive'
 import { IGetAllUserCarAd } from '@/types/car-ad/get-user-car-ads-output.interface'
 import { Loader2 } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
-import Characteristics from '../favorite-ad-item/Characteristics'
+import CarAdTitle from '../car-ad/CarAdTitle'
+import Characteristics from '../car-ad/Characteristics'
+import ImageBlock from '../car-ad/ImageBlock'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,29 +34,14 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 		<div className='h-full border rounded p-4'>
 			<div className='flex flex-col lg:flex-row lg:items-center gap-6	'>
 				<div className='lg:w-1/3'>
-					<div
-						style={{ paddingBottom: '50%' }}
-						className='overflow-hidden rounded-lg relative'>
-						<Link href={carAdLink}>
-							<Image
-								priority={true}
-								className='object-cover absolute top-0 left-0 h-full w-full hover:scale-[1.03] transition-all duration-300'
-								width={1280}
-								height={1280}
-								alt={carAd.title}
-								src={carAd.image}
-							/>
-						</Link>
-					</div>
+					<ImageBlock
+						image={carAd.image}
+						alt={carAd.title}
+						carAdLink={carAdLink}
+					/>
 				</div>
 				<div className='lg:w-4/6 flex gap-2 flex-col justify-between self-stretch'>
-					<div>
-						<h2 className='font-bold text-lg'>
-							<Link className='hover:underline' href={carAdLink}>
-								{carAd.title}
-							</Link>
-						</h2>
-					</div>
+					<CarAdTitle carAdLink={carAdLink} title={carAd.title} />
 					<Characteristics
 						engineCapacity={carAd.engineCapacity}
 						fuel={carAd.fuel}

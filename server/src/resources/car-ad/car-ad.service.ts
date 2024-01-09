@@ -147,6 +147,14 @@ class CarAdService {
 		return exists
 	}
 
+	async existsByCarAdIdAndUserId(id: number, userId: string) {
+		const exists = await this.carAdRepository.exist({
+			where: { id, user: { id: userId } },
+		})
+
+		return exists
+	}
+
 	/**
 	 *
 	 * @param userId user id of user who is requesting to toggle active status of car ad. Car ad must belong to this user

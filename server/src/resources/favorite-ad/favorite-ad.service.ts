@@ -42,7 +42,18 @@ class FavoriteAdService {
 		const exists = await carAdService.exists(carAdId)
 
 		if (!exists) {
-			throw HttpError.BadRequest('Invalid car ad')
+			throw HttpError.NotFound('Car ad was not found')
+		}
+
+		const isTheSameUserAd = await carAdService.existsByCarAdIdAndUserId(
+			carAdId,
+			userId,
+		)
+
+		if (isTheSameUserAd) {
+			throw HttpError.BadRequest(
+				'You are not allowed to add your own car ad to favorites',
+			)
 		}
 
 		const candidate = await this.favoriteAdRepository.findOneBy({
