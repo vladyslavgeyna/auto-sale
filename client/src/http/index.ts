@@ -50,6 +50,8 @@ authApi.interceptors.response.use(
 
 		localStorage.removeItem('accessToken')
 
+		location.href = 'http://localhost:3000/account/login'
+
 		throw error
 	},
 )
