@@ -4,6 +4,7 @@ import { ICreateCarAdOutput } from '@/types/car-ad/create-car-ad-output.interfac
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
 import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
 import IGetAllUserCarAdsOutput from '@/types/car-ad/get-user-car-ads-output.interface'
+import { IToggleActiveOutput } from '@/types/car-ad/toggle-active-output.interface'
 
 class CarAdService {
 	private URI_PREFIX = '/car-ads'
@@ -12,9 +13,14 @@ class CarAdService {
 		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)
 	}
 
+	public toggleActive = async (carAdId: number) => {
+		return authApi.post<IToggleActiveOutput>(
+			`${this.URI_PREFIX}/toggle-active`,
+			{ carAdId },
+		)
+	}
+
 	public getAllUserCarAds = async (userId: string) => {
-		//add 2 secinds delay
-		await new Promise(resolve => setTimeout(resolve, 2000))
 		return authApi.get<IGetAllUserCarAdsOutput>(
 			`${this.URI_PREFIX}/users/${userId}`,
 		)

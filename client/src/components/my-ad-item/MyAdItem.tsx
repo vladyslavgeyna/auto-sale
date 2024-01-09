@@ -1,4 +1,6 @@
+import { useToggleCarAdActive } from '@/hooks/useToggleCarAdActive'
 import { IGetAllUserCarAd } from '@/types/car-ad/get-user-car-ads-output.interface'
+import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Characteristics from '../favorite-ad-item/Characteristics'
@@ -17,6 +19,15 @@ import { Button } from '../ui/Button'
 
 const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 	const carAdLink = `/car-ad/${carAd.id}`
+
+	const { mutate: toggle, isPending: isTogglingPending } =
+		useToggleCarAdActive(carAd.id)
+
+	const handleDeleteCarAd = () => {}
+
+	const handleToggleCarAdActive = () => {
+		toggle(carAd.id)
+	}
 
 	return (
 		<div className='h-full border rounded p-4'>
@@ -63,7 +74,22 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 									Edit
 								</Link>
 							</Button>
-							<Button type='button'>Activate</Button>
+							<Button
+								onClick={handleToggleCarAdActive}
+								className='min-w-[115px]'
+								type='button'>
+								{isTogglingPending ? (
+									<Loader2 className='animate-spin h-6 w-6' />
+								) : (
+									<>
+										<span>
+											{carAd.isActive
+												? 'Deactivate'
+												: 'Activate'}
+										</span>
+									</>
+								)}
+							</Button>
 							<AlertDialog defaultOpen={false}>
 								<AlertDialogTrigger asChild>
 									<Button type='button'>Delete</Button>
@@ -78,17 +104,17 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 										</AlertDialogTitle>
 										<AlertDialogDescription>
 											This action cannot be undone. This
-											will permanently delete your account
-											and remove your data from our
-											servers.
+											will permanently delete this ad and
+											remove its data from our servers.
 										</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
 										<AlertDialogCancel>
 											Cancel
 										</AlertDialogCancel>
-										<AlertDialogAction>
-											Continue
+										<AlertDialogAction
+											onClick={handleDeleteCarAd}>
+											Delete anyway
 										</AlertDialogAction>
 									</AlertDialogFooter>
 								</AlertDialogContent>

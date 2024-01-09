@@ -27,6 +27,7 @@ import GetAllUserCarAdsOutputDto, {
 	GetAllUserCarAdDto,
 } from './dtos/get-all-user-car-ads-output.dto'
 import { GetCarAdByIdOutput } from './dtos/get-car-ad-by-id-output.dto'
+import ToggleActiveOutputDto from './dtos/toggle-active-output.dto'
 
 class CarAdService {
 	private carAdRepository: Repository<CarAd>
@@ -144,6 +145,46 @@ class CarAdService {
 		const exists = await this.carAdRepository.exist({ where: { id } })
 
 		return exists
+	}
+
+	/**
+	 *
+	 * @param userId user id of user who is requesting to toggle active status of car ad. Car ad must belong to this user
+	 * @param carAdId id of car ad to toggle active status
+	 * @returns result activation status of car ad
+	 */
+	async toggleActive(
+		userId: string,
+		carAdId: number,
+	): Promise<ToggleActiveOutputDto> {
+		const candidate = await this.carAdRepository.findOne({
+			where: {
+				id: carAdId,
+			},
+			relations: {
+				user: true,
+			},
+		})
+
+		if (!candidate) {
+			throw HttpError.BadRequest('Invalid car ad')
+		}
+
+		if (candidate.user.id !== userId) {
+			throw HttpError.Forbidden(
+				'You are not allowed to perform this action',
+			)
+		}
+
+		const currentStatus = candidate.isActive
+
+		candidate.isActive = !currentStatus
+
+		await this.carAdRepository.save(candidate)
+
+		return {
+			isActivated: !currentStatus,
+		}
 	}
 
 	async getById(id: number, authenticatedUserId?: string) {

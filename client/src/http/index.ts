@@ -43,14 +43,21 @@ authApi.interceptors.response.use(
 				return authApi.request(originalRequest)
 			} catch (error) {
 				console.log(error)
+				try {
+					if (localStorage.getItem('accessToken')) {
+						await accountService.logout()
+
+						localStorage.removeItem('accessToken')
+					}
+				} catch (error) {
+					console.log(error)
+				} finally {
+					location.href = `${String(
+						process.env.NEXT_PUBLIC_CLIENT_URL,
+					)}/account/login`
+				}
 			}
 		}
-
-		await accountService.logout()
-
-		localStorage.removeItem('accessToken')
-
-		location.href = 'http://localhost:3000/account/login'
 
 		throw error
 	},

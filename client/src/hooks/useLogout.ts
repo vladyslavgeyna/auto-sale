@@ -1,6 +1,5 @@
 import accountService from '@/services/account.service'
 import { useMutation } from '@tanstack/react-query'
-import { redirect } from 'next/navigation'
 
 export const useLogout = (removeCredentials: () => void) => {
 	return useMutation({
@@ -8,7 +7,7 @@ export const useLogout = (removeCredentials: () => void) => {
 		mutationFn: accountService.logout,
 		onSuccess: () => {
 			removeCredentials()
-			redirect('/')
+			location.href = `${String(process.env.NEXT_PUBLIC_CLIENT_URL)}/`
 		},
 	})
 }

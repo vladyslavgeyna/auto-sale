@@ -58,8 +58,6 @@ export const useUserStore = create<IUserStore>(set => ({
 			user: null,
 			isAuthenticated: false,
 		}))
-		console.log('removeCredentials')
-
 		localStorage.removeItem('accessToken')
 	},
 }))

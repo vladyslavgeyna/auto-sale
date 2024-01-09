@@ -1,7 +1,9 @@
 import { useUserStore } from '@/store/user'
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
+import { Terminal } from 'lucide-react'
 import Image from 'next/image'
 import { useShallow } from 'zustand/react/shallow'
+import { Alert, AlertTitle } from '../ui/Alert'
 import Title from '../ui/Title'
 import AboutCar from './AboutCar'
 import ActionLinks from './ActionLinks'
@@ -23,6 +25,14 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 
 	return (
 		<div className='mt-7'>
+			{!carAd.isActive && (
+				<Alert className='mb-3'>
+					<Terminal className='h-4 w-4' />
+					<AlertTitle>
+						The is deactivated. Other users can't see it.
+					</AlertTitle>
+				</Alert>
+			)}
 			<div className='flex items-center gap-3'>
 				{isUserAuthenticatedAndNotUserAd && (
 					<Heart className='w-10 h-10' carAdId={carAd.id} />

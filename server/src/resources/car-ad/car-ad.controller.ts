@@ -7,6 +7,7 @@ import {
 } from '../../utils/types/request.type'
 import carAdService from './car-ad.service'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
+import ToggleActiveInputDto from './dtos/toggle-active-input.dto'
 class CarAdController {
 	async create(
 		req: RequestWithBody<CreateCarAdInputDto>,
@@ -104,6 +105,26 @@ class CarAdController {
 			)
 
 			return res.json(ads)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async toggleActive(
+		req: RequestWithBody<ToggleActiveInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				throw HttpError.UnauthorizedError()
+			}
+
+			const response = await carAdService.toggleActive(
+				req.authUser.id,
+				req.body.carAdId,
+			)
+			res.json(response)
 		} catch (error) {
 			next(error)
 		}

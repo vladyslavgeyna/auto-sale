@@ -10,6 +10,7 @@ import { getAllCache } from './cache/get-all.cache'
 import { getByIdCache } from './cache/get-by-id.cache'
 import carAdController from './car-ad.controller'
 import { createCarAdValidation } from './validation/create-car-ad.validation'
+import { toggleActiveValidation } from './validation/toggle-active.validation'
 
 const carAdRouter = Router()
 
@@ -31,6 +32,14 @@ carAdRouter.get(
 	'/users/:userId',
 	authMiddleware,
 	carAdController.getAllUserCarAds,
+)
+
+carAdRouter.post(
+	'/toggle-active',
+	requireAuthMiddleware,
+	toggleActiveValidation,
+	checkValidationMiddleware,
+	carAdController.toggleActive,
 )
 
 carAdRouter.get('/:id', getByIdCache, authMiddleware, carAdController.getById)
