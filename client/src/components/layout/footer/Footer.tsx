@@ -19,6 +19,12 @@ const Footer = () => {
 								Vladyslav Geyna
 							</strong>
 						</a>
+						.{' '}
+						<Link
+							className='hover:underline'
+							href='/privacy-policy'>
+							Privacy Policy
+						</Link>
 					</span>
 				</div>
 				<ContactList />
