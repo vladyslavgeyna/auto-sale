@@ -8,7 +8,7 @@ export const useExistsCarComparison = (carAdId: number, isEnabled: boolean) => {
 			const response = await carComparisonService.exists(carAdId)
 			return response.data
 		},
-		staleTime: 0,
+		staleTime: 1000 * 60,
 		retry: false,
 		enabled: isEnabled,
 	})

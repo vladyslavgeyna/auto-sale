@@ -13,10 +13,10 @@ export const useCreateCarAd = (resetForm: () => void) => {
 	return useMutation({
 		mutationKey: ['create-car-ad'],
 		mutationFn: carAdService.create,
-		onSuccess: () => {
+		onSuccess: async () => {
 			resetForm()
 			successToast('The ad is created successfully!')
-			queryClient.invalidateQueries({ queryKey: ['car-ads'] })
+			await queryClient.invalidateQueries({ queryKey: ['car-ads'] })
 		},
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)

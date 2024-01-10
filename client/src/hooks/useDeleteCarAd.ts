@@ -20,10 +20,10 @@ export const useDeleteCarAd = (carAdId: number) => {
 	return useMutation({
 		mutationKey: ['delete-car-ad', carAdId],
 		mutationFn: carAdService.delete,
-		onSuccess: () => {
+		onSuccess: async () => {
 			successToast(`The ad is deleted successfully!`)
 			const currentUserId = user?.id!
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['user-car-ads', currentUserId],
 			})
 		},

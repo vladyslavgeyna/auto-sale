@@ -20,14 +20,14 @@ export const useToggleCarAdActive = (carAdId: number) => {
 	return useMutation({
 		mutationKey: ['toggle-car-ad-active', carAdId],
 		mutationFn: carAdService.toggleActive,
-		onSuccess: ({ data }) => {
+		onSuccess: async ({ data }) => {
 			successToast(
 				`The ad is ${
 					data.isActivated ? 'activated' : 'deactivated'
 				} successfully!`,
 			)
 			const currentUserId = user?.id!
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['user-car-ads', currentUserId],
 			})
 		},

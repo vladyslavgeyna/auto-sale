@@ -13,17 +13,17 @@ export const useToggleFavoriteAd = (carAdId: number) => {
 	return useMutation({
 		mutationKey: ['toggle-favorite-ad', carAdId],
 		mutationFn: favoriteAdService.toggle,
-		onSuccess: ({ data }) => {
+		onSuccess: async ({ data }) => {
 			successToast(
 				`The ad is ${data.added ? 'added' : 'removed'} successfully!`,
 			)
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['favorite-ads'],
 			})
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['favorite-ad-exists', carAdId],
 			})
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['favorite-ad-count', carAdId],
 			})
 		},

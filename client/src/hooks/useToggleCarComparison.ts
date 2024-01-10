@@ -13,14 +13,14 @@ export const useToggleCarComparison = (carAdId: number) => {
 	return useMutation({
 		mutationKey: ['toggle-car-comparison', carAdId],
 		mutationFn: carComparisonService.toggle,
-		onSuccess: ({ data }) => {
+		onSuccess: async ({ data }) => {
 			successToast(
 				`The ad is ${data.added ? 'added' : 'removed'} successfully!`,
 			)
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['car-comparisons'],
 			})
-			queryClient.invalidateQueries({
+			await queryClient.invalidateQueries({
 				queryKey: ['car-comparison-exists', carAdId],
 			})
 		},
