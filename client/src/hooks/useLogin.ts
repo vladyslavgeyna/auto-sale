@@ -2,7 +2,6 @@ import accountService from '@/services/account.service'
 import { useUserStore } from '@/store/user'
 import { useMutation } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { redirect } from 'next/navigation'
 import { useShallow } from 'zustand/react/shallow'
 
 export const useLogin = (
@@ -21,7 +20,6 @@ export const useLogin = (
 		onSuccess: ({ data }) => {
 			resetForm()
 			setCredentials(data)
-			redirect('/')
 		},
 		onError: (error: AxiosError) => {
 			handleHttpError(error)
