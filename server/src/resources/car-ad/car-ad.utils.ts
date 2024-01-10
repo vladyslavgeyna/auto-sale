@@ -102,6 +102,20 @@ export const getCarAdByIdOptions = (
 	},
 })
 
+export const deleteCarAdOptions = (carAdId: number): FindOneOptions<CarAd> => ({
+	relations: {
+		car: true,
+	},
+	where: {
+		id: carAdId,
+	},
+	select: {
+		car: {
+			id: true,
+		},
+	},
+})
+
 export const getAllUserCarAdsOptions = (
 	userId: string,
 	onlyActive: boolean,

@@ -3,6 +3,7 @@ import { appDataSource } from '../../data-source'
 import { Car } from '../car/car.entity'
 import imageService from '../image/image.service'
 import { CarImage } from './car-image.entity'
+import { deleteCarImageOptions } from './car-image.utils'
 
 class CarImageService {
 	private carImageRepository: Repository<CarImage>
@@ -16,18 +17,9 @@ class CarImageService {
 	 * @param carId car id to delete its images
 	 */
 	async deleteByCarId(carId: number) {
-		const carImages = await this.carImageRepository.find({
-			relations: {
-				image: true,
-			},
-			where: { car: { id: carId } },
-			select: {
-				id: true,
-				image: {
-					name: true,
-				},
-			},
-		})
+		const carImages = await this.carImageRepository.find(
+			deleteCarImageOptions(carId),
+		)
 
 		await this.carImageRepository.remove(carImages)
 

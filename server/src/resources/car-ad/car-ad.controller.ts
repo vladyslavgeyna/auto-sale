@@ -78,10 +78,7 @@ class CarAdController {
 			)
 
 			if (carAd.isActive) {
-				const key = redisClient.constructKey(
-					'car-ad',
-					Number(req.params.id),
-				)
+				const key = redisClient.constructKey('car-ad', carAdId)
 
 				await redisClient.set(key, carAd)
 			}
@@ -150,6 +147,10 @@ class CarAdController {
 			}
 
 			await carAdService.delete(carAdId, req.authUser.id)
+
+			const key = redisClient.constructKey('car-ad', carAdId)
+
+			await redisClient.delete(key)
 
 			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {

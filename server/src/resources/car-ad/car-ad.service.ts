@@ -17,6 +17,7 @@ import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { CarAd } from './car-ad.entity'
 import {
+	deleteCarAdOptions,
 	getAllCarAdsOptions,
 	getAllUserCarAdsOptions,
 	getCarAdByIdOptions,
@@ -198,19 +199,7 @@ class CarAdService {
 	}
 
 	async delete(id: number, userId: string) {
-		const carAd = await this.carAdRepository.findOne({
-			relations: {
-				car: true,
-			},
-			where: {
-				id,
-			},
-			select: {
-				car: {
-					id: true,
-				},
-			},
-		})
+		const carAd = await this.carAdRepository.findOne(deleteCarAdOptions(id))
 
 		if (!carAd) {
 			throw HttpError.NotFound(`Car ad was not found`)
