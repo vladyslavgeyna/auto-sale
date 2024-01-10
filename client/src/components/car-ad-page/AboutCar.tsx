@@ -1,6 +1,7 @@
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
+import AdditionalOptionsList from '../car-ad/AdditionalOptionsList'
+import ColorBlock from '../car-ad/ColorBlock'
 import { Table, TableBody, TableCell, TableRow } from '../ui/Table'
-import AdditionalOptionsList from './AdditionalOptionsList'
 
 const AboutCar = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 	return (
@@ -64,15 +65,7 @@ const AboutCar = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 						</TableCell>
 						<TableCell className='flex items-center gap-3'>
 							{carAd.color}
-							<span
-								className='rounded border w-4 h-4'
-								style={{
-									backgroundColor:
-										carAd.color === 'Multicolored'
-											? 'white'
-											: carAd.color,
-								}}
-							/>
+							<ColorBlock color={carAd.color} />
 						</TableCell>
 					</TableRow>
 					<TableRow>

@@ -8,7 +8,7 @@ export const useGetFavoriteAdCount = (carAdId: number) => {
 			const response = await favoriteAdService.getCountByCarAdId(carAdId)
 			return response.data
 		},
-		staleTime: 1000 * 60,
+		staleTime: 0,
 		retry: false,
 	})
 }

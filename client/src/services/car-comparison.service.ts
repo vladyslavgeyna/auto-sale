@@ -1,8 +1,14 @@
 import { authApi } from '@/http/index'
+import { IGetCarComparisonsOutput } from '@/types/car-comparison/get-car-comparisons-output.interface'
 import { IToggleCarComparisonOutput } from '@/types/car-comparison/toggle-car-comparison-output.interface'
 
 class CarComparisonService {
 	private URI_PREFIX = '/car-comparisons'
+
+	getAll = async () => {
+		await new Promise(resolve => setTimeout(resolve, 2000))
+		return authApi.get<IGetCarComparisonsOutput>(`${this.URI_PREFIX}`)
+	}
 
 	exists = async (carAdId: number) => {
 		return authApi.get<boolean>(

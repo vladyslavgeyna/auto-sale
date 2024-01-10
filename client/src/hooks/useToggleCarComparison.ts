@@ -18,6 +18,9 @@ export const useToggleCarComparison = (carAdId: number) => {
 				`The ad is ${data.added ? 'added' : 'removed'} successfully!`,
 			)
 			queryClient.invalidateQueries({
+				queryKey: ['car-comparisons'],
+			})
+			queryClient.invalidateQueries({
 				queryKey: ['car-comparison-exists', carAdId],
 			})
 		},

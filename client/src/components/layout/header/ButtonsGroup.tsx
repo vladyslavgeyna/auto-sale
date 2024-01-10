@@ -34,7 +34,7 @@ const ButtonsGroup = () => {
 					text='Create ad'
 				/>
 				<HeaderButton
-					href='/'
+					href='/car-comparisons'
 					iconComponent={<FaScaleBalanced className='text-lg' />}
 					text='Comparison'
 				/>

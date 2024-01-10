@@ -8,7 +8,7 @@ export const useExistsFavoriteAd = (carAdId: number) => {
 			const response = await favoriteAdService.exists(carAdId)
 			return response.data
 		},
-		staleTime: 1000 * 60,
+		staleTime: 0,
 		retry: false,
 	})
 }

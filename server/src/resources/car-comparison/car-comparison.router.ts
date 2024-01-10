@@ -20,4 +20,10 @@ carComparisonRouter.get(
 	carComparisonController.exists,
 )
 
+carComparisonRouter.get(
+	'/',
+	requireAuthMiddleware,
+	carComparisonController.getAll,
+)
+
 export default carComparisonRouter
