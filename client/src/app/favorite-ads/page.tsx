@@ -51,7 +51,9 @@ const FavoriteAds = () => {
 						/>
 					</div>
 				) : (
-					<Title>You don't have any favorite ad</Title>
+					<Title className='text-center'>
+						You don't have any favorite ad
+					</Title>
 				)}
 			</div>
 		</RequireAuth>
