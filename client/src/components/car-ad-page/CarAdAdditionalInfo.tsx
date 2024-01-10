@@ -13,6 +13,7 @@ const CarAdAdditionalInfo = ({ carAdDateOfCreation, carAdId }: PropsType) => {
 		isLoading: isGettingCountLoading,
 		isSuccess: isGettingCountSuccess,
 		isError: isGettingCountError,
+		isFetching: isGettingCountFetching,
 	} = useGetFavoriteAdCount(carAdId)
 
 	if (
@@ -30,7 +31,7 @@ const CarAdAdditionalInfo = ({ carAdDateOfCreation, carAdId }: PropsType) => {
 			</div>
 			<div className='text-sm mt-3 flex items-center gap-1'>
 				Saved to favorites:{' '}
-				{isGettingCountLoading ? (
+				{isGettingCountLoading || isGettingCountFetching ? (
 					<Loader2 className='h-4 w-4 animate-spin' />
 				) : (
 					<strong>{data?.count || 0}</strong>

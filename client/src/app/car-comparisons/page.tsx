@@ -12,6 +12,7 @@ const CarComparisons = () => {
 		isLoading: areCarComparisonsLoading,
 		isSuccess: isGettingCarComparisonsSuccess,
 		isError: isGettingCarComparisonsError,
+		isFetching: isCarComparisonsFetching,
 	} = useGetCarComparisons()
 
 	if (
@@ -30,7 +31,7 @@ const CarComparisons = () => {
 				{(areCarComparisonsLoading || hasDataLoadedAndItExists) && (
 					<Title className='mb-3'>Comparisons</Title>
 				)}
-				{areCarComparisonsLoading ? (
+				{areCarComparisonsLoading || isCarComparisonsFetching ? (
 					<div>
 						<CarComparisonsTableSkeleton />
 					</div>

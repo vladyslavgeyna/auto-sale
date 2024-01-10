@@ -13,6 +13,7 @@ const FavoriteAds = () => {
 		isLoading: areFavoriteAdsLoading,
 		isSuccess: isGettingFavoriteAdsSuccess,
 		isError: isGettingFavoriteAdsError,
+		isFetching: isFavoriteAdsFetching,
 	} = useGetFavoriteAds()
 
 	if (
@@ -33,7 +34,7 @@ const FavoriteAds = () => {
 				{(areFavoriteAdsLoading || hasDataLoadedAndItExists) && (
 					<Title className='mb-3'>Favorite Ads</Title>
 				)}
-				{areFavoriteAdsLoading ? (
+				{areFavoriteAdsLoading || isFavoriteAdsFetching ? (
 					<div>
 						<p className='mb-3 text-xl'>
 							Total ads:{' '}

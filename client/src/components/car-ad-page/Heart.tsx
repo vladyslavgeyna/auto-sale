@@ -21,11 +21,16 @@ const Heart = ({ carAdId, className = '' }: PropsType) => {
 		isLoading: isCheckingCarComparisonLoading,
 		isSuccess: isCheckingCarComparisonSuccess,
 		isError: isCheckingCarComparisonError,
+		isFetching: isCheckingCarComparisonFetching,
 	} = useExistsFavoriteAd(carAdId)
 
 	const { mutate: toggle, isPending } = useToggleFavoriteAd(carAdId)
 
-	if (isCheckingCarComparisonLoading || isPending) {
+	if (
+		isCheckingCarComparisonLoading ||
+		isPending ||
+		isCheckingCarComparisonFetching
+	) {
 		return <Loader2 className={'animate-spin ' + className} />
 	}
 

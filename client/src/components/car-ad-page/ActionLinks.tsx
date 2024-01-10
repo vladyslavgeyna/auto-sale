@@ -18,6 +18,7 @@ const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
 		isLoading: isCheckingCarComparisonLoading,
 		isSuccess: isCheckingCarComparisonSuccess,
 		isError: isCheckingCarComparisonError,
+		isFetching: isCheckingCarComparisonFetching,
 	} = useExistsCarComparison(carAdId, isNotCurrentUserAd)
 
 	const { mutate: toggle, isPending } = useToggleCarComparison(carAdId)
@@ -44,7 +45,9 @@ const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
 						onClick={handleToggleComparison}
 						type='button'
 						className='w-full flex gap-2 items-center justify-center mt-3'>
-						{isCheckingCarComparisonLoading || isPending ? (
+						{isCheckingCarComparisonLoading ||
+						isPending ||
+						isCheckingCarComparisonFetching ? (
 							<Loader2 className='h-6 w-6 animate-spin' />
 						) : (
 							<>

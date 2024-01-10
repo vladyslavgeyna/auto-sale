@@ -10,7 +10,7 @@ const CarComparisonsTable = ({
 }) => {
 	return (
 		<div className='overflow-auto'>
-			<table className='[&_td:first-child]:sticky [&_td:first-child]:bg-white [&_td:first-child]:left-[-1px] [&_td:first-child]:z-10 table-fixed border-collapse border [&_td]:border w-full [&_td]:w-72 [&_td:first-child]:w-52 [&_td:first-child]:font-bold [&_td]:p-2'>
+			<table className='[&_td:first-child]:sticky [&_td:first-child]:bg-white [&_td:first-child]:left-[-1px] [&_td:first-child]:z-10 table-fixed border-collapse border [&_td]:border w-full [&_td]:w-56 sm:[&_td]:w-64 [&_td:first-child]:w-40 md:[&_td]:w-72 md:[&_td:first-child]:w-52 [&_td:first-child]:font-bold [&_td]:p-2'>
 				<tbody>
 					<tr>
 						<td></td>

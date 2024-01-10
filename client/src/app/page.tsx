@@ -12,9 +12,10 @@ export default function Home() {
 		isLoading: areCarAdsLoading,
 		isSuccess: isGettingCarAdsSuccess,
 		isError: isGettingCarAdsError,
+		isFetching: isGettingCarAdsFetching,
 	} = useGetCarAds()
 
-	if (areCarAdsLoading) {
+	if (areCarAdsLoading || isGettingCarAdsFetching) {
 		return <CarAdsListSkeleton />
 	}
 

@@ -28,13 +28,13 @@ const CarComparisonsTableSkeleton = () => {
 					<tr>
 						<td></td>
 						{Array.from({ length: 3 }).map((_, index) => (
-							<td>
+							<td key={index + 'TableHeadItemSkeleton'}>
 								<TableHeadItemSkeleton />
 							</td>
 						))}
 					</tr>
 					{Array.from({ length: 13 }).map((_, index) => (
-						<tr key={index}>
+						<tr key={index + 'SkeletonTdGroup'}>
 							<SkeletonTdGroup />
 						</tr>
 					))}

@@ -26,10 +26,12 @@ const MyAdsPage = () => {
 		isLoading: areUserCarAdsLoading,
 		isSuccess: isGettingUserCarAdsSuccess,
 		isError: isGettingUserCarAdsError,
+		isFetching: isUserCarAdsFetching,
 	} = useGetUserCarAds(user.id)
 
 	if (
 		!areUserCarAdsLoading &&
+		!isUserCarAdsFetching &&
 		(!isGettingUserCarAdsSuccess || isGettingUserCarAdsError)
 	) {
 		redirect('/error')
@@ -37,6 +39,7 @@ const MyAdsPage = () => {
 
 	const hasDataLoadedAndItExists =
 		!areUserCarAdsLoading &&
+		!isUserCarAdsFetching &&
 		userCarAdsData &&
 		userCarAdsData.carAds.length > 0
 
