@@ -18,7 +18,6 @@ dist
 /dist
 **/dist
 dist-ssr
-*.local
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -62,7 +61,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-*.local
+*.
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -88,7 +87,6 @@ pgdata
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env*.local
 .vercel
 *.tsbuildinfo
 next-env.d.ts
