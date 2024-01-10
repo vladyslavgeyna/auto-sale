@@ -6,7 +6,6 @@ class CarComparisonService {
 	private URI_PREFIX = '/car-comparisons'
 
 	getAll = async () => {
-		await new Promise(resolve => setTimeout(resolve, 2000))
 		return authApi.get<IGetCarComparisonsOutput>(`${this.URI_PREFIX}`)
 	}
 
