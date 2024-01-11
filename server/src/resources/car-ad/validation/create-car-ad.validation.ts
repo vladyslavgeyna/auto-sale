@@ -104,7 +104,13 @@ export const createCarAdValidation = [
 		.notEmpty()
 		.escape()
 		.isInt({ min: 1, max: 100000000 })
-		.withMessage('Price should be from 1 to 100000000'),
+		.withMessage('Price should be from 1 to 100000000')
+		.custom(value => {
+			if (value && !/^[1-9]\d*$/.test(value)) {
+				throw new Error('Invalid price')
+			}
+			return true
+		}),
 	body('carBrandId')
 		.trim()
 		.notEmpty()
