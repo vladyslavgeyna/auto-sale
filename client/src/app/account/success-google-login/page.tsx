@@ -2,6 +2,7 @@
 
 import Loader from '@/components/loader/Loader'
 import { useUserStore } from '@/store/user'
+import { UserRole } from '@/types/user/user-role.interface'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -12,6 +13,7 @@ type PropsType = {
 		id: string
 		email: string
 		name: string
+		role: string
 		surname: string
 		phone?: string
 		imageLink?: string
@@ -34,12 +36,17 @@ const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
 			!searchParams?.email ||
 			!searchParams?.name ||
 			!searchParams?.surname ||
-			!searchParams?.id
+			!searchParams?.role ||
+			!searchParams?.id ||
+			!['user', 'admin', 'moderator'].includes(searchParams.role)
 		) {
 			return router.push('/')
 		}
 
+		console.log('searchParams', searchParams)
+
 		setCredentials({
+			role: searchParams.role as UserRole,
 			accessToken: searchParams.accessToken,
 			id: searchParams.id,
 			email: searchParams.email,

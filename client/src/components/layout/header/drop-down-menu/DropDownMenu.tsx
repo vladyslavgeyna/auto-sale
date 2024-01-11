@@ -1,6 +1,13 @@
 'use client'
 
-import { ChevronDown, Loader2, LogOut, Table, User } from 'lucide-react'
+import {
+	ChevronDown,
+	LayoutDashboard,
+	Loader2,
+	LogOut,
+	Table,
+	User,
+} from 'lucide-react'
 
 import { Avatar, AvatarImage } from '@/components/ui/Avatar'
 import { Button } from '@/components/ui/Button'
@@ -26,9 +33,6 @@ function DropdownMenu() {
 			user: state.user,
 		})),
 	)
-	{
-		/* <LayoutDashboard /> */
-	}
 	const [isOpened, setIsOpened] = useState(false)
 
 	const { mutate: logout, isPending } = useLogout(removeCredentials)
@@ -81,6 +85,22 @@ function DropdownMenu() {
 						</Link>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>
+				{user && user.role === 'admin' && (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuGroup>
+							<DropdownMenuItem className='hover:cursor-pointer'>
+								<Link
+									onClick={() => onOpenChange(false)}
+									className='w-full flex items-center'
+									href={'/dashboard'}>
+									<LayoutDashboard className='mr-2 h-4 w-4 -mb-0.5' />
+									<span>Dashboard</span>
+								</Link>
+							</DropdownMenuItem>
+						</DropdownMenuGroup>
+					</>
+				)}
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
 					<DropdownMenuItem

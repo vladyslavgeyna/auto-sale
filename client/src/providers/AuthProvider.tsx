@@ -38,6 +38,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 						surname: data.surname,
 						phone: data.phone,
 						imageLink: data.imageLink,
+						role: data.role,
 					})
 					setIsAuthenticated(true)
 					localStorage.setItem('accessToken', data.accessToken)

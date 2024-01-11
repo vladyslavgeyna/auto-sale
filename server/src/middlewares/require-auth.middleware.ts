@@ -28,7 +28,7 @@ const requireAuthMiddleware = (
 
 		next()
 	} catch (error) {
-		return next(HttpError.UnauthorizedError())
+		return next(error)
 	}
 }
 

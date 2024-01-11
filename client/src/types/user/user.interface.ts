@@ -1,3 +1,4 @@
+import { UserRole } from './user-role.interface'
 export interface IUser {
 	id: string
 	email: string
@@ -5,5 +6,5 @@ export interface IUser {
 	surname: string
 	phone: string | null
 	imageLink: string | null
-	role: 'user' | 'admin' | 'moderator'
+	role: UserRole
 }

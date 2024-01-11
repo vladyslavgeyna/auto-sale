@@ -24,7 +24,7 @@ import {
 } from './car-ad.utils'
 import { CarAdDto } from './dtos/car-ad.dto'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
-import CreateCarOutputDto from './dtos/create-car-ad-output.dto'
+import CreateCarAdOutputDto from './dtos/create-car-ad-output.dto'
 import { GetAllCarAdsOutputDto } from './dtos/get-all-car-ads-output.dto'
 import GetAllUserCarAdsOutputDto, {
 	GetAllUserCarAdDto,
@@ -48,7 +48,7 @@ class CarAdService {
 	async create(
 		carAd: CreateCarAdInputDto & { userId: string },
 		images: Express.Multer.File[],
-	): Promise<CreateCarOutputDto> {
+	): Promise<CreateCarAdOutputDto> {
 		if (!images.some(image => image.originalname === carAd.mainImageName)) {
 			throw HttpError.BadRequest(
 				`Invalid main image. Main image with filename ${carAd.mainImageName} was not found in the provided images`,

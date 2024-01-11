@@ -152,11 +152,13 @@ class AccountController {
 					process.env.CLIENT_URL
 				}/account/success-google-login?accessToken=${
 					loginData.tokens.accessToken
-				}&id=${loginData.user.id}&email=${loginData.user.email}&name=${
-					loginData.user.name
-				}&surname=${loginData.user.surname}&phone=${
-					loginData.user.phone || ''
-				}&imageLink=${encodedImageLink || ''}`,
+				}&id=${loginData.user.id}&email=${loginData.user.email}&role=${
+					loginData.user.role
+				}&name=${loginData.user.name}&surname=${
+					loginData.user.surname
+				}&phone=${loginData.user.phone || ''}&imageLink=${
+					encodedImageLink || ''
+				}`,
 			)
 		} catch (error) {
 			res.redirect(

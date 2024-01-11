@@ -1,8 +1,12 @@
 import { NextFunction, Response } from 'express'
 import redisClient from '../../redis'
 import { EnumDto } from '../../utils/enums/enum.dto'
-import { RequestWithQuery } from '../../utils/types/request.type'
+import {
+	RequestWithBody,
+	RequestWithQuery,
+} from '../../utils/types/request.type'
 import carModelService from './car-model.service'
+import CreateCarModelInputDto from './dtos/create-car-model-input.dto'
 
 class CarModelController {
 	async getAll(
@@ -34,6 +38,20 @@ class CarModelController {
 			}
 
 			res.json(carModelsResponse)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async create(
+		req: RequestWithBody<CreateCarModelInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const carModel = await carModelService.create(req.body)
+
+			res.json(carModel)
 		} catch (error) {
 			next(error)
 		}

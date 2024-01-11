@@ -1,4 +1,4 @@
-export default interface CreateCarOutputDto {
+export default interface CreateCarAdOutputDto {
 	id: number
 
 	carId: number

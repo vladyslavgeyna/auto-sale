@@ -6,7 +6,7 @@ export class CarModel {
 	@PrimaryGeneratedColumn()
 	id: number
 
-	@Column({ unique: true })
+	@Column()
 	name: string
 
 	@ManyToOne(() => CarBrand, { nullable: false })

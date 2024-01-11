@@ -7,6 +7,7 @@ import { appDataSource } from './data-source'
 import errorMiddleware from './middlewares/error.middleware'
 import accountRouter from './resources/account/account.router'
 import carAdRouter from './resources/car-ad/car-ad.router'
+import carBrandRouter from './resources/car-brand/car-brand.router'
 import carComparisonRouter from './resources/car-comparison/car-comparison.router'
 import carModelRouter from './resources/car-model/car-model.router'
 import carRouter from './resources/car/car.router'
@@ -35,6 +36,7 @@ class App {
 		this.app.use(this.getRouteUri('car-ads'), carAdRouter)
 		this.app.use(this.getRouteUri('cars'), carRouter)
 		this.app.use(this.getRouteUri('car-models'), carModelRouter)
+		this.app.use(this.getRouteUri('car-brands'), carBrandRouter)
 		this.app.use(this.getRouteUri('car-comparisons'), carComparisonRouter)
 		this.app.use(this.getRouteUri('favorite-ads'), favoriteAdRouter)
 	}
