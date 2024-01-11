@@ -30,6 +30,8 @@ const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
 	)
 
 	useEffect(() => {
+		console.log('in use effect searchParams', searchParams)
+
 		if (
 			isAuthenticated ||
 			!searchParams?.accessToken ||
@@ -40,6 +42,7 @@ const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
 			!searchParams?.id ||
 			!['user', 'admin', 'moderator'].includes(searchParams.role)
 		) {
+			console.log('not good')
 			return router.push('/')
 		}
 

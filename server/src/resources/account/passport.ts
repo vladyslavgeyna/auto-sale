@@ -11,7 +11,7 @@ passport.use(
 		{
 			clientID: GOOGLE_CLIENT_ID,
 			clientSecret: GOOGLE_CLIENT_SECRET,
-			callbackURL: '/api/account/google/callback',
+			callbackURL: `${process.env.API_URL}/api/account/google/callback`,
 		},
 		function (_accessToken, _refreshToken, profile, done) {
 			done(null, profile)
