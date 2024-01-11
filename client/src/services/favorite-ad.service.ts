@@ -2,7 +2,7 @@ import { api, authApi } from '@/http/index'
 import { IGetFavoriteAdsOutput } from '@/types/favorite-ad/get-favorite-ads-output.interface'
 import { IToggleFavoriteAdOutput } from '@/types/favorite-ad/toggle-favorite-ad-output.interface'
 
-class FavoriteAd {
+class FavoriteAdService {
 	private URI_PREFIX = '/favorite-ads'
 
 	getCountByCarAdId = async (carAdId: number) => {
@@ -29,4 +29,4 @@ class FavoriteAd {
 	}
 }
 
-export default new FavoriteAd()
+export default new FavoriteAdService()

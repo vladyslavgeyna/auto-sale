@@ -1,6 +1,6 @@
 import { useToast } from '@/components/ui/useToast'
 import { IHttpError } from '@/types/http-error.interface'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 
 export const useErrorToast = () => {
 	const { toast } = useToast()
@@ -9,7 +9,7 @@ export const useErrorToast = () => {
 
 	const errorToast = (error: IHttpError | null) => {
 		if (!error) {
-			return router.push('/error')
+			redirect('/error')
 		}
 
 		const errorDescription =
