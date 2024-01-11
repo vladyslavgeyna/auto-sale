@@ -1,0 +1,15 @@
+auto-sale.anyeg.me, www.auto-sale.anyeg.me {
+  reverse_proxy http://client:3000 {
+    header_up Upgrade $http_upgrade
+    header_up Connection 'upgrade'
+    header_up Host $host
+  }
+}
+
+api.auto-sale.anyeg.me, www.api.auto-sale.anyeg.me {
+  reverse_proxy /api/* http://server:5000/api/* {
+    header_up Upgrade $http_upgrade
+    header_up Connection 'upgrade'
+    header_up Host $host
+  }
+}

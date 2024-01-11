@@ -522,6 +522,10 @@ const CreateCarAdForm = () => {
 						type='text'
 						placeholder='Example: 7500'
 						{...register('price', {
+							pattern: {
+								value: /^[1-9]\d*$/,
+								message: `Invalid price. Enter digits only`,
+							},
 							required: 'Price is required',
 							min: {
 								value: 1,
