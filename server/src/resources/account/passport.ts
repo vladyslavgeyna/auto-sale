@@ -6,8 +6,11 @@ const GoogleStrategy = PassportGoogleOAuth20.Strategy
 const GOOGLE_CLIENT_ID = String(process.env.GOOGLE_CLIENT_ID)
 const GOOGLE_CLIENT_SECRET = String(process.env.GOOGLE_CLIENT_SECRET)
 
-console.log('GOOGLE_CLIENT_ID', GOOGLE_CLIENT_ID)
-console.log('GOOGLE_CLIENT_SECRET', GOOGLE_CLIENT_SECRET)
+console.log('process.env.GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID)
+console.log(
+	'process.env.GOOGLE_CLIENT_SECRET',
+	process.env.GOOGLE_CLIENT_SECRET,
+)
 
 passport.use(
 	new GoogleStrategy(
