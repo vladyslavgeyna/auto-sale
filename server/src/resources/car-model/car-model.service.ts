@@ -63,7 +63,7 @@ class CarModelService {
 
 		if (carModelExists) {
 			throw HttpError.BadRequest(
-				`Car model with name ${name} already exists for the chosen car brand`,
+				`Car model with name ${createCarModelData.name} already exists for the chosen car brand`,
 			)
 		}
 

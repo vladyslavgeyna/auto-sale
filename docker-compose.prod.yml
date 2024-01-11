@@ -16,8 +16,6 @@ services:
         container_name: redis
         image: redis
         restart: always
-        ports:
-            - ${REDIS_PORT}:6379
 
     client:
         restart: unless-stopped
@@ -25,8 +23,6 @@ services:
             - server
         build:
             context: ./client
-        ports:
-            - 3000:3000
 
     server:
         restart: unless-stopped
@@ -35,8 +31,6 @@ services:
             - redis
         build:
             context: ./server
-        ports:
-            - 5000:5000
         env_file: ./server/.env
         environment:
             CLIENT_URL: ${CLIENT_URL}
@@ -63,6 +57,9 @@ services:
             POSTGRES_PORT: ${POSTGRES_PORT}
 
     caddy:
+        depends_on:
+            - server
+            - client
         image: caddy
         restart: unless-stopped
         ports:
