@@ -6,20 +6,12 @@ const GoogleStrategy = PassportGoogleOAuth20.Strategy
 const GOOGLE_CLIENT_ID = String(process.env.GOOGLE_CLIENT_ID)
 const GOOGLE_CLIENT_SECRET = String(process.env.GOOGLE_CLIENT_SECRET)
 
-console.log('process.env.GOOGLE_CLIENT_ID', process.env.GOOGLE_CLIENT_ID)
-console.log(
-	'process.env.GOOGLE_CLIENT_SECRET',
-	process.env.GOOGLE_CLIENT_SECRET,
-)
-
 passport.use(
 	new GoogleStrategy(
 		{
 			clientID: GOOGLE_CLIENT_ID,
 			clientSecret: GOOGLE_CLIENT_SECRET,
-			callbackURL: `${String(
-				process.env.API_URL,
-			)}/api/account/google/callback`,
+			callbackURL: '/api/account/google/callback',
 		},
 		function (_accessToken, _refreshToken, profile, done) {
 			done(null, profile)
