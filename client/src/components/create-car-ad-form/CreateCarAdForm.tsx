@@ -152,7 +152,7 @@ const CreateCarAdForm = () => {
 					/>
 				</div>
 				{images && (
-					<div className='flex gap-2'>
+					<div className='flex gap-2 overflow-auto'>
 						{Array.from(images).map((image, index) => (
 							<div
 								className='flex flex-col items-center'
