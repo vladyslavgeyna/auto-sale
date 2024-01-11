@@ -26,7 +26,9 @@ function DropdownMenu() {
 			user: state.user,
 		})),
 	)
-
+	{
+		/* <LayoutDashboard /> */
+	}
 	const [isOpened, setIsOpened] = useState(false)
 
 	const { mutate: logout, isPending } = useLogout(removeCredentials)

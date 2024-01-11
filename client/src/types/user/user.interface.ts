@@ -5,4 +5,5 @@ export interface IUser {
 	surname: string
 	phone: string | null
 	imageLink: string | null
+	role: 'user' | 'admin' | 'moderator'
 }

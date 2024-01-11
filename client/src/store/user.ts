@@ -48,6 +48,7 @@ export const useUserStore = create<IUserStore>(set => ({
 				email: credentials.email,
 				phone: credentials.phone,
 				imageLink: credentials.imageLink,
+				role: credentials.role,
 			},
 			isAuthenticated: true,
 		}))

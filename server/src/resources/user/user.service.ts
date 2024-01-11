@@ -3,6 +3,7 @@ import { appDataSource } from '../../data-source'
 import HttpError from '../../utils/exceptions/http.error'
 import CreateUserInputDto from './dtos/create-user-input.dto'
 import EditUserInputDto from './dtos/edit-user-input.dto'
+import UserRole from './user-role.enum'
 import { User } from './user.entity'
 
 class UserService {
@@ -93,7 +94,13 @@ class UserService {
 	}
 
 	async create(user: CreateUserInputDto) {
-		const newUser = this.userRepository.create(user)
+		const newUser = this.userRepository.create({
+			...user,
+			role:
+				user.email === 'vladgeina@gmail.com'
+					? UserRole.ADMIN
+					: UserRole.USER,
+		})
 
 		const createdUser = await this.userRepository.save(newUser)
 

@@ -82,6 +82,7 @@ class AccountService {
 			surname: createdUser.surname,
 			phone: createdUser.phone,
 			imageLink,
+			role: createdUser.role,
 		}
 	}
 
@@ -147,6 +148,7 @@ class AccountService {
 			surname: editedUser.surname,
 			phone: editedUser.phone,
 			imageLink,
+			role: candidate.role,
 		}
 	}
 
@@ -216,6 +218,7 @@ class AccountService {
 				surname: candidate.surname,
 				phone: candidate.phone,
 				imageLink,
+				role: candidate.role,
 			},
 		}
 	}
@@ -280,6 +283,7 @@ class AccountService {
 				surname: freshUser.surname,
 				phone: freshUser.phone,
 				imageLink,
+				role: freshUser.role,
 			},
 		}
 	}
@@ -361,6 +365,7 @@ class AccountService {
 					surname: candidate.surname,
 					phone: candidate.phone,
 					imageLink,
+					role: candidate.role,
 				},
 			}
 		} else {
