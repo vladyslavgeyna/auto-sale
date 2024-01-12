@@ -3,25 +3,11 @@
 import Loader from '@/components/loader/Loader'
 import { useUserStore } from '@/store/user'
 import { UserRole } from '@/types/user/user-role.interface'
-import { useRouter } from 'next/navigation'
+import { redirect, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 
-type PropsType = {
-	searchParams?: {
-		accessToken: string
-		id: string
-		email: string
-		name: string
-		role: string
-		surname: string
-		phone?: string
-		imageLink?: string
-	}
-}
-
-const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
-	const router = useRouter()
+const SuccessGoogleLogin = () => {
 	const { setCredentials, isAuthenticated } = useUserStore(
 		useShallow(state => ({
 			setCredentials: state.setCredentials,
@@ -29,39 +15,45 @@ const SuccessGoogleLogin = ({ searchParams }: PropsType) => {
 		})),
 	)
 
+	const searchParams = useSearchParams()
+
 	useEffect(() => {
-		console.log('in use effect searchParams', searchParams)
+		const searchParamsData = {
+			imageLink: searchParams.get('imageLink'),
+			phone: searchParams.get('phone'),
+			surname: searchParams.get('surname'),
+			name: searchParams.get('name'),
+			email: searchParams.get('email'),
+			id: searchParams.get('id'),
+			accessToken: searchParams.get('accessToken'),
+			role: searchParams.get('role'),
+		}
 
 		if (
 			isAuthenticated ||
-			!searchParams?.accessToken ||
-			!searchParams?.email ||
-			!searchParams?.name ||
-			!searchParams?.surname ||
-			!searchParams?.role ||
-			!searchParams?.id ||
-			!['user', 'admin', 'moderator'].includes(searchParams.role)
+			!searchParamsData.accessToken ||
+			!searchParamsData.email ||
+			!searchParamsData.name ||
+			!searchParamsData.surname ||
+			!searchParamsData.role ||
+			!searchParamsData.id ||
+			!['user', 'admin', 'moderator'].includes(searchParamsData.role)
 		) {
-			console.log('not good')
-			return router.push('/')
+			redirect('/')
 		}
 
-		console.log('searchParams', searchParams)
-
 		setCredentials({
-			role: searchParams.role as UserRole,
-			accessToken: searchParams.accessToken,
-			id: searchParams.id,
-			email: searchParams.email,
-			name: searchParams.name,
-			surname: searchParams.surname,
-			phone: searchParams.phone || null,
-			imageLink: searchParams.imageLink
-				? decodeURIComponent(searchParams?.imageLink)
-				: null,
+			role: searchParamsData.role as UserRole,
+			accessToken: searchParamsData.accessToken,
+			id: searchParamsData.id,
+			email: searchParamsData.email,
+			name: searchParamsData.name,
+			surname: searchParamsData.surname,
+			phone: searchParamsData.phone || null,
+			imageLink: searchParamsData.imageLink || null,
 		})
 
-		return router.push('/')
+		redirect('/')
 	}, [])
 
 	return (
