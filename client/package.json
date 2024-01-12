@@ -26,6 +26,7 @@
     "lucide-react": "^0.303.0",
     "next": "14.0.4",
     "react": "^18",
+    "react-bootstrap-pagination-control": "^1.0.5",
     "react-dom": "^18",
     "react-hook-form": "^7.49.2",
     "react-icons": "^4.12.0",

@@ -1,13 +1,15 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Response } from 'express'
 import redisClient from '../../redis'
 import HttpStatusCode from '../../utils/enums/http-status-code'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
 	RequestWithParams,
+	RequestWithQuery,
 } from '../../utils/types/request.type'
 import carAdService from './car-ad.service'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
+import { GetAllCarAdsInputDto } from './dtos/get-all-car-ads-input.dto'
 import ToggleActiveInputDto from './dtos/toggle-active-input.dto'
 class CarAdController {
 	async create(
@@ -40,12 +42,19 @@ class CarAdController {
 		}
 	}
 
-	async getAll(req: Request, res: Response, next: NextFunction) {
+	async getAll(
+		req: RequestWithQuery<GetAllCarAdsInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
 		try {
-			const carAds = await carAdService.getAll()
+			const carAds = await carAdService.getAll(req.query)
 
 			if (carAds.count > 0) {
-				const key = redisClient.constructKey('car-ad')
+				const key = redisClient.constructKeyFromQuery(
+					'car-ads',
+					req.query,
+				)
 
 				await redisClient.set(key, carAds)
 			}
@@ -78,7 +87,7 @@ class CarAdController {
 			)
 
 			if (carAd.isActive) {
-				const key = redisClient.constructKey('car-ad', carAdId)
+				const key = redisClient.constructKey('car-ads', carAdId)
 
 				await redisClient.set(key, carAd)
 			}
@@ -148,7 +157,7 @@ class CarAdController {
 
 			await carAdService.delete(carAdId, req.authUser.id)
 
-			const key = redisClient.constructKey('car-ad', carAdId)
+			const key = redisClient.constructKey('car-ads', carAdId)
 
 			await redisClient.delete(key)
 

@@ -6,6 +6,19 @@ import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
 import IGetAllUserCarAdsOutput from '@/types/car-ad/get-user-car-ads-output.interface'
 import { IToggleActiveOutput } from '@/types/car-ad/toggle-active-output.interface'
 
+export interface IGetCarAdsQueryParams {
+	page: number
+	limit: number
+	carBrandId?: number
+	carModelId?: number
+	region?: number
+	yearFrom?: number
+	yearTo?: number
+	priceFrom?: number
+	priceTo?: number
+	orderBy?: number
+}
+
 class CarAdService {
 	private URI_PREFIX = '/car-ads'
 
@@ -13,8 +26,8 @@ class CarAdService {
 		return authApi.delete(`${this.URI_PREFIX}/${carAdId}`)
 	}
 
-	public getAll = async () => {
-		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}`)
+	public getAll = async (paramsUrl: string) => {
+		return api.get<IGetCarAdsOutput>(`${this.URI_PREFIX}${paramsUrl}`)
 	}
 
 	public toggleActive = async (carAdId: number) => {

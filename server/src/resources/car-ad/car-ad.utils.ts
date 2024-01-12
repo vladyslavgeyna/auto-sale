@@ -1,35 +1,46 @@
 import { FindManyOptions, FindOneOptions } from 'typeorm'
 import { CarAd } from './car-ad.entity'
 
-export const getAllCarAdsOptions: FindManyOptions<CarAd> = {
-	relations: {
-		car: {
-			carImages: {
-				image: true,
+export type GetAllCarAdsOptionsInputType = {
+	offset: number
+	limit: number
+}
+
+export const getAllCarAdsOptions = (
+	getAllOptions: GetAllCarAdsOptionsInputType,
+): FindManyOptions<CarAd> => {
+	return {
+		skip: getAllOptions.offset,
+		take: getAllOptions.limit,
+		relations: {
+			car: {
+				carImages: {
+					image: true,
+				},
 			},
 		},
-	},
-	select: {
-		id: true,
-		title: true,
-		car: {
-			engineCapacity: true,
-			price: true,
-			transmission: true,
-			wheelDrive: true,
-			fuel: true,
-			mileage: true,
-			carImages: true,
-		},
-	},
-	where: {
-		car: {
-			carImages: {
-				isMain: true,
+		select: {
+			id: true,
+			title: true,
+			car: {
+				engineCapacity: true,
+				price: true,
+				transmission: true,
+				wheelDrive: true,
+				fuel: true,
+				mileage: true,
+				carImages: true,
 			},
 		},
-		isActive: true,
-	},
+		where: {
+			car: {
+				carImages: {
+					isMain: true,
+				},
+			},
+			isActive: true,
+		},
+	}
 }
 
 export const getCarAdByIdOptions = (
