@@ -47,6 +47,17 @@ const getDefaultYearsArray = () =>
 			value: item.toString(),
 		}))
 
+const getDefaultValue = (value: string | null, items: IEnum[]) => {
+	let resultItem = Number(value) || undefined
+	if (resultItem) {
+		const exists = items.some(item => item.id === resultItem)
+		if (exists) {
+			return resultItem
+		}
+	}
+	return undefined
+}
+
 const FilteringSortingModal = ({
 	data,
 	carModels,
@@ -77,14 +88,26 @@ const FilteringSortingModal = ({
 		useForm<FilteringSortingFormType>({
 			mode: 'onChange',
 			defaultValues: {
-				region: Number(searchParams.get('region')) || undefined,
-				carBrandId: Number(searchParams.get('carBrandId')) || undefined,
-				carModelId: Number(searchParams.get('carModelId')) || undefined,
+				region: getDefaultValue(
+					searchParams.get('region'),
+					data.regions,
+				),
+				carBrandId: getDefaultValue(
+					searchParams.get('carBrandId'),
+					data.carBrands,
+				),
+				carModelId: getDefaultValue(
+					searchParams.get('carModelId'),
+					carModels,
+				),
 				yearFrom: Number(searchParams.get('yearFrom')) || undefined,
 				yearTo: Number(searchParams.get('yearTo')) || undefined,
 				priceFrom: Number(searchParams.get('priceFrom')) || undefined,
 				priceTo: Number(searchParams.get('priceTo')) || undefined,
-				orderBy: Number(searchParams.get('orderBy')) || undefined,
+				orderBy: getDefaultValue(
+					searchParams.get('orderBy'),
+					data.orderByOptions,
+				),
 			},
 		})
 
