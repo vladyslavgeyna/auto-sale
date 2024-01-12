@@ -28,9 +28,9 @@ class CarModelController {
 
 			if (carModelsResponse.length > 0) {
 				const key = redisClient.constructKey(
-					'car-model',
+					'car-models',
 					undefined,
-					'car-brand',
+					'car-brands',
 					carBrandId,
 				)
 

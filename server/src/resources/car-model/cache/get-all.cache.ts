@@ -14,9 +14,9 @@ export const getAllCache = async (
 			: undefined
 
 		const key = redisClient.constructKey(
-			'car-model',
+			'car-models',
 			undefined,
-			'car-brand',
+			'car-brands',
 			carBrandId,
 		)
 

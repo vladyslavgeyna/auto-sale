@@ -10,4 +10,8 @@ carRouter.get(
 	carController.additionalData,
 )
 
+carRouter.get('/regions', carController.getRegions)
+
+carRouter.get('/order-by-options', carController.getOrderByOptions)
+
 export default carRouter

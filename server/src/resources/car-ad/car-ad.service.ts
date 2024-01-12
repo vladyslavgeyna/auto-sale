@@ -25,6 +25,7 @@ import {
 import { CarAdDto } from './dtos/car-ad.dto'
 import CreateCarAdInputDto from './dtos/create-car-ad-input.dto'
 import CreateCarAdOutputDto from './dtos/create-car-ad-output.dto'
+import { GetAllCarAdsInputDto } from './dtos/get-all-car-ads-input.dto'
 import { GetAllCarAdsOutputDto } from './dtos/get-all-car-ads-output.dto'
 import GetAllUserCarAdsOutputDto, {
 	GetAllUserCarAdDto,
@@ -117,10 +118,31 @@ class CarAdService {
 		}
 	}
 
-	async getAll(): Promise<GetAllCarAdsOutputDto> {
-		const carAdsFromDatabase = await this.carAdRepository.findAndCount({
-			...getAllCarAdsOptions,
+	async getAll(
+		queryParamsData: GetAllCarAdsInputDto,
+	): Promise<GetAllCarAdsOutputDto> {
+		const DEFAULT_LIMIT = 20
+		const DEFAULT_PAGE = 1
+
+		const limit = queryParamsData.limit
+			? Number(queryParamsData.limit) || DEFAULT_LIMIT
+			: DEFAULT_LIMIT
+
+		const page = queryParamsData.page
+			? Number(queryParamsData.page) || DEFAULT_PAGE
+			: DEFAULT_PAGE
+
+		const offset = page * limit - limit
+
+		const carAdsOptions = getAllCarAdsOptions({
+			...queryParamsData,
+			limit,
+			offset,
 		})
+
+		const carAdsFromDatabase = await this.carAdRepository.findAndCount(
+			carAdsOptions,
+		)
 
 		const carAds: CarAdDto[] = await Promise.all(
 			carAdsFromDatabase[0].map(async item => {

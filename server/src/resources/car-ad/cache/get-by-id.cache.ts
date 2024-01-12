@@ -9,7 +9,7 @@ export const getByIdCache = async (
 	next: NextFunction,
 ) => {
 	try {
-		const key = redisClient.constructKey('car-ad', Number(req.params.id))
+		const key = redisClient.constructKey('car-ads', Number(req.params.id))
 		const data = await redisClient.get<GetCarAdByIdOutput>(key)
 		if (data) {
 			res.json(data)

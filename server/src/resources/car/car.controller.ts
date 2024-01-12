@@ -14,6 +14,22 @@ class CarController {
 			next(error)
 		}
 	}
+
+	getRegions(_req: Request, res: Response, next: NextFunction) {
+		try {
+			res.json(carService.getRegions())
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	getOrderByOptions(_req: Request, res: Response, next: NextFunction) {
+		try {
+			res.json(carService.getOrderByOptions())
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 export default new CarController()

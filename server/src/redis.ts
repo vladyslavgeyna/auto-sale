@@ -52,6 +52,23 @@ class RedisClient {
 		return key
 	}
 
+	public constructKeyFromQuery<T extends object>(
+		mainKey: string,
+		queryParams: T,
+	) {
+		let paramsUrl = ''
+
+		for (const key in queryParams) {
+			if (key in queryParams) {
+				if (queryParams[key as keyof T]) {
+					paramsUrl += `${key}:${queryParams[key as keyof T]}/`
+				}
+			}
+		}
+
+		return mainKey + '/' + paramsUrl
+	}
+
 	public async getString(key: string): Promise<string | null> {
 		const data = await this.redis.get(key)
 		return data
