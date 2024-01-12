@@ -1,17 +1,59 @@
-import { FindManyOptions, FindOneOptions } from 'typeorm'
+import {
+	Between,
+	FindManyOptions,
+	FindOneOptions,
+	FindOptionsOrder,
+	FindOptionsOrderValue,
+	LessThanOrEqual,
+	MoreThanOrEqual,
+} from 'typeorm'
+import { Car } from '../car/car.entity'
 import { CarAd } from './car-ad.entity'
+import { GetAllCarAdsInputDto } from './dtos/get-all-car-ads-input.dto'
+import { CarAdsOrderByOptions } from './enums/car-ad-order-by-options.enum'
 
-export type GetAllCarAdsOptionsInputType = {
+export interface GetAllCarAdsOptionsInputType
+	extends Omit<Omit<GetAllCarAdsInputDto, 'limit'>, 'page'> {
 	offset: number
 	limit: number
 }
 
 export const getAllCarAdsOptions = (
-	getAllOptions: GetAllCarAdsOptionsInputType,
+	getAllOptionsData: GetAllCarAdsOptionsInputType,
 ): FindManyOptions<CarAd> => {
+	const carBrandId = Number(getAllOptionsData.carBrandId) || undefined
+	const carModelId = Number(getAllOptionsData.carModelId) || undefined
+	const region = Number(getAllOptionsData.region) || undefined
+	const yearFrom = Number(getAllOptionsData.yearFrom) || undefined
+	const yearTo = Number(getAllOptionsData.yearTo) || undefined
+	const priceFrom = Number(getAllOptionsData.priceFrom) || undefined
+	const priceTo = Number(getAllOptionsData.priceTo) || undefined
+	const orderBy = Number(getAllOptionsData.orderBy) || undefined
+
+	type OrderByOptionsType = {
+		[key in CarAdsOrderByOptions]:
+			| FindOptionsOrderValue
+			| FindOptionsOrder<Car>
+			| undefined
+	}
+
+	const orderByOptions: OrderByOptionsType | undefined = {
+		[CarAdsOrderByOptions['By default']]: undefined,
+		[CarAdsOrderByOptions['From cheap to expensive']]: { price: 'ASC' },
+		[CarAdsOrderByOptions['From expensive to cheap']]: { price: 'DESC' },
+		[CarAdsOrderByOptions['Mileage, ascending']]: { mileage: 'ASC' },
+		[CarAdsOrderByOptions['Mileage, descending']]: { mileage: 'DESC' },
+		[CarAdsOrderByOptions['Year of production, ascending']]: {
+			yearOfProduction: 'ASC',
+		},
+		[CarAdsOrderByOptions['Year of production, descending']]: {
+			yearOfProduction: 'DESC',
+		},
+	}
+
 	return {
-		skip: getAllOptions.offset,
-		take: getAllOptions.limit,
+		skip: getAllOptionsData.offset,
+		take: getAllOptionsData.limit,
 		relations: {
 			car: {
 				carImages: {
@@ -23,6 +65,7 @@ export const getAllCarAdsOptions = (
 			id: true,
 			title: true,
 			car: {
+				yearOfProduction: true,
 				engineCapacity: true,
 				price: true,
 				transmission: true,
@@ -34,12 +77,34 @@ export const getAllCarAdsOptions = (
 		},
 		where: {
 			car: {
+				carBrand: { id: carBrandId },
+				carModel: { id: carModelId },
+				region: region,
+				yearOfProduction:
+					yearFrom && yearTo
+						? Between(yearFrom, yearTo)
+						: yearTo && !yearFrom
+						? LessThanOrEqual(yearTo)
+						: !yearTo && yearFrom
+						? MoreThanOrEqual(yearFrom)
+						: undefined,
+				price:
+					priceFrom && priceTo
+						? Between(priceFrom, priceTo)
+						: priceTo && !priceFrom
+						? LessThanOrEqual(priceTo)
+						: !priceTo && priceFrom
+						? MoreThanOrEqual(priceFrom)
+						: undefined,
 				carImages: {
 					isMain: true,
 				},
 			},
 			isActive: true,
 		},
+		order: orderBy
+			? { car: orderByOptions[orderBy as CarAdsOrderByOptions] }
+			: undefined,
 	}
 }
 

@@ -3,8 +3,12 @@ import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { ICreateCarAdOutput } from '@/types/car-ad/create-car-ad-output.interface'
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
 import { IGetCarAdsOutput } from '@/types/car-ad/get-car-ads-output.interface'
+import { IGetFilteringSortingDataOutput } from '@/types/car-ad/get-filtering-sorting-data-output.interface'
 import IGetAllUserCarAdsOutput from '@/types/car-ad/get-user-car-ads-output.interface'
 import { IToggleActiveOutput } from '@/types/car-ad/toggle-active-output.interface'
+import { IEnum } from '@/types/enum.interface'
+import carBrandService from './car-brand.service'
+import carService from './car.service'
 
 export interface IGetCarAdsQueryParams {
 	page: number
@@ -21,6 +25,22 @@ export interface IGetCarAdsQueryParams {
 
 class CarAdService {
 	private URI_PREFIX = '/car-ads'
+
+	public getFilteringSortingData =
+		async (): Promise<IGetFilteringSortingDataOutput> => {
+			const carBrandsResponse = await carBrandService.getAll()
+			const regions = await carService.getRegions()
+			const orderByOptions = await carService.getOrderByOptions()
+			const carBrands: IEnum[] = carBrandsResponse.data.map(carBrand => ({
+				id: carBrand.id,
+				value: carBrand.name,
+			}))
+			return {
+				carBrands,
+				regions: regions.data,
+				orderByOptions: orderByOptions.data,
+			}
+		}
 
 	public delete = async (carAdId: number) => {
 		return authApi.delete(`${this.URI_PREFIX}/${carAdId}`)

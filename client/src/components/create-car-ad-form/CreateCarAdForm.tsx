@@ -249,11 +249,11 @@ const CreateCarAdForm = () => {
 										min: {
 											value: 0,
 											message:
-												'Year of production should be at least 0',
+												'Mileage should be at least 0',
 										},
 										max: {
 											value: 999,
-											message: `Year of production should be maximum 999`,
+											message: `Mileage should be maximum 999`,
 										},
 										pattern: {
 											value: /^(0|[1-9]\d{0,2})$/,

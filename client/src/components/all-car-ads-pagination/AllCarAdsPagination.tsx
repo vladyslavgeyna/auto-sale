@@ -20,8 +20,6 @@ const AllCarAdsPagination = ({ page, limit, totalCount }: PropsType) => {
 
 		params.set('page', page.toString())
 
-		params.toString()
-
 		router.push(pathname + '?' + params.toString())
 	}
 

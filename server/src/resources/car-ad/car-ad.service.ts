@@ -121,7 +121,7 @@ class CarAdService {
 	async getAll(
 		queryParamsData: GetAllCarAdsInputDto,
 	): Promise<GetAllCarAdsOutputDto> {
-		const DEFAULT_LIMIT = 10
+		const DEFAULT_LIMIT = 20
 		const DEFAULT_PAGE = 1
 
 		const limit = queryParamsData.limit
@@ -135,6 +135,7 @@ class CarAdService {
 		const offset = page * limit - limit
 
 		const carAdsOptions = getAllCarAdsOptions({
+			...queryParamsData,
 			limit,
 			offset,
 		})

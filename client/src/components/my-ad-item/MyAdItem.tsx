@@ -83,7 +83,7 @@ const MyAdItem = ({ carAd }: { carAd: IGetAllUserCarAd }) => {
 									</>
 								)}
 							</Button>
-							<AlertDialog defaultOpen={false}>
+							<AlertDialog>
 								<AlertDialogTrigger asChild>
 									<Button
 										className='min-w-[83px]'
