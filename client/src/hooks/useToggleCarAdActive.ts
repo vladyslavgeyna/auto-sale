@@ -30,6 +30,9 @@ export const useToggleCarAdActive = (carAdId: number) => {
 			await queryClient.invalidateQueries({
 				queryKey: ['user-car-ads', currentUserId],
 			})
+			await queryClient.invalidateQueries({
+				queryKey: ['car-ads', carAdId],
+			})
 		},
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)
