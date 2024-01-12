@@ -7,7 +7,9 @@ import {
 	LessThanOrEqual,
 	MoreThanOrEqual,
 } from 'typeorm'
+import { hasEnumValue } from '../../utils/enums/enum.utils'
 import { Car } from '../car/car.entity'
+import { Region } from '../car/enums/region.enum'
 import { CarAd } from './car-ad.entity'
 import { GetAllCarAdsInputDto } from './dtos/get-all-car-ads-input.dto'
 import { CarAdsOrderByOptions } from './enums/car-ad-order-by-options.enum'
@@ -23,12 +25,18 @@ export const getAllCarAdsOptions = (
 ): FindManyOptions<CarAd> => {
 	const carBrandId = Number(getAllOptionsData.carBrandId) || undefined
 	const carModelId = Number(getAllOptionsData.carModelId) || undefined
-	const region = Number(getAllOptionsData.region) || undefined
+	let region = Number(getAllOptionsData.region) || undefined
 	const yearFrom = Number(getAllOptionsData.yearFrom) || undefined
 	const yearTo = Number(getAllOptionsData.yearTo) || undefined
 	const priceFrom = Number(getAllOptionsData.priceFrom) || undefined
 	const priceTo = Number(getAllOptionsData.priceTo) || undefined
-	const orderBy = Number(getAllOptionsData.orderBy) || undefined
+	let orderBy = Number(getAllOptionsData.orderBy) || undefined
+	if (orderBy && !hasEnumValue(orderBy, CarAdsOrderByOptions)) {
+		orderBy = undefined
+	}
+	if (region && !hasEnumValue(region, Region)) {
+		region = undefined
+	}
 
 	type OrderByOptionsType = {
 		[key in CarAdsOrderByOptions]:
