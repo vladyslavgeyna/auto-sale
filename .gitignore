@@ -17,6 +17,7 @@ lerna-debug.log*
 dist
 /dist
 **/dist
+.env.local
 dist-ssr
 .vscode/*
 !.vscode/extensions.json
