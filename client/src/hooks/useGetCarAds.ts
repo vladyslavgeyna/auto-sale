@@ -20,7 +20,7 @@ export const useGetCarAds = (params: IGetCarAdsQueryParams) => {
 			const response = await carAdService.getAll(paramsUrl)
 			return response.data
 		},
-		staleTime: 1000 * 60,
+		staleTime: 1000 * 30,
 		retry: false,
 	})
 }
