@@ -17,7 +17,7 @@ const UserContact = ({ text, icon, type }: PropsType) => {
 	)
 
 	return (
-		<div>
+		<div style={{ overflowWrap: 'anywhere' }}>
 			{type === 'none' ? (
 				<div className='flex gap-2 items-center'>{contactContent}</div>
 			) : (

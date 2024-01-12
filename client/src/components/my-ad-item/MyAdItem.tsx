@@ -3,9 +3,9 @@ import { useToggleCarAdActive } from '@/hooks/useToggleCarAdActive'
 import { IGetAllUserCarAd } from '@/types/car-ad/get-user-car-ads-output.interface'
 import { Loader2 } from 'lucide-react'
 import Link from 'next/link'
-import CarAdTitle from '../car-ad/CarAdTitle'
-import Characteristics from '../car-ad/Characteristics'
-import ImageBlock from '../car-ad/ImageBlock'
+import CarAdTitle from '../car-ad-general/CarAdTitle'
+import Characteristics from '../car-ad-general/Characteristics'
+import ImageBlock from '../car-ad-general/ImageBlock'
 import {
 	AlertDialog,
 	AlertDialogAction,

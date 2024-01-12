@@ -1,6 +1,6 @@
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
-import AdditionalOptionsList from '../car-ad/AdditionalOptionsList'
-import ColorBlock from '../car-ad/ColorBlock'
+import AdditionalOptionsList from '../car-ad-general/AdditionalOptionsList'
+import ColorBlock from '../car-ad-general/ColorBlock'
 import { Table, TableBody, TableCell, TableRow } from '../ui/Table'
 
 const AboutCar = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {

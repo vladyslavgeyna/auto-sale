@@ -1,6 +1,6 @@
 import { IGetCarComparisonsOutput } from '@/types/car-comparison/get-car-comparisons-output.interface'
-import AdditionalOptionsList from '../car-ad/AdditionalOptionsList'
-import ColorBlock from '../car-ad/ColorBlock'
+import AdditionalOptionsList from '../car-ad-general/AdditionalOptionsList'
+import ColorBlock from '../car-ad-general/ColorBlock'
 import TableHeadItem from './TableHeadItem'
 
 const CarComparisonsTable = ({
