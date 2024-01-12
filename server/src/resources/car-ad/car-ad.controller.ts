@@ -131,6 +131,16 @@ class CarAdController {
 				req.authUser.id,
 				req.body.carAdId,
 			)
+
+			if (!response.isActivated) {
+				const key = redisClient.constructKey(
+					'car-ads',
+					req.body.carAdId,
+				)
+
+				await redisClient.delete(key)
+			}
+
 			res.json(response)
 		} catch (error) {
 			next(error)
