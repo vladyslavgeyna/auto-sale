@@ -122,15 +122,25 @@ class CarAdService {
 		queryParamsData: GetAllCarAdsInputDto,
 	): Promise<GetAllCarAdsOutputDto> {
 		const DEFAULT_LIMIT = 20
+		const MAX_LIMIT = 100
+		const MIN_LIMIT = 3
 		const DEFAULT_PAGE = 1
 
-		const limit = queryParamsData.limit
+		let limit = queryParamsData.limit
 			? Number(queryParamsData.limit) || DEFAULT_LIMIT
 			: DEFAULT_LIMIT
 
-		const page = queryParamsData.page
+		let page = queryParamsData.page
 			? Number(queryParamsData.page) || DEFAULT_PAGE
 			: DEFAULT_PAGE
+
+		if (limit > MAX_LIMIT || limit < MIN_LIMIT) {
+			limit = DEFAULT_LIMIT
+		}
+
+		if (page < 1) {
+			page = DEFAULT_PAGE
+		}
 
 		const offset = page * limit - limit
 
