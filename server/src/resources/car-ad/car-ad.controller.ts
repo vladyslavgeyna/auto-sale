@@ -56,7 +56,7 @@ class CarAdController {
 					req.query,
 				)
 
-				await redisClient.set(key, carAds)
+				await redisClient.set(key, carAds, 30)
 			}
 
 			return res.json(carAds)
