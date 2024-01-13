@@ -48,7 +48,7 @@ const MyAdsPage = () => {
 			{(areUserCarAdsLoading || hasDataLoadedAndItExists) && (
 				<Title className='mb-3'>My ads</Title>
 			)}
-			{areUserCarAdsLoading ? (
+			{areUserCarAdsLoading || isUserCarAdsFetching ? (
 				<div>
 					<p className='mb-3 text-xl'>
 						Total ads:{' '}
