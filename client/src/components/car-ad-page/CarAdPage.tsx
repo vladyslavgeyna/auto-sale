@@ -1,9 +1,10 @@
 import { useUserStore } from '@/store/user'
 import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
+import { AvatarImage } from '@radix-ui/react-avatar'
 import { Terminal } from 'lucide-react'
-import Image from 'next/image'
 import { useShallow } from 'zustand/react/shallow'
 import { Alert, AlertTitle } from '../ui/Alert'
+import { Avatar } from '../ui/Avatar'
 import Title from '../ui/Title'
 import AboutCar from './AboutCar'
 import ActionLinks from './ActionLinks'
@@ -48,17 +49,15 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 					</div>
 					<div className='flex gap-2 sm:gap-5 lg:gap-3 items-center lg:items-stretch rounded-lg p-2 bg-primary text-white mt-3'>
 						<div className='w-[30%]'>
-							<div>
-								<Image
-									alt='User image'
-									width={100}
-									height={100}
+							<Avatar className='w-full pb-[100%]'>
+								<AvatarImage
+									className='object-cover absolute top-0 left-0 rounded-full w-full h-full'
 									src={
 										carAd.userImage || '/default_avatar.svg'
 									}
-									className='rounded-full w-full h-full'
+									alt='User avatar'
 								/>
-							</div>
+							</Avatar>
 						</div>
 						<div className='w-[70%] flex flex-col gap-2'>
 							<SellerInfo

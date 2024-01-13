@@ -55,6 +55,7 @@ function DropdownMenu() {
 					variant='default'>
 					<Avatar className='w-8 h-8'>
 						<AvatarImage
+							className='object-cover rounded-full'
 							src={user?.imageLink || '/default_avatar.svg'}
 							alt='User avatar'
 						/>
