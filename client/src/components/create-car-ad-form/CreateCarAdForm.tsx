@@ -32,7 +32,7 @@ const CreateCarAdForm = () => {
 
 	const [isGetCarModelsError, setIsGetCarModelsError] = useState(false)
 
-	const [carModels, setCarModel] = useState<IEnum[]>([])
+	const [carModels, setCarModels] = useState<IEnum[]>([])
 
 	const {
 		handleSubmit,
@@ -55,7 +55,7 @@ const CreateCarAdForm = () => {
 	const { mutate: createCarAd, isPending } = useCreateCarAd(() => {
 		reset()
 		setImages(null)
-		setCarModel([])
+		setCarModels([])
 	})
 
 	const onSubmit: SubmitHandler<ICreateCarAdInput> = createCarAdInputData => {
@@ -71,7 +71,7 @@ const CreateCarAdForm = () => {
 		try {
 			const carBrandId = Number(event.target.value)
 			const data = await carModelService.getAll(carBrandId)
-			setCarModel(data.data)
+			setCarModels(data.data)
 		} catch (error) {
 			setIsGetCarModelsError(true)
 		}

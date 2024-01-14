@@ -128,7 +128,7 @@ const EditProfileForm = () => {
 										}}
 										className='h-32 w-32 m-auto hover:cursor-pointer relative !overflow-visible'>
 										<AvatarImage
-											className='rounded-full'
+											className='rounded-full object-cover'
 											src={
 												user?.imageLink ||
 												'/default_avatar.svg'

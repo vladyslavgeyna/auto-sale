@@ -25,6 +25,7 @@ const FavoriteAds = () => {
 
 	const hasDataLoadedAndItExists =
 		!areFavoriteAdsLoading &&
+		!isFavoriteAdsFetching &&
 		favoriteAdsData &&
 		favoriteAdsData.favoriteAds.length > 0
 
