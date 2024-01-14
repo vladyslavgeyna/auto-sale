@@ -1,9 +1,9 @@
 const ColorBlock = ({ color }: { color: string }) => {
-	return (
+	return color === 'Multicolored' ? null : (
 		<span
 			className='rounded border w-4 h-4'
 			style={{
-				backgroundColor: color === 'Multicolored' ? 'white' : color,
+				backgroundColor: color,
 			}}
 		/>
 	)
