@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import redisClient from '../../redis'
 import HttpStatusCode from '../../utils/enums/http-status-code'
 import HttpError from '../../utils/exceptions/http.error'
 import {
@@ -7,9 +8,11 @@ import {
 } from '../../utils/types/request.type'
 import tokenService from '../token/token.service'
 import accountService from './account.service'
+import ChangePasswordInputDto from './dtos/change-password-input.dto'
 import EditInputDto from './dtos/edit-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import RegisterInputDto from './dtos/register-input.dto'
+import ResetPasswordInputDto from './dtos/reset-password-input.dto'
 import VerifyInputDto from './dtos/verify-input.dto'
 
 class AccountController {
@@ -22,6 +25,82 @@ class AccountController {
 			const userData = await accountService.register(req.body, req.file)
 
 			res.json({ ...userData })
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async changePassword(
+		req: RequestWithBody<ChangePasswordInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			await accountService.changePassword({
+				...req.body,
+				userId: req.authUser.id,
+			})
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async resetPassword(
+		req: RequestWithBody<ResetPasswordInputDto>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const { password, resetPasswordUniqueId } = req.body
+
+			const key = redisClient.constructKey(
+				`reset-password`,
+				resetPasswordUniqueId,
+			)
+
+			const userEmail = await redisClient.getString(key)
+
+			if (!userEmail) {
+				return next(
+					HttpError.BadRequest(
+						'Reset password link is probably expired. Try to get a new email with the link again',
+					),
+				)
+			}
+
+			await accountService.resetPassword(userEmail, password)
+
+			await redisClient.delete(key)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async sendResetPasswordEmail(
+		req: RequestWithBody<{ email: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const userEmail = req.body.email
+
+			const uniqueId = await accountService.sendResetPasswordEmail(
+				userEmail,
+			)
+
+			const key = redisClient.constructKey(`reset-password`, uniqueId)
+
+			await redisClient.setString(key, userEmail, 60 * 15)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {
 			next(error)
 		}

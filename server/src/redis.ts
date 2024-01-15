@@ -34,9 +34,9 @@ class RedisClient {
 
 	public constructKey(
 		mainKey: string,
-		mainId?: number,
+		mainId?: number | string,
 		subKey?: string,
-		subId?: number,
+		subId?: number | string,
 	) {
 		let key = mainKey
 		if (mainId) {

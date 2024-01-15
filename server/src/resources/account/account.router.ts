@@ -8,9 +8,12 @@ import { imageExtensionValidation } from '../image/validation/image-extension.va
 import { imageSizeValidation } from '../image/validation/image-size.validation'
 import accountController from './account.controller'
 import './passport'
+import { accountChangePasswordValidation } from './validation/account-change-password.validation'
 import { accountEditValidation } from './validation/account-edit.validation'
 import { accountLoginValidation } from './validation/account-login.validation'
 import { accountRegisterValidation } from './validation/account-register.validation'
+import { accountResetPasswordValidation } from './validation/account-reset-password.validation'
+import { accountSendResetPasswordEmailValidation } from './validation/account-send-reset-password-email.validation'
 
 const accountRouter = Router()
 
@@ -22,6 +25,28 @@ accountRouter.post(
 	accountRegisterValidation,
 	checkValidationMiddleware,
 	accountController.register,
+)
+
+accountRouter.put(
+	'/change-password',
+	requireAuthMiddleware,
+	accountChangePasswordValidation,
+	checkValidationMiddleware,
+	accountController.changePassword,
+)
+
+accountRouter.post(
+	'/reset-password',
+	accountSendResetPasswordEmailValidation,
+	checkValidationMiddleware,
+	accountController.sendResetPasswordEmail,
+)
+
+accountRouter.put(
+	'/reset-password',
+	accountResetPasswordValidation,
+	checkValidationMiddleware,
+	accountController.resetPassword,
 )
 
 accountRouter.post(

@@ -30,3 +30,7 @@ export const validateImages = (images: FileList | null): string | null => {
 		return 'Images are required.'
 	}
 }
+
+export const isEmail = (email: string) => {
+	return EMAIL_REGEXP.test(email)
+}

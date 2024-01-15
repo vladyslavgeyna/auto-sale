@@ -93,6 +93,23 @@ class UserService {
 		}
 	}
 
+	/**
+	 *
+	 * @param userId user id to change password
+	 * @param newPassword new password
+	 */
+	async changePassword(userId: string, newPassword: string) {
+		const user = await this.getById(userId)
+
+		if (!user) {
+			throw HttpError.NotFound('User not found')
+		}
+
+		user.password = newPassword
+
+		await this.userRepository.save(user)
+	}
+
 	async create(user: CreateUserInputDto) {
 		const newUser = this.userRepository.create({
 			...user,
