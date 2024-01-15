@@ -468,7 +468,7 @@ const CreateCarAdForm = () => {
 						type='text'
 						placeholder='Example: BMW X5 2020 xDrive M Sport'
 						{...register('title', {
-							required: 'Text is required',
+							required: 'Title is required',
 							minLength: {
 								value: 3,
 								message:
