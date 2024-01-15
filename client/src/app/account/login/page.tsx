@@ -1,4 +1,5 @@
 import LoginForm from '@/components/login-form/LoginForm'
+import ResetPasswordUnlogged from '@/components/reset-password-unlogged/ResetPasswordUnlogged'
 import Title from '@/components/ui/Title'
 import WithGoogle from '@/components/with-google/WithGoogle'
 import WithoutAuth from '@/hoc/WithoutAuth'
@@ -16,6 +17,9 @@ const Login = () => {
 			<div>
 				<Title className='text-center mt-5'>Authorization</Title>
 				<LoginForm />
+				<div className='max-w-lg mx-auto mt-3'>
+					<ResetPasswordUnlogged />
+				</div>
 				<hr className='max-w-lg mx-auto mt-7' />
 				<p className='mt-7 text-center text-lg'>
 					Don't have account yet?{' '}

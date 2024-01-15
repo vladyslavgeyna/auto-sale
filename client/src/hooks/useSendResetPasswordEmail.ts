@@ -5,7 +5,7 @@ import { AxiosError } from 'axios'
 import { useErrorToast } from './useErrorToast'
 import { useSuccessToast } from './useSuccessToast'
 
-export const useSendResetPasswordEmail = () => {
+export const useSendResetPasswordEmail = (reset?: () => void) => {
 	const { errorToast } = useErrorToast()
 	const { successToast } = useSuccessToast()
 
@@ -18,6 +18,9 @@ export const useSendResetPasswordEmail = () => {
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)
 			errorToast(httpError)
+		},
+		onSettled: () => {
+			reset && reset()
 		},
 	})
 }
