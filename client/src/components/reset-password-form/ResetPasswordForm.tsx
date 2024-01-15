@@ -1,17 +1,20 @@
 'use client'
 
-import { useChangePassword } from '@/hooks/useChangePassword'
 import { useHttpError } from '@/hooks/useHttpError'
-import { IChangePasswordInput } from '@/types/user/change-password-input.interface'
+import { useResetPassword } from '@/hooks/useResetPassword'
+import { IResetPasswordInput } from '@/types/user/reset-password-input.interface'
 import { PASSWORD_REGEXP } from '@/utils/validation'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
 import HttpError from '../http-error/HttpError'
-import ResetPassword from '../reset-password/ResetPassword'
 import { Input } from '../ui/Input'
 
-const ChangePasswordForm = () => {
+const ResetPasswordForm = ({
+	resetPasswordUniqueId,
+}: {
+	resetPasswordUniqueId: string
+}) => {
 	const { handleHttpError, httpError } = useHttpError()
 
 	const {
@@ -20,20 +23,20 @@ const ChangePasswordForm = () => {
 		reset,
 		watch,
 		formState: { errors, isValid, isDirty },
-	} = useForm<IChangePasswordInput>({
+	} = useForm<IResetPasswordInput>({
 		mode: 'onChange',
 	})
 
 	const {
-		mutate: changePassword,
+		mutate: resetPassword,
 		isError,
 		isPending,
-	} = useChangePassword(handleHttpError, reset)
+	} = useResetPassword(handleHttpError, reset)
 
 	const onSubmit: SubmitHandler<
-		IChangePasswordInput
-	> = changePasswordInputData => {
-		changePassword(changePasswordInputData)
+		IResetPasswordInput
+	> = resetPasswordInputData => {
+		resetPassword(resetPasswordInputData)
 	}
 
 	const isHttpError = httpError && isError
@@ -45,19 +48,14 @@ const ChangePasswordForm = () => {
 				onSubmit={handleSubmit(onSubmit)}
 				className='max-w-lg mx-auto mt-7 flex flex-col gap-3'
 				method='post'>
-				<div>
-					<Input
-						type='password'
-						placeholder='Current password'
-						{...register('oldPassword', {
-							required: 'Old password is required',
-						})}
-					/>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.oldPassword?.message}
-					/>
-				</div>
+				<input
+					required
+					type='hidden'
+					{...register('resetPasswordUniqueId', {
+						required: 'Reset password unique id is required',
+					})}
+					value={resetPasswordUniqueId}
+				/>
 				<div>
 					<Input
 						type='password'
@@ -108,14 +106,12 @@ const ChangePasswordForm = () => {
 						isDisabled={!isValid && isDirty}
 						className='w-full'
 						isLoading={isPending}>
-						Change password
+						Reset password
 					</FormButton>
 				</div>
 			</form>
-			<hr className='mt-3' />
-			<ResetPassword />
 		</div>
 	)
 }
 
-export default ChangePasswordForm
+export default ResetPasswordForm

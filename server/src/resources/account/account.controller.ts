@@ -12,6 +12,7 @@ import ChangePasswordInputDto from './dtos/change-password-input.dto'
 import EditInputDto from './dtos/edit-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import RegisterInputDto from './dtos/register-input.dto'
+import ResetPasswordInputDto from './dtos/reset-password-input.dto'
 import VerifyInputDto from './dtos/verify-input.dto'
 
 class AccountController {
@@ -50,25 +51,54 @@ class AccountController {
 		}
 	}
 
-	async sendResetPasswordEmail(
-		req: Request,
+	async resetPassword(
+		req: RequestWithBody<ResetPasswordInputDto>,
 		res: Response,
 		next: NextFunction,
 	) {
 		try {
-			if (!req.authUser) {
-				return next(HttpError.UnauthorizedError())
+			const { password, resetPasswordUniqueId } = req.body
+
+			const key = redisClient.constructKey(
+				`reset-password`,
+				resetPasswordUniqueId,
+			)
+
+			const userEmail = await redisClient.getString(key)
+
+			if (!userEmail) {
+				return next(
+					HttpError.BadRequest(
+						'Reset password link is probably expired. Try to get a new email with the link again',
+					),
+				)
 			}
 
-			const userEmail = req.authUser.email
+			await accountService.resetPassword(userEmail, password)
+
+			await redisClient.delete(key)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async sendResetPasswordEmail(
+		req: RequestWithBody<{ email: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const userEmail = req.body.email
 
 			const uniqueId = await accountService.sendResetPasswordEmail(
 				userEmail,
 			)
 
-			const key = redisClient.constructKey(`reset-password`, userEmail)
+			const key = redisClient.constructKey(`reset-password`, uniqueId)
 
-			await redisClient.set(key, uniqueId, 60 * 15)
+			await redisClient.setString(key, userEmail, 60 * 15)
 
 			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {

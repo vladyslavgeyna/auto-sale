@@ -126,13 +126,38 @@ class AccountService {
 
 		if (isNewPasswordLikeOldPassword) {
 			throw HttpError.BadRequest(
-				'The new you entered is the same as the old one. Enter a different password',
+				'The new password you entered is the same as the old one. Enter a different password',
 			)
 		}
 
 		const hashedPassword = await this.hashPassword(
 			changePasswordData.password,
 		)
+
+		await userService.changePassword(candidate.id, hashedPassword)
+	}
+
+	async resetPassword(email: string, password: string) {
+		const candidate = await userService.getByEmail(email)
+
+		if (!candidate) {
+			throw HttpError.BadRequest(`User was not found`)
+		}
+
+		if (candidate.password) {
+			const isNewPasswordLikeOldPassword = await bcrypt.compare(
+				password,
+				candidate.password,
+			)
+
+			if (isNewPasswordLikeOldPassword) {
+				throw HttpError.BadRequest(
+					'The password you entered is the same as the old one. Enter a different password',
+				)
+			}
+		}
+
+		const hashedPassword = await this.hashPassword(password)
 
 		await userService.changePassword(candidate.id, hashedPassword)
 	}

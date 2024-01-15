@@ -12,6 +12,8 @@ import { accountChangePasswordValidation } from './validation/account-change-pas
 import { accountEditValidation } from './validation/account-edit.validation'
 import { accountLoginValidation } from './validation/account-login.validation'
 import { accountRegisterValidation } from './validation/account-register.validation'
+import { accountResetPasswordValidation } from './validation/account-reset-password.validation'
+import { accountSendResetPasswordEmailValidation } from './validation/account-send-reset-password-email.validation'
 
 const accountRouter = Router()
 
@@ -33,10 +35,18 @@ accountRouter.put(
 	accountController.changePassword,
 )
 
-accountRouter.get(
+accountRouter.post(
 	'/reset-password',
-	requireAuthMiddleware,
+	accountSendResetPasswordEmailValidation,
+	checkValidationMiddleware,
 	accountController.sendResetPasswordEmail,
+)
+
+accountRouter.put(
+	'/reset-password',
+	accountResetPasswordValidation,
+	checkValidationMiddleware,
+	accountController.resetPassword,
 )
 
 accountRouter.post(

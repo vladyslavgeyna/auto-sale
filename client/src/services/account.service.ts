@@ -4,6 +4,7 @@ import { IEditProfileInput } from '@/types/user/edit-profile-input.interface'
 import { ILoginInput } from '@/types/user/login-input.interface'
 import { ILoginOutput } from '@/types/user/login-output.interface'
 import { IRegisterInput } from '@/types/user/register-input.interface'
+import { IResetPasswordInput } from '@/types/user/reset-password-input.interface'
 import { IUser } from '@/types/user/user.interface'
 
 class AccountService {
@@ -13,8 +14,16 @@ class AccountService {
 		return credentialsApi.get<ILoginOutput>(`${this.URI_PREFIX}/refresh`)
 	}
 
-	sendResetPasswordEmail = async () => {
-		return authApi.get(`${this.URI_PREFIX}/reset-password`)
+	sendResetPasswordEmail = async (userEmail: string) => {
+		return api.post(`${this.URI_PREFIX}/reset-password`, {
+			email: userEmail,
+		})
+	}
+
+	resetPassword = async (resetPasswordData: IResetPasswordInput) => {
+		return api.put(`${this.URI_PREFIX}/reset-password`, {
+			...resetPasswordData,
+		})
 	}
 
 	changePassword = async (changePasswordData: IChangePasswordInput) => {

@@ -61,7 +61,8 @@ const ResetPassword = () => {
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel>Cancel</AlertDialogCancel>
-					<AlertDialogAction onClick={() => sendResetPasswordEmail()}>
+					<AlertDialogAction
+						onClick={() => sendResetPasswordEmail(user.email)}>
 						Get email
 					</AlertDialogAction>
 				</AlertDialogFooter>
