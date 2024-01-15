@@ -1,4 +1,5 @@
 import { api, authApi, credentialsApi } from '@/http/index'
+import { IChangePasswordInput } from '@/types/user/change-password-input.interface'
 import { IEditProfileInput } from '@/types/user/edit-profile-input.interface'
 import { ILoginInput } from '@/types/user/login-input.interface'
 import { ILoginOutput } from '@/types/user/login-output.interface'
@@ -10,6 +11,16 @@ class AccountService {
 
 	refresh = async () => {
 		return credentialsApi.get<ILoginOutput>(`${this.URI_PREFIX}/refresh`)
+	}
+
+	sendResetPasswordEmail = async () => {
+		return authApi.get(`${this.URI_PREFIX}/reset-password`)
+	}
+
+	changePassword = async (changePasswordData: IChangePasswordInput) => {
+		return authApi.put(`${this.URI_PREFIX}/change-password`, {
+			...changePasswordData,
+		})
 	}
 
 	register = async (userData: IRegisterInput) => {

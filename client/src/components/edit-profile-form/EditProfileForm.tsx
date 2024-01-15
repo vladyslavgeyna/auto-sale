@@ -12,6 +12,7 @@ import {
 	PHONE_NUMBER_REGEXP,
 } from '@/utils/validation'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FaCamera } from 'react-icons/fa6'
@@ -19,6 +20,7 @@ import { useShallow } from 'zustand/react/shallow'
 import HttpError from '../../components/http-error/HttpError'
 import FormButton from '../form-button/FormButton'
 import FormError from '../form-error/FormError'
+import ResetPassword from '../reset-password/ResetPassword'
 import { Avatar, AvatarImage } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 import { Input } from '../ui/Input'
@@ -36,6 +38,10 @@ const EditProfileForm = () => {
 		})),
 	)
 
+	if (!user) {
+		redirect('/')
+	}
+
 	const { handleHttpError, httpError } = useHttpError()
 
 	const fileInputRef = useRef<HTMLInputElement>(null)
@@ -52,10 +58,10 @@ const EditProfileForm = () => {
 	} = useForm<IEditProfileInput>({
 		mode: 'onChange',
 		defaultValues: {
-			email: user?.email,
-			name: user?.name,
-			surname: user?.surname,
-			phone: user?.phone || '',
+			email: user.email,
+			name: user.name,
+			surname: user.surname,
+			phone: user.phone || '',
 		},
 	})
 
@@ -130,7 +136,7 @@ const EditProfileForm = () => {
 										<AvatarImage
 											className='rounded-full object-cover'
 											src={
-												user?.imageLink ||
+												user.imageLink ||
 												'/default_avatar.svg'
 											}
 											alt='User avatar'
@@ -288,6 +294,7 @@ const EditProfileForm = () => {
 						Change password
 					</Link>
 				</Button>
+				<ResetPassword />
 			</div>
 		</>
 	)

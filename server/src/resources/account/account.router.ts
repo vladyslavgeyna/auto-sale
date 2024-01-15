@@ -8,6 +8,7 @@ import { imageExtensionValidation } from '../image/validation/image-extension.va
 import { imageSizeValidation } from '../image/validation/image-size.validation'
 import accountController from './account.controller'
 import './passport'
+import { accountChangePasswordValidation } from './validation/account-change-password.validation'
 import { accountEditValidation } from './validation/account-edit.validation'
 import { accountLoginValidation } from './validation/account-login.validation'
 import { accountRegisterValidation } from './validation/account-register.validation'
@@ -22,6 +23,20 @@ accountRouter.post(
 	accountRegisterValidation,
 	checkValidationMiddleware,
 	accountController.register,
+)
+
+accountRouter.put(
+	'/change-password',
+	requireAuthMiddleware,
+	accountChangePasswordValidation,
+	checkValidationMiddleware,
+	accountController.changePassword,
+)
+
+accountRouter.get(
+	'/reset-password',
+	requireAuthMiddleware,
+	accountController.sendResetPasswordEmail,
 )
 
 accountRouter.post(

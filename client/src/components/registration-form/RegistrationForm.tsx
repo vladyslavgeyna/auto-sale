@@ -140,7 +140,8 @@ const RegistrationForm = () => {
 							},
 							minLength: {
 								value: 6,
-								message: 'Surname should be at least 6 symbols',
+								message:
+									'Password should be at least 6 symbols',
 							},
 							maxLength: {
 								value: 50,

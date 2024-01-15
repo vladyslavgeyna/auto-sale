@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import * as uuid from 'uuid'
 import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
 import emailService from '../email/email.service'
@@ -8,14 +9,18 @@ import TokenPayloadDto from '../token/dtos/token-payload.dto'
 import tokenService from '../token/token.service'
 import UserDto from '../user/dtos/user.dto'
 import userService from '../user/user.service'
+import ChangePasswordInputDto from './dtos/change-password-input.dto'
 import EditInputDto from './dtos/edit-input.dto'
 import GoogleLoginInputDto from './dtos/google-login-input.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
 import RefreshOutputDto from './dtos/refresh-output.dto'
 import RegisterInputDto from './dtos/register-input.dto'
-
 class AccountService {
+	async hashPassword(password: string) {
+		return await bcrypt.hash(password, 3)
+	}
+
 	/**
 	 *
 	 * @param user User data to register from request body
@@ -50,7 +55,7 @@ class AccountService {
 			createdImage = await imageService.save(image)
 		}
 
-		const hashedPassword = await bcrypt.hash(user.password, 3)
+		const hashedPassword = await this.hashPassword(user.password)
 
 		const createdUser = await userService.create({
 			email: user.email,
@@ -84,6 +89,75 @@ class AccountService {
 			imageLink,
 			role: createdUser.role,
 		}
+	}
+
+	/**
+	 *
+	 * @param changePasswordData Change password data. Contains old password, new password, password confirm and user id
+	 */
+	async changePassword(
+		changePasswordData: ChangePasswordInputDto & { userId: string },
+	) {
+		const candidate = await userService.getById(changePasswordData.userId)
+
+		if (!candidate) {
+			throw HttpError.BadRequest(`User was not found`)
+		}
+
+		if (!candidate.password) {
+			throw HttpError.BadRequest(
+				'Password is incorrect. If you registered with google, then you can try to reset password',
+			)
+		}
+
+		const isOldPasswordCorrect = await bcrypt.compare(
+			changePasswordData.oldPassword,
+			candidate.password,
+		)
+
+		if (!isOldPasswordCorrect) {
+			throw HttpError.BadRequest('Old password is incorrect')
+		}
+
+		const isNewPasswordLikeOldPassword = await bcrypt.compare(
+			changePasswordData.password,
+			candidate.password,
+		)
+
+		if (isNewPasswordLikeOldPassword) {
+			throw HttpError.BadRequest(
+				'The new you entered is the same as the old one. Enter a different password',
+			)
+		}
+
+		const hashedPassword = await this.hashPassword(
+			changePasswordData.password,
+		)
+
+		await userService.changePassword(candidate.id, hashedPassword)
+	}
+
+	/**
+	 * Sends reset password email to user email
+	 * @param userEmail User email to send reset password email
+	 * @returns Unique reset password id. This id is used to reset password
+	 */
+	async sendResetPasswordEmail(userEmail: string) {
+		const candidateByEmail = await userService.getByEmail(userEmail)
+
+		if (!candidateByEmail) {
+			throw HttpError.NotFound(
+				`User with email ${userEmail} was not found`,
+			)
+		}
+
+		const uniqueResetPasswordId = uuid.v4()
+
+		const resetPasswordLink = `${process.env.CLIENT_URL}/account/reset-password/${uniqueResetPasswordId}`
+
+		await emailService.sendResetPasswordEmail(userEmail, resetPasswordLink)
+
+		return uniqueResetPasswordId
 	}
 
 	/**
