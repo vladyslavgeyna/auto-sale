@@ -5,16 +5,17 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "nodemon src/index.js"
+		"dev": "nodemon src/index.js",
+		"start": "node src/index.js"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"dotenv": "^16.3.1",
 		"nodemon": "^3.0.2"
 	},
 	"dependencies": {
+		"dotenv": "^16.3.1",
 		"socket.io": "^4.7.4"
 	}
 }
