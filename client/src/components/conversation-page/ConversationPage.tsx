@@ -172,7 +172,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	return (
-		<div className='max-w-screen-lg m-auto h-[calc(100vh-275px)]'>
+		<div className='max-w-screen-lg m-auto h-[calc(100vh-325px)] sm:h-[calc(100vh-275px)]'>
 			<div className='h-full overflow-y-auto pr-2'>
 				{conversationMessages.map(m => (
 					<div key={m.id} ref={scrollRef}>
@@ -180,9 +180,9 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					</div>
 				))}
 			</div>
-			<div className='mt-2 flex gap-3 items-center justify-between'>
+			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
-					className='p-2 w-[80%] resize-none h-24'
+					className='p-2 w-full sm:w-[80%] resize-none h-24'
 					placeholder='Write something...'
 					onChange={e => setNewMessage(e.target.value)}
 					value={newMessage}
@@ -193,13 +193,13 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					}}
 				/>
 				{isPending ? (
-					<Button className='flex items-center justify-center gap-2 min-w-[100px] min-h-10'>
+					<Button className='flex items-center justify-center gap-2 w-full sm:w-[initial] min-w-[125px] min-h-10'>
 						<Loader2 className='h-6 w-6 animate-spin' />
 					</Button>
 				) : (
 					<Button
 						onClick={handleSendMessage}
-						className='flex items-center gap-2 min-w-[100px] min-h-10'>
+						className='flex items-center gap-2 min-w-[125px] min-h-10 w-full sm:w-[initial]'>
 						<span>Send</span>
 						<FiSend className='text-lg' />
 					</Button>
