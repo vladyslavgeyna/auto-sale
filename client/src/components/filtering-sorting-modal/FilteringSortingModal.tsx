@@ -2,6 +2,7 @@ import carModelService from '@/services/car-model.service'
 import { IGetFilteringSortingDataOutput } from '@/types/car-ad/get-filtering-sorting-data-output.interface'
 import { IEnum } from '@/types/enum.interface'
 import { CURRENT_YEAR, getArrayInRange } from '@/utils/utils'
+import { Loader2 } from 'lucide-react'
 import {
 	redirect,
 	usePathname,
@@ -67,6 +68,8 @@ const FilteringSortingModal = ({
 	carModels: IEnum[]
 	setCarModels: React.Dispatch<React.SetStateAction<IEnum[] | undefined>>
 }) => {
+	const [areCarModelsLoading, setAreCarModelsLoading] = useState(false)
+
 	const [yearFromArray, setYearFromArray] = useState<SelectItemType[]>(
 		getDefaultYearsArray(),
 	)
@@ -115,6 +118,7 @@ const FilteringSortingModal = ({
 		event: React.ChangeEvent<HTMLSelectElement>,
 	) => {
 		try {
+			setAreCarModelsLoading(true)
 			const carBrandId = Number(event.target.value)
 			const data = await carModelService.getAll(carBrandId)
 			setCarModels(data.data)
@@ -123,6 +127,8 @@ const FilteringSortingModal = ({
 			})
 		} catch (error) {
 			setIsGetCarModelsError(true)
+		} finally {
+			setAreCarModelsLoading(false)
 		}
 	}
 
@@ -229,16 +235,22 @@ const FilteringSortingModal = ({
 										placeholder='Car brand'
 									/>
 								</div>
-								<div>
-									<FormSelect
-										register={register('carModelId')}
-										items={carModels.map(item => ({
-											key: item.id.toString(),
-											value: item.value,
-										}))}
-										placeholder='Car model'
-									/>
-								</div>
+								{areCarModelsLoading ? (
+									<div className='rounded-md border h-10 w-full flex items-center justify-center'>
+										<Loader2 className='animate-spin h-6 w-6' />
+									</div>
+								) : (
+									<div>
+										<FormSelect
+											register={register('carModelId')}
+											items={carModels.map(item => ({
+												key: item.id.toString(),
+												value: item.value,
+											}))}
+											placeholder='Car model'
+										/>
+									</div>
+								)}
 								<div>
 									<FormSelect
 										register={register('region')}
