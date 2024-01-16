@@ -3,8 +3,8 @@ import { User } from '../user/user.entity'
 
 @Entity()
 export class Conversation {
-	@PrimaryGeneratedColumn()
-	id: number
+	@PrimaryGeneratedColumn('uuid')
+	id: string
 
 	@ManyToOne(() => User, { nullable: false })
 	firstMember: User
