@@ -21,6 +21,7 @@ services:
         restart: unless-stopped
         depends_on:
             - server
+            - socket
         build:
             context: ./client
 
@@ -57,10 +58,20 @@ services:
             POSTGRES_PORT: ${POSTGRES_PORT}
             SOCKET_PORT: ${SOCKET_PORT}
 
+    socket:
+        restart: unless-stopped
+        build:
+            context: ./socket
+        env_file: ./server/.env
+        environment:
+            CLIENT_URL: ${CLIENT_URL}
+            SOCKET_PORT: ${SOCKET_PORT}
+
     caddy:
         depends_on:
             - server
             - client
+            - socket
         image: caddy
         restart: unless-stopped
         ports:
