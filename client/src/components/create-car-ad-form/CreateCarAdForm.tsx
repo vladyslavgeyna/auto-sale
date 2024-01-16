@@ -7,6 +7,7 @@ import { ICreateCarAdInput } from '@/types/car-ad/create-car-ad-input.interface'
 import { IEnum } from '@/types/enum.interface'
 import { CURRENT_YEAR, getArrayInRange, renameFiles } from '@/utils/utils'
 import { MAX_IMAGES_COUNT, validateImages } from '@/utils/validation'
+import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -33,6 +34,8 @@ const CreateCarAdForm = () => {
 	const [isGetCarModelsError, setIsGetCarModelsError] = useState(false)
 
 	const [carModels, setCarModels] = useState<IEnum[]>([])
+
+	const [areCarModelsLoading, setAreCarModelsLoading] = useState(false)
 
 	const {
 		handleSubmit,
@@ -69,11 +72,14 @@ const CreateCarAdForm = () => {
 		event: React.ChangeEvent<HTMLSelectElement>,
 	) => {
 		try {
+			setAreCarModelsLoading(true)
 			const carBrandId = Number(event.target.value)
 			const data = await carModelService.getAll(carBrandId)
 			setCarModels(data.data)
 		} catch (error) {
 			setIsGetCarModelsError(true)
+		} finally {
+			setAreCarModelsLoading(false)
 		}
 	}
 
@@ -194,22 +200,28 @@ const CreateCarAdForm = () => {
 						message={errors.carBrandId?.message}
 					/>
 				</div>
-				<div>
-					<FormSelect
-						register={register('carModelId', {
-							required: 'Car model is required',
-						})}
-						items={carModels.map(item => ({
-							key: item.id.toString(),
-							value: item.value,
-						}))}
-						placeholder='Select car model'
-					/>
-					<FormError
-						className='ml-1 mt-1'
-						message={errors.carModelId?.message}
-					/>
-				</div>
+				{areCarModelsLoading ? (
+					<div className='rounded-md border h-10 w-full flex items-center justify-center'>
+						<Loader2 className='animate-spin h-6 w-6' />
+					</div>
+				) : (
+					<div>
+						<FormSelect
+							register={register('carModelId', {
+								required: 'Car model is required',
+							})}
+							items={carModels.map(item => ({
+								key: item.id.toString(),
+								value: item.value,
+							}))}
+							placeholder='Select car model'
+						/>
+						<FormError
+							className='ml-1 mt-1'
+							message={errors.carModelId?.message}
+						/>
+					</div>
+				)}
 				<div>
 					<FormSelect
 						register={register('yearOfProduction', {
