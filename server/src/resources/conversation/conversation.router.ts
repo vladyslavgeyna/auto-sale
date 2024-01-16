@@ -15,7 +15,7 @@ conversationRouter.post(
 )
 
 conversationRouter.get(
-	'/:userId',
+	'/users/:userId',
 	requireAuthMiddleware,
 	conversationController.getByUserId,
 )

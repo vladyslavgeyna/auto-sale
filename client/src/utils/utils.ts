@@ -35,6 +35,10 @@ export function generateRandomString() {
 	return result
 }
 
+export function generateRandomInt(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min) + min)
+}
+
 export function getExtension(fileName: string) {
 	return fileName.split('.').pop()
 }

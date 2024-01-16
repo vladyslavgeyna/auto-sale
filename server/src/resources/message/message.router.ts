@@ -15,7 +15,7 @@ messageRouter.post(
 )
 
 messageRouter.get(
-	'/:conversationId',
+	'/conversations/:conversationId',
 	requireAuthMiddleware,
 	messageController.getByConversationId,
 )

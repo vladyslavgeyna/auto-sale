@@ -1,6 +1,8 @@
-import ConversationDto from '../../conversation/dtos/conversation.dto'
+import MemberDto from '../../conversation/dtos/member.dto'
 import MessageDto from './message.dto'
 
 export default interface GetAllConversationMessagesOutputDto
-	extends MessageDto,
-		Omit<ConversationDto, 'id'> {}
+	extends MessageDto {
+	firstMember: MemberDto
+	secondMember: MemberDto
+}
