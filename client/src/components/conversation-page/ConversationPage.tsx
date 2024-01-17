@@ -73,8 +73,10 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		},
 	)
 
-	const { mutate: updateLastVisit } =
-		useUpdateLastConversationVisit(conversationId)
+	const { mutate: updateLastVisit } = useUpdateLastConversationVisit(
+		conversationId,
+		user.id,
+	)
 
 	useEffect(() => {
 		socket.on(
