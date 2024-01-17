@@ -26,4 +26,10 @@ conversationRouter.get(
 	conversationController.getById,
 )
 
+conversationRouter.put(
+	'/:id/last-visit',
+	requireAuthMiddleware,
+	conversationController.updateLastVisit,
+)
+
 export default conversationRouter

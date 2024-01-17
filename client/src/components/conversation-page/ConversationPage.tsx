@@ -2,6 +2,7 @@
 import { useGetConversation } from '@/hooks/useGetConversation'
 import { useGetConversationMessages } from '@/hooks/useGetConversationMessages'
 import { useSendMessage } from '@/hooks/useSendMessage'
+import { useUpdateLastConversationVisit } from '@/hooks/useUpdateLastConversationVisit'
 import { useSocket } from '@/providers/SocketProvider'
 import { useUserStore } from '@/store/user'
 import { IHttpError } from '@/types/http-error.interface'
@@ -72,6 +73,9 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		},
 	)
 
+	const { mutate: updateLastVisit } =
+		useUpdateLastConversationVisit(conversationId)
+
 	useEffect(() => {
 		socket.on(
 			'getMessage',
@@ -83,6 +87,10 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				})
 			},
 		)
+
+		return () => {
+			updateLastVisit(conversationId)
+		}
 	}, [])
 
 	useEffect(() => {

@@ -37,6 +37,27 @@ class ConversationController {
 		}
 	}
 
+	async updateLastVisit(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			const conversation = await conversationService.updateLastVisit(
+				req.params.id,
+				req.authUser.id,
+			)
+
+			res.json(conversation)
+		} catch (error) {
+			next(error)
+		}
+	}
+
 	async getByUserId(
 		req: RequestWithParams<{ userId: string }>,
 		res: Response,

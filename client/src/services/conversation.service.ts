@@ -12,6 +12,10 @@ class ConversationService {
 		})
 	}
 
+	updateLastVisit = async (id: string) => {
+		return authApi.put(`${this.URI_PREFIX}/${id}/last-visit`)
+	}
+
 	getAllUserConversation = async (userId: string) => {
 		return authApi.get<IGetUserConversationsOutput[]>(
 			`${this.URI_PREFIX}/users/${userId}`,

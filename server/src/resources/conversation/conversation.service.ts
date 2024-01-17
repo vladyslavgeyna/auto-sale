@@ -240,6 +240,33 @@ class ConversationService {
 			},
 		}
 	}
+
+	async updateLastVisit(id: string, userId: string) {
+		const conversation = await this.conversationRepository.findOne(
+			getConversationByIdOptions(id),
+		)
+
+		if (!conversation) {
+			throw HttpError.NotFound('Conversation was not found')
+		}
+
+		if (
+			conversation.firstMember.id !== userId &&
+			conversation.secondMember.id !== userId
+		) {
+			throw HttpError.Forbidden(
+				'You can only update conversations with yourself',
+			)
+		}
+
+		if (conversation.firstMember.id === userId) {
+			conversation.lastFirstMemberVisit = new Date()
+		} else {
+			conversation.lastSecondMemberVisit = new Date()
+		}
+
+		await this.conversationRepository.save(conversation)
+	}
 }
 
 export default new ConversationService()

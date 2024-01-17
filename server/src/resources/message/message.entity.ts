@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import {
+	Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+} from 'typeorm'
 import { Conversation } from '../conversation/conversation.entity'
 import { User } from '../user/user.entity'
 
@@ -8,6 +14,7 @@ export class Message {
 	id: number
 
 	@ManyToOne(() => Conversation, { nullable: false })
+	@JoinColumn()
 	conversation: Conversation
 
 	@ManyToOne(() => User, { nullable: false })
