@@ -11,6 +11,7 @@ import ActionLinks from './ActionLinks'
 import CarAdAdditionalInfo from './CarAdAdditionalInfo'
 import Heart from './Heart'
 import SellerInfo from './SellerInfo'
+import WriteToSeller from './WriteToSeller'
 import Slider from './slider/Slider'
 
 const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
@@ -68,6 +69,12 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 							/>
 						</div>
 					</div>
+					{isUserAuthenticatedAndNotUserAd && user && (
+						<WriteToSeller
+							sellerId={carAd.userId}
+							currentUserId={user.id}
+						/>
+					)}
 					<ActionLinks
 						carAdId={carAd.id}
 						isNotCurrentUserAd={isUserAuthenticatedAndNotUserAd}

@@ -40,7 +40,6 @@ export const useUserStore = create<IUserStore>(set => ({
 		set(() => ({ isCheckingAuthFinished }))
 	},
 	setCredentials: (credentials: ILoginOutput) => {
-		console.log('userStore setCredentials:ILoginOutput', credentials)
 		set(() => ({
 			user: {
 				id: credentials.id,

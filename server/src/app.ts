@@ -11,7 +11,9 @@ import carBrandRouter from './resources/car-brand/car-brand.router'
 import carComparisonRouter from './resources/car-comparison/car-comparison.router'
 import carModelRouter from './resources/car-model/car-model.router'
 import carRouter from './resources/car/car.router'
+import conversationRouter from './resources/conversation/conversation.router'
 import favoriteAdRouter from './resources/favorite-ad/favorite-ad.router'
+import messageRouter from './resources/message/message.router'
 
 class App {
 	private port: number
@@ -39,6 +41,8 @@ class App {
 		this.app.use(this.getRouteUri('car-brands'), carBrandRouter)
 		this.app.use(this.getRouteUri('car-comparisons'), carComparisonRouter)
 		this.app.use(this.getRouteUri('favorite-ads'), favoriteAdRouter)
+		this.app.use(this.getRouteUri('conversations'), conversationRouter)
+		this.app.use(this.getRouteUri('messages'), messageRouter)
 	}
 
 	private initializeMiddlewares() {

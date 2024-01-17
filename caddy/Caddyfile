@@ -9,3 +9,7 @@ auto-sale.anyeg.me, www.auto-sale.anyeg.me {
 api.auto-sale.anyeg.me, www.api.auto-sale.anyeg.me {
   reverse_proxy http://server:5000
 }
+
+socket.auto-sale.anyeg.me, www.socket.auto-sale.anyeg.me {
+  reverse_proxy http://socket:5050
+}
