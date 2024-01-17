@@ -54,10 +54,7 @@ const ConversationItem = ({
 
 	const hasNewMessage = () => {
 		if (conversation.lastMessageSenderId !== user.id) {
-			if (
-				conversation.lastMessageDateOfCreation &&
-				conversation.lastMessageDateOfCreation
-			) {
+			if (conversation.lastMessageDateOfCreation) {
 				const lastMessageDate = new Date(
 					conversation.lastMessageDateOfCreation,
 				)
