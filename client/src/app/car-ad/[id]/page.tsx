@@ -1,13 +1,10 @@
 'use client'
 
 import CarAdPage from '@/components/car-ad-page/CarAdPage'
-import Forbidden from '@/components/forbidden/Forbidden'
+import ComplexError from '@/components/complex-error/ComplexError'
 import Loader from '@/components/loader/Loader'
 import NotFound from '@/components/not-found/NotFound'
 import { useGetCarAdById } from '@/hooks/useGetCarAdById'
-import { IHttpError } from '@/types/http-error.interface'
-import { AxiosError } from 'axios'
-import { redirect } from 'next/navigation'
 
 type PropsType = {
 	params: {
@@ -39,22 +36,7 @@ const CarAdByIdPage = ({ params }: PropsType) => {
 	}
 
 	if (!isGettingCarAdSuccess || isGettingCarAdError) {
-		if (getCarAdError) {
-			const error = getCarAdError as AxiosError
-			const httpError = IHttpError.toIHttpError(error)
-			if (!httpError) {
-				redirect('/error')
-			}
-			if (httpError.status === 404) {
-				return <NotFound text={httpError.message} />
-			} else if (httpError.status === 403) {
-				return <Forbidden text={httpError.message} />
-			} else {
-				redirect('/error')
-			}
-		} else {
-			redirect('/error')
-		}
+		return <ComplexError error={getCarAdError} />
 	}
 
 	return <CarAdPage carAd={carAd} />

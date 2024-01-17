@@ -1,14 +1,11 @@
 'use client'
 import { useGetUserConversations } from '@/hooks/useGetUserConversations'
 import { useUserStore } from '@/store/user'
-import { IHttpError } from '@/types/http-error.interface'
-import { AxiosError } from 'axios'
 import { redirect } from 'next/navigation'
 import { useShallow } from 'zustand/react/shallow'
 import Chat from '../chat/Chat'
-import Forbidden from '../forbidden/Forbidden'
+import ComplexError from '../complex-error/ComplexError'
 import Loader from '../loader/Loader'
-import NotFound from '../not-found/NotFound'
 import Title from '../ui/Title'
 
 const ChatPage = () => {
@@ -40,22 +37,7 @@ const ChatPage = () => {
 	}
 
 	if (!isGettingUserConversationsSuccess || isGettingUserConversationsError) {
-		if (getUserConversationsError) {
-			const error = getUserConversationsError as AxiosError
-			const httpError = IHttpError.toIHttpError(error)
-			if (!httpError) {
-				redirect('/error')
-			}
-			if (httpError.status === 404) {
-				return <NotFound text={httpError.message} />
-			} else if (httpError.status === 403) {
-				return <Forbidden text={httpError.message} />
-			} else {
-				redirect('/error')
-			}
-		} else {
-			redirect('/error')
-		}
+		return <ComplexError error={getUserConversationsError} />
 	}
 
 	return (
