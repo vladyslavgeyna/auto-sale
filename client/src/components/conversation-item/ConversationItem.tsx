@@ -75,9 +75,10 @@ const ConversationItem = ({
 							? new Date(conversation.lastSecondMemberVisit)
 							: null
 				}
-				if (!lastUserConversationVisit) {
-					return true
-				} else if (lastMessageDate > lastUserConversationVisit) {
+				if (
+					!lastUserConversationVisit ||
+					lastMessageDate > lastUserConversationVisit
+				) {
 					return true
 				}
 			}
