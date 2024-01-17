@@ -9,29 +9,23 @@ const io = new Server({
 	},
 })
 
-let users = new Map()
+let users = []
 
 const addUser = (userId, socketId) => {
-	if (!users.has(userId)) {
-		users.set(userId, socketId)
-	}
+	!users.some(user => user.userId === userId) &&
+		users.push({ userId, socketId })
 }
 
 const removeUser = socketId => {
-	for (const [userId, userSocketId] of users.entries()) {
-		if (userSocketId === socketId) {
-			users.delete(userId)
-			break
-		}
-	}
+	users = users.filter(user => user.socketId !== socketId)
 }
 
 const getUser = userId => {
-	return users.get(userId)
+	return users.find(user => user.userId === userId)
 }
 
 io.on('connection', socket => {
-	socket.on('join', async userId => {
+	socket.on('join', userId => {
 		addUser(userId, socket.id)
 	})
 
