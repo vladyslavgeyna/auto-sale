@@ -36,7 +36,7 @@ export const getAllUserConversationsOptions = (
 	},
 	order: {
 		messages: {
-			dateOfCreation: 'ASC',
+			dateOfCreation: 'DESC',
 		},
 	},
 })
