@@ -39,6 +39,13 @@ io.on('connection', socket => {
 		}
 	})
 
+	socket.on('typing', ({ receiverId }) => {
+		const user = getUser(receiverId)
+		if (user) {
+			io.to(user.socketId).emit('responseTyping')
+		}
+	})
+
 	socket.on('disconnect', () => {
 		removeUser(socket.id)
 	})

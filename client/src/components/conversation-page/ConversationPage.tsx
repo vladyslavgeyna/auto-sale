@@ -23,6 +23,8 @@ import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Textarea'
 
 const ConversationPage = ({ conversationId }: { conversationId: string }) => {
+	let timer: NodeJS.Timeout | null = null
+
 	const { user } = useUserStore(
 		useShallow(state => ({
 			user: state.user,
@@ -40,6 +42,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	const scrollRef = useRef<HTMLDivElement>(null)
 
 	const [newMessage, setNewMessage] = useState('')
+	const [isMemberTyping, setIsMemberTyping] = useState(false)
 	const [arrivalMessage, setArrivalMessage] = useState<{
 		senderId: string
 		text: string
@@ -89,6 +92,14 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				})
 			},
 		)
+
+		socket.on('responseTyping', () => {
+			timer && clearTimeout(timer)
+			setIsMemberTyping(true)
+			timer = setTimeout(() => {
+				setIsMemberTyping(false)
+			}, 1500)
+		})
 
 		return () => {
 			updateLastVisit(conversationId)
@@ -203,28 +214,33 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	const handleSendMessage = () => {
-		sendMessage({
-			senderId: user.id,
-			conversationId,
-			text: newMessage,
-		})
-
-		const members = [conversation.firstMember, conversation.secondMember]
-
-		const receiverId = members.find(m => m.id !== user.id)?.id
-
-		if (receiverId) {
-			socket.emit('sendMessage', {
+		if (newMessage) {
+			sendMessage({
 				senderId: user.id,
-				receiverId,
+				conversationId,
 				text: newMessage,
 			})
+
+			const members = [
+				conversation.firstMember,
+				conversation.secondMember,
+			]
+
+			const receiverId = members.find(m => m.id !== user.id)?.id
+
+			if (receiverId) {
+				socket.emit('sendMessage', {
+					senderId: user.id,
+					receiverId,
+					text: newMessage,
+				})
+			}
 		}
 	}
 
 	return (
 		<div className='max-w-screen-lg m-auto h-[calc(100vh-325px)] sm:h-[calc(100vh-275px)]'>
-			<div className='h-full overflow-y-auto pr-2'>
+			<div className='h-full overflow-y-auto pr-2 pb-5'>
 				{conversationMessages.length > 0 ? (
 					conversationMessages.map(m => (
 						<div key={m.id} ref={scrollRef}>
@@ -239,15 +255,47 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					</p>
 				)}
 			</div>
-			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
+			{isMemberTyping ? (
+				<div className={'italic text-sm text-gray-500 animate-pulse'}>
+					<span className='ml-2'>Typing...</span>
+				</div>
+			) : (
+				<div className='h-5'></div>
+			)}
+			<div className='mt-1 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
 					className='p-2 w-full sm:w-[80%] resize-none h-24'
 					placeholder='Write something...'
-					onChange={e => setNewMessage(e.target.value)}
+					onChange={e => {
+						setNewMessage(e.target.value)
+					}}
 					value={newMessage}
 					onKeyDown={e => {
-						if (e.key === 'Enter') {
+						if (e.key === 'Enter' && !e.ctrlKey) {
+							e.preventDefault()
 							handleSendMessage()
+						} else if (e.key === 'Enter' && e.ctrlKey) {
+							setNewMessage(prevMessage => prevMessage + '\n')
+						} else {
+							if (timer === null) {
+								const members = [
+									conversation.firstMember,
+									conversation.secondMember,
+								]
+
+								const receiverId = members.find(
+									m => m.id !== user.id,
+								)?.id
+
+								if (receiverId) {
+									socket.emit('typing', {
+										receiverId,
+									})
+									timer = setTimeout(() => {
+										timer = null
+									}, 500)
+								}
+							}
 						}
 					}}
 				/>
