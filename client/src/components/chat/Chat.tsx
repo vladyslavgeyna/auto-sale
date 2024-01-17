@@ -7,13 +7,13 @@ const Chat = ({
 	conversations: IGetUserConversationsOutput[]
 }) => {
 	return (
-		<div className='flex gap-5 mt-5'>
-			<div className='w-[30%] flex flex-col gap-2'>
+		<div className='flex flex-col-reverse md:flex-row gap-5 mt-5'>
+			<div className='w-full md:w-[500px] flex flex-col gap-2'>
 				{conversations.map(c => (
 					<ConversationItem key={c.id} conversation={c} />
 				))}
 			</div>
-			<p className='text-7xl font-bold text-gray-300 w-auto'>
+			<p className='text-5xl lg:text-7xl font-bold text-center md:text-left text-gray-300 w-full'>
 				Choose a conversation to start messaging
 			</p>
 		</div>

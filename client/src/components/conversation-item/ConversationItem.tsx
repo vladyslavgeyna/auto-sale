@@ -34,7 +34,9 @@ const ConversationItem = ({
 
 	return (
 		member && (
-			<Link href={`/chat/${conversation.id}`}>
+			<Link
+				className='border border-gray-100 rounded-lg'
+				href={`/chat/${conversation.id}`}>
 				<div className='flex items-center gap-3 w-full hover:bg-gray-100 transition-all p-1.5 cursor-pointer rounded-lg'>
 					<div>
 						<Avatar className='w-12 h-12'>
