@@ -28,6 +28,10 @@ class ConversationService {
 			`${this.URI_PREFIX}/${id}`,
 		)
 	}
+
+	delete = async (id: string) => {
+		return authApi.delete(`${this.URI_PREFIX}/${id}`)
+	}
 }
 
 export default new ConversationService()

@@ -11,19 +11,16 @@ export const createCarAdValidation = [
 	body('title')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isLength({ min: 3, max: 50 })
 		.withMessage('Title length should be from 3 to 50 characters'),
 	body('text')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isLength({ min: 10, max: 1000 })
 		.withMessage(`Text length should be from 5 to 1000 characters`),
 	body('additionalOptions')
 		.optional()
 		.trim()
-		.escape()
 		.isLength({ min: 2, max: 150 })
 		.withMessage(`Additional options should be from 2 to 150 characters`)
 		.custom(value => {
@@ -47,7 +44,6 @@ export const createCarAdValidation = [
 	body('color')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.custom(value => {
 			if (!hasEnumValue(Number(value), Color)) {
@@ -58,7 +54,6 @@ export const createCarAdValidation = [
 	body('fuel')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.custom(value => {
 			if (!hasEnumValue(Number(value), Fuel)) {
@@ -69,7 +64,6 @@ export const createCarAdValidation = [
 	body('transmission')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.custom(value => {
 			if (!hasEnumValue(Number(value), Transmission)) {
@@ -80,7 +74,6 @@ export const createCarAdValidation = [
 	body('wheelDrive')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.custom(value => {
 			if (!hasEnumValue(Number(value), WheelDrive)) {
@@ -91,7 +84,6 @@ export const createCarAdValidation = [
 	body('region')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.custom(value => {
 			if (!hasEnumValue(Number(value), Region)) {
@@ -102,7 +94,6 @@ export const createCarAdValidation = [
 	body('price')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt({ min: 1, max: 100000000 })
 		.withMessage('Price should be from 1 to 100000000')
 		.custom(value => {
@@ -114,19 +105,16 @@ export const createCarAdValidation = [
 	body('carBrandId')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.withMessage('Invalid car brand'),
 	body('carModelId')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.withMessage('Invalid car model'),
 	body('engineCapacity')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isFloat({ min: 0, max: 1000 })
 		.withMessage(
 			'Invalid engine capacity or power. It should be from 0 to 1000',
@@ -134,7 +122,6 @@ export const createCarAdValidation = [
 	body('numberOfSeats')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.withMessage('Invalid number of seats')
 		.custom(value => {
@@ -146,7 +133,6 @@ export const createCarAdValidation = [
 	body('mileage')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isInt()
 		.withMessage('Invalid mileage')
 		.custom(value => {
@@ -155,9 +141,5 @@ export const createCarAdValidation = [
 			}
 			return true
 		}),
-	body('mainImageName')
-		.trim()
-		.notEmpty()
-		.escape()
-		.withMessage('Invalid main image'),
+	body('mainImageName').trim().notEmpty().withMessage('Invalid main image'),
 ]

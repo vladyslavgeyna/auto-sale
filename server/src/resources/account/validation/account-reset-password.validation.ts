@@ -21,7 +21,6 @@ export const accountResetPasswordValidation = [
 	body('resetPasswordUniqueId')
 		.trim()
 		.notEmpty()
-		.escape()
 		.withMessage(`Reset password unique id is required`),
 	body('password')
 		.trim()

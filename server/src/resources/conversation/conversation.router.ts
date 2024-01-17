@@ -32,4 +32,10 @@ conversationRouter.put(
 	conversationController.updateLastVisit,
 )
 
+conversationRouter.delete(
+	'/:id',
+	requireAuthMiddleware,
+	conversationController.delete,
+)
+
 export default conversationRouter

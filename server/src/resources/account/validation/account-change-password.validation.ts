@@ -21,7 +21,6 @@ export const accountChangePasswordValidation = [
 	body('oldPassword')
 		.trim()
 		.notEmpty()
-		.escape()
 		.withMessage(`Old password is required`),
 	body('password')
 		.trim()

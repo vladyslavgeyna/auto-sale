@@ -20,6 +20,8 @@ class MessageService {
 	async create(
 		createMessageData: CreateMessageInputDto,
 	): Promise<MessageDto> {
+		console.log('createMessageData', createMessageData)
+
 		const senderExists = await userService.exists(
 			createMessageData.senderId,
 		)
@@ -157,6 +159,12 @@ class MessageService {
 		})
 
 		return resultMessages
+	}
+
+	async deleteByConversationId(conversationId: string) {
+		await this.messageRepository.delete({
+			conversation: { id: conversationId },
+		})
 	}
 }
 

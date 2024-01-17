@@ -208,8 +208,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	return (
-		<div className='max-w-screen-lg m-auto h-[calc(100vh-325px)] sm:h-[calc(100vh-275px)]'>
-			<div className='h-full overflow-y-auto pr-2 pb-5'>
+		<div className='max-w-screen-lg m-auto h-[calc(100vh-350px)] sm:h-[calc(100vh-275px)]'>
+			<div className='h-full overflow-y-auto pr-2 pb-6'>
 				{conversationMessages.length > 0 ? (
 					conversationMessages.map(m => (
 						<div key={m.id} ref={scrollRef}>

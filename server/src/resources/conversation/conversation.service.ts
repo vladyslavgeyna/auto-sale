@@ -6,6 +6,7 @@ import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { Conversation } from './conversation.entity'
 import {
+	deleteConversationOptions,
 	getAllUserConversationsOptions,
 	getConversationByIdOptions,
 } from './conversation.utils'
@@ -280,6 +281,29 @@ class ConversationService {
 		}
 
 		await this.conversationRepository.save(conversation)
+	}
+
+	async delete(id: string, currentUserId: string) {
+		const conversation = await this.conversationRepository.findOne(
+			deleteConversationOptions(id),
+		)
+
+		if (!conversation) {
+			throw HttpError.NotFound(`Conversation was not found`)
+		}
+
+		if (
+			conversation.firstMember.id !== currentUserId &&
+			conversation.secondMember.id !== currentUserId
+		) {
+			throw HttpError.Forbidden(
+				'You can only delete conversations with yourself',
+			)
+		}
+
+		await messageService.deleteByConversationId(id)
+
+		await this.conversationRepository.delete(id)
 	}
 }
 

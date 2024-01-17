@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express'
+import HttpStatusCode from '../../utils/enums/http-status-code'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
@@ -102,6 +103,24 @@ class ConversationController {
 			)
 
 			res.json(conversation)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async delete(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			await conversationService.delete(req.params.id, req.authUser.id)
+
+			res.send(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {
 			next(error)
 		}

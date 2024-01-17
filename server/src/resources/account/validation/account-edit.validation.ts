@@ -4,19 +4,16 @@ export const accountEditValidation = [
 	body('name')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isLength({ min: 2, max: 100 })
 		.withMessage(`Name length should be from 5 to 100 characters`),
 	body('surname')
 		.trim()
 		.notEmpty()
-		.escape()
 		.isLength({ min: 2, max: 100 })
 		.withMessage(`Surname length should be from 5 to 100 characters`),
 	body('phone')
 		.optional()
 		.trim()
-		.escape()
 		.custom(value => {
 			if (
 				value &&
