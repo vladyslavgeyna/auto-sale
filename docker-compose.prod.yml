@@ -81,29 +81,6 @@ services:
             - ./caddy/Caddyfile:/etc/caddy/Caddyfile
             - ./caddy/data/:/data/
             - ./caddy/config/:/config/
-
-    # nginx:
-    #     container_name: nginx
-    #     image: nginx
-    #     restart: unless-stopped
-    #     ports:
-    #         - 80:80
-    #         - 443:443
-    #     volumes:
-    #         - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    #         - ./certbot/conf:/etc/letsencrypt
-    #         - ./certbot/www:/var/www/certbot
-    #     depends_on:
-    #         - client
-    #         - server
-
-    # certbot:
-    #     container_name: certbot
-    #     image: certbot/certbot
-    #     command: certonly --webroot -w /var/www/certbot --email vladgeina@gmail.com --agree-tos -d auto-sale.anyeg.me -d api.auto-sale.anyeg.me
-    #     volumes:
-    #         - ./certbot/conf:/etc/letsencrypt
-    #         - ./certbot/www:/var/www/certbot
 # run command: docker-compose -f docker-compose.prod.yml --env-file server/.env up -d
 # run with build command: docker-compose -f docker-compose.prod.yml --env-file server/.env up -d --build
 # build command: docker-compose -f docker-compose.prod.yml --env-file server/.env build
