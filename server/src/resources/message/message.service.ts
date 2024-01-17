@@ -20,8 +20,6 @@ class MessageService {
 	async create(
 		createMessageData: CreateMessageInputDto,
 	): Promise<MessageDto> {
-		console.log('createMessageData', createMessageData)
-
 		const senderExists = await userService.exists(
 			createMessageData.senderId,
 		)
