@@ -46,6 +46,13 @@ class ConversationService {
 	async create(
 		createConversationData: CreateConversationInputDto,
 	): Promise<ConversationDto> {
+		if (
+			createConversationData.senderId ===
+			createConversationData.receiverId
+		) {
+			throw HttpError.BadRequest('Sender and receiver cannot be the same')
+		}
+
 		const senderExists = await userService.exists(
 			createConversationData.senderId,
 		)
