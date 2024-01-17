@@ -37,10 +37,14 @@ const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
 
 	return (
 		<>
-			<ActionLink text='All reviews' icon={<FaRegComments />} />
+			<ActionLink href='/' text='All reviews' icon={<FaRegComments />} />
 			{isNotCurrentUserAd && (
 				<>
-					<ActionLink text='Leave a review' icon={<FaRegComment />} />
+					<ActionLink
+						href='/'
+						text='Leave a review'
+						icon={<FaRegComment />}
+					/>
 					<Button
 						onClick={handleToggleComparison}
 						type='button'
