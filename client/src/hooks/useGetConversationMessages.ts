@@ -12,5 +12,6 @@ export const useGetConversationMessages = (conversationId: string) => {
 		},
 		staleTime: 0,
 		retry: false,
+		refetchOnWindowFocus: false,
 	})
 }

@@ -10,5 +10,6 @@ export const useGetConversation = (id: string) => {
 		},
 		staleTime: 0,
 		retry: false,
+		refetchOnWindowFocus: false,
 	})
 }
