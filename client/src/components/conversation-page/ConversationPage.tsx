@@ -203,22 +203,27 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	const handleSendMessage = () => {
-		sendMessage({
-			senderId: user.id,
-			conversationId,
-			text: newMessage,
-		})
-
-		const members = [conversation.firstMember, conversation.secondMember]
-
-		const receiverId = members.find(m => m.id !== user.id)?.id
-
-		if (receiverId) {
-			socket.emit('sendMessage', {
+		if (newMessage) {
+			sendMessage({
 				senderId: user.id,
-				receiverId,
+				conversationId,
 				text: newMessage,
 			})
+
+			const members = [
+				conversation.firstMember,
+				conversation.secondMember,
+			]
+
+			const receiverId = members.find(m => m.id !== user.id)?.id
+
+			if (receiverId) {
+				socket.emit('sendMessage', {
+					senderId: user.id,
+					receiverId,
+					text: newMessage,
+				})
+			}
 		}
 	}
 
@@ -243,11 +248,16 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				<Textarea
 					className='p-2 w-full sm:w-[80%] resize-none h-24'
 					placeholder='Write something...'
-					onChange={e => setNewMessage(e.target.value)}
+					onChange={e => {
+						setNewMessage(e.target.value)
+					}}
 					value={newMessage}
 					onKeyDown={e => {
-						if (e.key === 'Enter') {
+						if (e.key === 'Enter' && !e.ctrlKey) {
+							e.preventDefault()
 							handleSendMessage()
+						} else if (e.key === 'Enter' && e.ctrlKey) {
+							setNewMessage(prevMessage => prevMessage + '\n')
 						}
 					}}
 				/>
