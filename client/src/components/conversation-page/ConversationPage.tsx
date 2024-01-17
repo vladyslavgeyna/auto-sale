@@ -5,20 +5,17 @@ import { useSendMessage } from '@/hooks/useSendMessage'
 import { useUpdateLastConversationVisit } from '@/hooks/useUpdateLastConversationVisit'
 import { useSocket } from '@/providers/SocketProvider'
 import { useUserStore } from '@/store/user'
-import { IHttpError } from '@/types/http-error.interface'
 import IGetConversationMessagesOutput from '@/types/message/get-conversation-messages-output.interface'
 import { generateRandomInt } from '@/utils/utils'
 import { useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { FiSend } from 'react-icons/fi'
 import { useShallow } from 'zustand/react/shallow'
-import Forbidden from '../forbidden/Forbidden'
+import ComplexError from '../complex-error/ComplexError'
 import Loader from '../loader/Loader'
 import Message from '../message/Message'
-import NotFound from '../not-found/NotFound'
 import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Textarea'
 
@@ -165,22 +162,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	if (!isGettingConversationSuccess || isGettingConversationError) {
-		if (getConversationError) {
-			const error = getConversationError as AxiosError
-			const httpError = IHttpError.toIHttpError(error)
-			if (!httpError) {
-				redirect('/error')
-			}
-			if (httpError.status === 404) {
-				return <NotFound text={httpError.message} />
-			} else if (httpError.status === 403) {
-				return <Forbidden text={httpError.message} />
-			} else {
-				redirect('/error')
-			}
-		} else {
-			redirect('/error')
-		}
+		return <ComplexError error={getConversationError} />
 	}
 
 	if (areConversationMessagesLoading || isConversationMessagesFetching) {
@@ -195,39 +177,25 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		!isGettingConversationMessagesSuccess ||
 		isGettingConversationMessagesError
 	) {
-		if (getConversationMessagesError) {
-			const error = getConversationMessagesError as AxiosError
-			const httpError = IHttpError.toIHttpError(error)
-			if (!httpError) {
-				redirect('/error')
-			}
-			if (httpError.status === 404) {
-				return <NotFound text={httpError.message} />
-			} else if (httpError.status === 403) {
-				return <Forbidden text={httpError.message} />
-			} else {
-				redirect('/error')
-			}
-		} else {
-			redirect('/error')
-		}
+		return <ComplexError error={getConversationMessagesError} />
+	}
+
+	const getReceiverId = () => {
+		const members = [conversation.firstMember, conversation.secondMember]
+
+		return members.find(m => m.id !== user.id)?.id
 	}
 
 	const handleSendMessage = () => {
 		const message = newMessage.trim()
-		if (message) {
+		if (message && !isPending) {
 			sendMessage({
 				senderId: user.id,
 				conversationId,
 				text: message,
 			})
 
-			const members = [
-				conversation.firstMember,
-				conversation.secondMember,
-			]
-
-			const receiverId = members.find(m => m.id !== user.id)?.id
+			const receiverId = getReceiverId()
 
 			if (receiverId) {
 				socket.emit('sendMessage', {
@@ -240,8 +208,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	return (
-		<div className='max-w-screen-lg m-auto h-[calc(100vh-325px)] sm:h-[calc(100vh-275px)]'>
-			<div className='h-full overflow-y-auto pr-2 pb-5'>
+		<div className='max-w-screen-lg m-auto h-[calc(100vh-350px)] sm:h-[calc(100vh-275px)]'>
+			<div className='h-full overflow-y-auto pr-2 pb-6'>
 				{conversationMessages.length > 0 ? (
 					conversationMessages.map(m => (
 						<div key={m.id} ref={scrollRef}>
@@ -257,36 +225,30 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				)}
 			</div>
 			{isMemberTyping ? (
-				<div className={'italic text-sm text-gray-500 animate-pulse'}>
+				<div
+					className={
+						'italic font-medium text-gray-500 animate-pulse'
+					}>
 					<span className='ml-2'>Typing...</span>
 				</div>
 			) : (
 				<div className='h-5'></div>
 			)}
-			<div className='mt-1 flex gap-2 flex-col sm:flex-row items-center justify-between'>
+			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
-					className='p-2 w-full sm:w-[80%] resize-none h-24'
+					className='p-2 w-full sm:w-[80%] text-base resize-none h-24'
 					placeholder='Write something...'
 					onChange={e => {
 						setNewMessage(e.target.value)
 					}}
 					value={newMessage}
 					onKeyDown={e => {
-						if (e.key === 'Enter' && !e.ctrlKey) {
+						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault()
 							handleSendMessage()
-						} else if (e.key === 'Enter' && e.ctrlKey) {
-							setNewMessage(prevMessage => prevMessage + '\n')
 						} else {
 							if (timer === null) {
-								const members = [
-									conversation.firstMember,
-									conversation.secondMember,
-								]
-
-								const receiverId = members.find(
-									m => m.id !== user.id,
-								)?.id
+								const receiverId = getReceiverId()
 
 								if (receiverId) {
 									socket.emit('typing', {

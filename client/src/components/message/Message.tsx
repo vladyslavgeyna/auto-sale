@@ -31,11 +31,16 @@ const Message = ({ message, currentUser }: PropsType) => {
 						alt='User avatar'
 					/>
 				</Avatar>
-				<p className='p-2 rounded-lg max-w-72 whitespace-pre-wrap break-words'>
-					{message.text}
-				</p>
+				<div className='flex flex-col'>
+					<p className='p-2 rounded-lg max-w-72 whitespace-pre-wrap break-words'>
+						{message.text}
+					</p>
+					<div
+						className={'text-sm mt-1' + (isOwn ? ' self-end' : '')}>
+						{format(message.dateOfCreation)}
+					</div>
+				</div>
 			</div>
-			<div className='text-sm mt-1'>{format(message.dateOfCreation)}</div>
 		</div>
 	)
 }

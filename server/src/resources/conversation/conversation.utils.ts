@@ -36,7 +36,7 @@ export const getAllUserConversationsOptions = (
 	},
 	order: {
 		messages: {
-			dateOfCreation: 'ASC',
+			dateOfCreation: 'DESC',
 		},
 	},
 })
@@ -72,6 +72,25 @@ export const getConversationByIdOptions = (
 			image: {
 				name: true,
 			},
+		},
+	},
+})
+
+export const deleteConversationOptions = (
+	id: string,
+): FindOneOptions<Conversation> => ({
+	relations: {
+		firstMember: true,
+		secondMember: true,
+	},
+	where: { id },
+	select: {
+		id: true,
+		firstMember: {
+			id: true,
+		},
+		secondMember: {
+			id: true,
 		},
 	},
 })
