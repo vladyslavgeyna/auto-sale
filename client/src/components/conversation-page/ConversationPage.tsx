@@ -243,11 +243,9 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					}}
 					value={newMessage}
 					onKeyDown={e => {
-						if (e.key === 'Enter' && !e.ctrlKey) {
+						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault()
 							handleSendMessage()
-						} else if (e.key === 'Enter' && e.ctrlKey) {
-							setNewMessage(prevMessage => prevMessage + '\n')
 						} else {
 							if (timer === null) {
 								const receiverId = getReceiverId()
