@@ -8,7 +8,10 @@ import CreateMessageInputDto from './dtos/create-message-input.dto'
 import GetAllConversationMessagesOutputDto from './dtos/get-all-conversation-messages-output.dto'
 import MessageDto from './dtos/message.dto'
 import { Message } from './message.entity'
-import { getAllConversationMessagesOptions } from './message.utils'
+import {
+	getAllConversationMessagesOptions,
+	getLastConversationMessageDataOptions,
+} from './message.utils'
 
 class MessageService {
 	private messageRepository: Repository<Message>
@@ -63,20 +66,9 @@ class MessageService {
 			throw HttpError.NotFound('Conversation does not exist')
 		}
 
-		const message = await this.messageRepository.findOne({
-			relations: {
-				sender: true,
-			},
-			where: { conversation: { id: conversationId } },
-			select: {
-				id: true,
-				dateOfCreation: true,
-				sender: {
-					id: true,
-				},
-			},
-			order: { dateOfCreation: 'DESC' },
-		})
+		const message = await this.messageRepository.findOne(
+			getLastConversationMessageDataOptions(conversationId),
+		)
 
 		if (!message) {
 			return null

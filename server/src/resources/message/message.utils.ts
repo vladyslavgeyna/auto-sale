@@ -1,4 +1,4 @@
-import { FindManyOptions } from 'typeorm'
+import { FindManyOptions, FindOneOptions } from 'typeorm'
 import { Message } from './message.entity'
 
 export const getAllConversationMessagesOptions = (
@@ -48,4 +48,21 @@ export const getAllConversationMessagesOptions = (
 	order: {
 		dateOfCreation: 'ASC',
 	},
+})
+
+export const getLastConversationMessageDataOptions = (
+	conversationId: string,
+): FindOneOptions<Message> => ({
+	relations: {
+		sender: true,
+	},
+	where: { conversation: { id: conversationId } },
+	select: {
+		id: true,
+		dateOfCreation: true,
+		sender: {
+			id: true,
+		},
+	},
+	order: { dateOfCreation: 'DESC' },
 })
