@@ -61,29 +61,28 @@ const ConversationItem = ({
 				const lastMessageDate = new Date(
 					conversation.lastMessageDateOfCreation,
 				)
-				if (
-					conversation.lastFirstMemberVisit &&
-					conversation.lastSecondMemberVisit
-				) {
-					let lastUserConversationVisit: Date
 
-					if (conversation.firstMember.id === user.id) {
-						lastUserConversationVisit = new Date(
-							conversation.lastFirstMemberVisit,
-						)
-					} else {
-						lastUserConversationVisit = new Date(
-							conversation.lastSecondMemberVisit,
-						)
-					}
-					if (lastMessageDate > lastUserConversationVisit) {
-						return true
-					} else {
-						return false
-					}
+				let lastUserConversationVisit: Date | null
+
+				if (conversation.firstMember.id === user.id) {
+					lastUserConversationVisit =
+						conversation.lastFirstMemberVisit
+							? new Date(conversation.lastFirstMemberVisit)
+							: null
+				} else {
+					lastUserConversationVisit =
+						conversation.lastSecondMemberVisit
+							? new Date(conversation.lastSecondMemberVisit)
+							: null
+				}
+				if (!lastUserConversationVisit) {
+					return true
+				} else if (lastMessageDate > lastUserConversationVisit) {
+					return true
 				}
 			}
 		}
+		return false
 	}
 
 	const handleDeleteConversation = () => {
