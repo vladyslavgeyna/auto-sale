@@ -4,7 +4,10 @@ import awsService from '../aws/aws.service'
 import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { Conversation } from './conversation.entity'
-import { getAllUserConversationsOptions } from './conversation.utils'
+import {
+	getAllUserConversationsOptions,
+	getConversationByIdOptions,
+} from './conversation.utils'
 import ConversationDto from './dtos/conversation.dto'
 import CreateConversationInputDto from './dtos/create-conversation-input.dto'
 import GetUserConversationsOutputDto from './dtos/get-user-conversations-output.dto'
@@ -33,6 +36,36 @@ class ConversationService {
 		return exists
 	}
 
+	async getByUsers(senderId: string, receiverId: string) {
+		const conversation = await this.conversationRepository.findOne({
+			relations: {
+				firstMember: true,
+				secondMember: true,
+			},
+			where: [
+				{
+					firstMember: { id: senderId },
+					secondMember: { id: receiverId },
+				},
+				{
+					firstMember: { id: receiverId },
+					secondMember: { id: senderId },
+				},
+			],
+			select: {
+				id: true,
+				firstMember: {
+					id: true,
+				},
+				secondMember: {
+					id: true,
+				},
+			},
+		})
+
+		return conversation
+	}
+
 	async exists(id: string) {
 		const exists = await this.conversationRepository.exist({
 			where: {
@@ -43,6 +76,9 @@ class ConversationService {
 		return exists
 	}
 
+	/**
+	 * Creates a conversation between two users. If the conversation already exists, returns the existing one.
+	 */
 	async create(
 		createConversationData: CreateConversationInputDto,
 	): Promise<ConversationDto> {
@@ -69,13 +105,17 @@ class ConversationService {
 			throw HttpError.NotFound('Receiver user does not exist')
 		}
 
-		const exists = await this.existsByUsers(
+		const existedConversation = await this.getByUsers(
 			createConversationData.senderId,
 			createConversationData.receiverId,
 		)
 
-		if (exists) {
-			throw HttpError.BadRequest('Conversation already exists')
+		if (existedConversation) {
+			return {
+				id: existedConversation.id,
+				firstMemberId: existedConversation.firstMember.id,
+				secondMemberId: existedConversation.secondMember.id,
+			}
 		}
 
 		const conversation = this.conversationRepository.create({
@@ -145,6 +185,60 @@ class ConversationService {
 			)
 
 		return resultConversations
+	}
+
+	async getById(
+		conversationId: string,
+		currentUserId: string,
+	): Promise<GetUserConversationsOutputDto> {
+		const conversation = await this.conversationRepository.findOne(
+			getConversationByIdOptions(conversationId),
+		)
+
+		if (!conversation) {
+			throw HttpError.NotFound('Conversation was not found')
+		}
+
+		if (
+			conversation.firstMember.id !== currentUserId &&
+			conversation.secondMember.id !== currentUserId
+		) {
+			throw HttpError.Forbidden(
+				'You can only get conversations with yourself',
+			)
+		}
+
+		let firstMemberImageLink: string | null = null
+
+		let secondMemberImageLink: string | null = null
+
+		if (conversation.firstMember.image) {
+			firstMemberImageLink = await awsService.getImageUrl(
+				conversation.firstMember.image.name,
+			)
+		}
+
+		if (conversation.secondMember.image) {
+			secondMemberImageLink = await awsService.getImageUrl(
+				conversation.secondMember.image.name,
+			)
+		}
+
+		return {
+			id: conversation.id,
+			firstMember: {
+				id: conversation.firstMember.id,
+				name: conversation.firstMember.name,
+				surname: conversation.firstMember.surname,
+				imageLink: firstMemberImageLink,
+			},
+			secondMember: {
+				id: conversation.secondMember.id,
+				name: conversation.secondMember.name,
+				surname: conversation.secondMember.surname,
+				imageLink: secondMemberImageLink,
+			},
+		}
 	}
 }
 

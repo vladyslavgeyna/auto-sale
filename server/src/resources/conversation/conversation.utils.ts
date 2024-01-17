@@ -1,9 +1,9 @@
-import { FindOneOptions } from 'typeorm'
+import { FindManyOptions, FindOneOptions } from 'typeorm'
 import { Conversation } from './conversation.entity'
 
 export const getAllUserConversationsOptions = (
 	userId: string,
-): FindOneOptions<Conversation> => ({
+): FindManyOptions<Conversation> => ({
 	relations: {
 		firstMember: {
 			image: true,
@@ -13,6 +13,41 @@ export const getAllUserConversationsOptions = (
 		},
 	},
 	where: [{ firstMember: { id: userId } }, { secondMember: { id: userId } }],
+	select: {
+		id: true,
+		firstMember: {
+			id: true,
+			name: true,
+			surname: true,
+			image: {
+				name: true,
+			},
+		},
+		secondMember: {
+			id: true,
+			name: true,
+			surname: true,
+			image: {
+				name: true,
+			},
+		},
+	},
+})
+
+export const getConversationByIdOptions = (
+	id: string,
+): FindOneOptions<Conversation> => ({
+	relations: {
+		firstMember: {
+			image: true,
+		},
+		secondMember: {
+			image: true,
+		},
+	},
+	where: {
+		id,
+	},
 	select: {
 		id: true,
 		firstMember: {

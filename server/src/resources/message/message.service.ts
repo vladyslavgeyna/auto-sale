@@ -86,16 +86,18 @@ class MessageService {
 
 		let secondMemberImageLink: string | null = null
 
-		if (messages[0].conversation.firstMember.image) {
-			firstMemberImageLink = await awsService.getImageUrl(
-				messages[0].conversation.firstMember.image.name,
-			)
-		}
+		if (messages.length > 0) {
+			if (messages[0].conversation.firstMember.image) {
+				firstMemberImageLink = await awsService.getImageUrl(
+					messages[0].conversation.firstMember.image.name,
+				)
+			}
 
-		if (messages[0].conversation.secondMember.image) {
-			secondMemberImageLink = await awsService.getImageUrl(
-				messages[0].conversation.secondMember.image.name,
-			)
+			if (messages[0].conversation.secondMember.image) {
+				secondMemberImageLink = await awsService.getImageUrl(
+					messages[0].conversation.secondMember.image.name,
+				)
+			}
 		}
 
 		const resultMessages = messages.map(m => {

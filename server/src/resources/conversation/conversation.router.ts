@@ -20,4 +20,10 @@ conversationRouter.get(
 	conversationController.getByUserId,
 )
 
+conversationRouter.get(
+	'/:id',
+	requireAuthMiddleware,
+	conversationController.getById,
+)
+
 export default conversationRouter

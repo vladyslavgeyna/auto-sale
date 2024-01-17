@@ -64,6 +64,27 @@ class ConversationController {
 			next(error)
 		}
 	}
+
+	async getById(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			const conversation = await conversationService.getById(
+				req.params.id,
+				req.authUser.id,
+			)
+
+			res.json(conversation)
+		} catch (error) {
+			next(error)
+		}
+	}
 }
 
 export default new ConversationController()

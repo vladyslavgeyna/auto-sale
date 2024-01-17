@@ -1,4 +1,5 @@
 'use client'
+import { useGetConversation } from '@/hooks/useGetConversation'
 import { useGetConversationMessages } from '@/hooks/useGetConversationMessages'
 import { useSendMessage } from '@/hooks/useSendMessage'
 import { useSocket } from '@/providers/SocketProvider'
@@ -45,6 +46,15 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	} | null>(null)
 
 	const {
+		data: conversation,
+		isLoading: isConversationLoading,
+		isSuccess: isGettingConversationSuccess,
+		isError: isGettingConversationError,
+		isFetching: isConversationFetching,
+		error: getConversationError,
+	} = useGetConversation(conversationId)
+
+	const {
 		data: conversationMessages,
 		isLoading: areConversationMessagesLoading,
 		isSuccess: isGettingConversationMessagesSuccess,
@@ -55,8 +65,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	const { mutate: sendMessage, isPending } = useSendMessage(
 		conversationId,
-		conversationMessages?.[0].firstMember,
-		conversationMessages?.[0].secondMember,
+		conversation?.firstMember,
+		conversation?.secondMember,
 		() => {
 			setNewMessage('')
 		},
@@ -77,8 +87,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	useEffect(() => {
 		if (arrivalMessage) {
-			const firstMember = conversationMessages?.[0].firstMember
-			const secondMember = conversationMessages?.[0].secondMember
+			const firstMember = conversation?.firstMember
+			const secondMember = conversation?.secondMember
 
 			if (firstMember && secondMember) {
 				if (
@@ -87,12 +97,19 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				) {
 					let randomInt = 0
 
-					do {
-						randomInt = generateRandomInt(
-							1,
-							Number.MAX_SAFE_INTEGER,
+					if (
+						conversationMessages &&
+						conversationMessages.length > 0
+					) {
+						do {
+							randomInt = generateRandomInt(
+								1,
+								Number.MAX_SAFE_INTEGER,
+							)
+						} while (
+							conversationMessages.some(m => m.id === randomInt)
 						)
-					} while (conversationMessages.some(m => m.id === randomInt))
+					}
 
 					queryClient.setQueryData<IGetConversationMessagesOutput[]>(
 						['conversation-messages', conversationId],
@@ -117,6 +134,33 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	useEffect(() => {
 		scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
 	}, [conversationMessages])
+
+	if (isConversationLoading || isConversationFetching) {
+		return (
+			<div className='w-full mt-80 flex items-center justify-center'>
+				<Loader />
+			</div>
+		)
+	}
+
+	if (!isGettingConversationSuccess || isGettingConversationError) {
+		if (getConversationError) {
+			const error = getConversationError as AxiosError
+			const httpError = IHttpError.toIHttpError(error)
+			if (!httpError) {
+				redirect('/error')
+			}
+			if (httpError.status === 404) {
+				return <NotFound text={httpError.message} />
+			} else if (httpError.status === 403) {
+				return <Forbidden text={httpError.message} />
+			} else {
+				redirect('/error')
+			}
+		} else {
+			redirect('/error')
+		}
+	}
 
 	if (areConversationMessagesLoading || isConversationMessagesFetching) {
 		return (
@@ -155,10 +199,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 			text: newMessage,
 		})
 
-		const members = [
-			conversationMessages[0].firstMember,
-			conversationMessages[0].secondMember,
-		]
+		const members = [conversation.firstMember, conversation.secondMember]
 
 		const receiverId = members.find(m => m.id !== user.id)?.id
 
@@ -174,11 +215,19 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	return (
 		<div className='max-w-screen-lg m-auto h-[calc(100vh-325px)] sm:h-[calc(100vh-275px)]'>
 			<div className='h-full overflow-y-auto pr-2'>
-				{conversationMessages.map(m => (
-					<div key={m.id} ref={scrollRef}>
-						<Message currentUser={user} message={m} />
-					</div>
-				))}
+				{conversationMessages.length > 0 ? (
+					conversationMessages.map(m => (
+						<div key={m.id} ref={scrollRef}>
+							<Message currentUser={user} message={m} />
+						</div>
+					))
+				) : (
+					<p className='text-center text-5xl text-gray-300 font-bold'>
+						There is no messages yet
+						<br />
+						Write the first message
+					</p>
+				)}
 			</div>
 			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
