@@ -214,11 +214,12 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	const handleSendMessage = () => {
-		if (newMessage) {
+		const message = newMessage.trim()
+		if (message) {
 			sendMessage({
 				senderId: user.id,
 				conversationId,
-				text: newMessage,
+				text: message,
 			})
 
 			const members = [
@@ -232,7 +233,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				socket.emit('sendMessage', {
 					senderId: user.id,
 					receiverId,
-					text: newMessage,
+					text: message,
 				})
 			}
 		}
