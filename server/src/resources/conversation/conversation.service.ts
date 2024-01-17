@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm'
 import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
+import messageService from '../message/message.service'
 import userService from '../user/user.service'
 import { appDataSource } from './../../data-source'
 import { Conversation } from './conversation.entity'
@@ -10,6 +11,7 @@ import {
 } from './conversation.utils'
 import ConversationDto from './dtos/conversation.dto'
 import CreateConversationInputDto from './dtos/create-conversation-input.dto'
+import GetConversationByIdOutputDto from './dtos/get-conversation-by-id-output.dto'
 import GetUserConversationsOutputDto from './dtos/get-user-conversations-output.dto'
 
 class ConversationService {
@@ -166,6 +168,11 @@ class ConversationService {
 						)
 					}
 
+					const lastMessageData =
+						await messageService.getLastConversationMessageData(
+							c.id,
+						)
+
 					return {
 						id: c.id,
 						firstMember: {
@@ -180,6 +187,13 @@ class ConversationService {
 							surname: c.secondMember.surname,
 							imageLink: secondMemberImageLink,
 						},
+						lastMessageDateOfCreation:
+							lastMessageData?.dateOfCreation || null,
+						lastMessageSenderId: lastMessageData?.senderId || null,
+						lastFirstMemberVisit:
+							c.lastFirstMemberVisit?.toISOString() || null,
+						lastSecondMemberVisit:
+							c.lastSecondMemberVisit?.toISOString() || null,
 					}
 				}),
 			)
@@ -190,7 +204,7 @@ class ConversationService {
 	async getById(
 		conversationId: string,
 		currentUserId: string,
-	): Promise<GetUserConversationsOutputDto> {
+	): Promise<GetConversationByIdOutputDto> {
 		const conversation = await this.conversationRepository.findOne(
 			getConversationByIdOptions(conversationId),
 		)

@@ -1,10 +1,10 @@
-import IGetUserConversationsOutput from '@/types/conversation/get-user-conversations-output.interface'
+import IGetConversationByIdOutput from '@/types/conversation/get-conversation-by-id-output.interface'
 import ConversationItem from '../conversation-item/ConversationItem'
 
 const Chat = ({
 	conversations,
 }: {
-	conversations: IGetUserConversationsOutput[]
+	conversations: IGetConversationByIdOutput[]
 }) => {
 	return (
 		<div className='flex flex-col-reverse md:flex-row gap-5 mt-5'>

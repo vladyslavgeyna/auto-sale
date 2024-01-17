@@ -1,5 +1,5 @@
 import { useUserStore } from '@/store/user'
-import IGetUserConversationsOutput from '@/types/conversation/get-user-conversations-output.interface'
+import IGetConversationByIdOutput from '@/types/conversation/get-conversation-by-id-output.interface'
 import IMember from '@/types/conversation/member.interface'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -10,7 +10,7 @@ import { Avatar, AvatarImage } from '../ui/Avatar'
 const ConversationItem = ({
 	conversation,
 }: {
-	conversation: IGetUserConversationsOutput
+	conversation: IGetConversationByIdOutput
 }) => {
 	const [member, setMember] = useState<IMember | null>(null)
 

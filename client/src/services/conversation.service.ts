@@ -1,6 +1,7 @@
 import { authApi } from '@/http/index'
 import ICreateConversationInput from '@/types/conversation/create-conversation-input.interface'
 import ICreateConversationOutput from '@/types/conversation/create-conversation-output.interface'
+import IGetConversationByIdOutput from '@/types/conversation/get-conversation-by-id-output.interface'
 import IGetUserConversationsOutput from '@/types/conversation/get-user-conversations-output.interface'
 
 class ConversationService {
@@ -23,7 +24,7 @@ class ConversationService {
 	}
 
 	getById = async (id: string) => {
-		return authApi.get<IGetUserConversationsOutput>(
+		return authApi.get<IGetConversationByIdOutput>(
 			`${this.URI_PREFIX}/${id}`,
 		)
 	}

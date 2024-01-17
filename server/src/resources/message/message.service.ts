@@ -54,6 +54,40 @@ class MessageService {
 		}
 	}
 
+	async getLastConversationMessageData(conversationId: string) {
+		const conversationExists = await conversationService.exists(
+			conversationId,
+		)
+
+		if (!conversationExists) {
+			throw HttpError.NotFound('Conversation does not exist')
+		}
+
+		const message = await this.messageRepository.findOne({
+			relations: {
+				sender: true,
+			},
+			where: { conversation: { id: conversationId } },
+			select: {
+				id: true,
+				dateOfCreation: true,
+				sender: {
+					id: true,
+				},
+			},
+			order: { dateOfCreation: 'DESC' },
+		})
+
+		if (!message) {
+			return null
+		}
+
+		return {
+			dateOfCreation: message.dateOfCreation.toISOString(),
+			senderId: message.sender.id,
+		}
+	}
+
 	async getByConversationId(
 		conversationId: string,
 		currentUserId: string,

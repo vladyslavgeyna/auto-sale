@@ -31,6 +31,8 @@ export const getAllUserConversationsOptions = (
 				name: true,
 			},
 		},
+		lastFirstMemberVisit: true,
+		lastSecondMemberVisit: true,
 	},
 	order: {
 		messages: {
