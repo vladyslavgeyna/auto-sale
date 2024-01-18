@@ -232,7 +232,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					<span className='ml-2'>Typing...</span>
 				</div>
 			) : (
-				<div className='h-5'></div>
+				<div className='h-6'></div>
 			)}
 			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
