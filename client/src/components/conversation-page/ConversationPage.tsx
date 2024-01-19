@@ -51,7 +51,6 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	const wrapperRef = useRef<HTMLDivElement>(null)
 
 	const [newMessage, setNewMessage] = useState('')
-
 	const [shouldScroll, setShouldScroll] = useState(true)
 	const [conversationMessages, setConversationMessages] = useState<
 		IGetConversationMessagesOutput[]
