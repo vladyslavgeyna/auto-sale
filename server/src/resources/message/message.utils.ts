@@ -3,6 +3,8 @@ import { Message } from './message.entity'
 
 export const getAllConversationMessagesOptions = (
 	conversationId: string,
+	offset: number,
+	limit: number,
 ): FindManyOptions<Message> => ({
 	relations: {
 		sender: true,
@@ -46,8 +48,10 @@ export const getAllConversationMessagesOptions = (
 		},
 	},
 	order: {
-		dateOfCreation: 'ASC',
+		dateOfCreation: 'DESC',
 	},
+	skip: offset,
+	take: limit,
 })
 
 export const getLastConversationMessageDataOptions = (

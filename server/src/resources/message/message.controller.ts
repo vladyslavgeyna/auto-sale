@@ -2,7 +2,7 @@ import { NextFunction, Response } from 'express'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
-	RequestWithParams,
+	RequestWithParamsAndQuery,
 } from '../../utils/types/request.type'
 import CreateMessageInputDto from './dtos/create-message-input.dto'
 import messageService from './message.service'
@@ -35,7 +35,12 @@ class MessageController {
 	}
 
 	async getByConversationId(
-		req: RequestWithParams<{ conversationId: string }>,
+		req: RequestWithParamsAndQuery<
+			{
+				conversationId: string
+			},
+			{ limit: string; page: string }
+		>,
 		res: Response,
 		next: NextFunction,
 	) {
@@ -47,6 +52,8 @@ class MessageController {
 			const messages = await messageService.getByConversationId(
 				req.params.conversationId,
 				req.authUser.id,
+				req.query.page,
+				req.query.limit,
 			)
 
 			res.json(messages)

@@ -6,9 +6,16 @@ import ISendMessageOutput from '@/types/message/send-message-output.interface'
 class MessageService {
 	private URI_PREFIX = '/messages'
 
-	getAllConversationMessages = async (conversationId: string) => {
-		return authApi.get<IGetConversationMessagesOutput[]>(
-			`${this.URI_PREFIX}/conversations/${conversationId}`,
+	getAllConversationMessages = async (
+		conversationId: string,
+		page: number = 1,
+		limit: number = 20,
+	) => {
+		return authApi.get<{
+			messages: IGetConversationMessagesOutput[]
+			count: number
+		}>(
+			`${this.URI_PREFIX}/conversations/${conversationId}?page=${page}&limit=${limit}`,
 		)
 	}
 
