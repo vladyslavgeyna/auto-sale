@@ -1,13 +1,13 @@
 'use client'
 import { useGetConversation } from '@/hooks/useGetConversation'
-import { useGetConversationMessages } from '@/hooks/useGetConversationMessages'
 import { useSendMessage } from '@/hooks/useSendMessage'
 import { useUpdateLastConversationVisit } from '@/hooks/useUpdateLastConversationVisit'
 import { useSocket } from '@/providers/SocketProvider'
+import messageService from '@/services/message.service'
 import { useUserStore } from '@/store/user'
 import IGetConversationMessagesOutput from '@/types/message/get-conversation-messages-output.interface'
 import { generateRandomInt } from '@/utils/utils'
-import { useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -37,8 +37,16 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	const socket = useSocket()
 
 	const scrollRef = useRef<HTMLDivElement>(null)
+	const wrapperRef = useRef<HTMLDivElement>(null)
 
 	const [newMessage, setNewMessage] = useState('')
+
+	const [shouldScroll, setShouldScroll] = useState(true)
+	const [conversationMessages, setConversationMessages] = useState<
+		IGetConversationMessagesOutput[]
+	>([])
+	const [conversationMessagesCount, setConversationMessagesCount] =
+		useState<number>(0)
 	const [isMemberTyping, setIsMemberTyping] = useState(false)
 	const [arrivalMessage, setArrivalMessage] = useState<{
 		senderId: string
@@ -56,13 +64,42 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	} = useGetConversation(conversationId)
 
 	const {
-		data: conversationMessages,
+		data: conversationMessagesData,
 		isLoading: areConversationMessagesLoading,
 		isSuccess: isGettingConversationMessagesSuccess,
 		isError: isGettingConversationMessagesError,
 		isFetching: isConversationMessagesFetching,
 		error: getConversationMessagesError,
-	} = useGetConversationMessages(conversationId)
+		fetchNextPage,
+	} = useInfiniteQuery({
+		queryKey: ['conversation-messages', conversationId],
+		queryFn: async ({ pageParam = 1 }) => {
+			const { data } = await messageService.getAllConversationMessages(
+				conversationId,
+				pageParam,
+			)
+			return data
+		},
+		getNextPageParam: (lastPage, pages) => {
+			return lastPage.messages.length ? pages.length + 1 : undefined
+		},
+		initialPageParam: 1,
+	})
+
+	useEffect(() => {
+		if (conversationMessagesData) {
+			const conversationMessages = conversationMessagesData.pages
+				.slice()
+				.reverse()
+				.flatMap(m => m.messages)
+
+			setConversationMessages(conversationMessages)
+
+			setConversationMessagesCount(
+				conversationMessagesData.pages[0].count,
+			)
+		}
+	}, [conversationMessagesData])
 
 	const { mutate: sendMessage, isPending } = useSendMessage(
 		conversationId,
@@ -95,7 +132,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 			setIsMemberTyping(true)
 			timer = setTimeout(() => {
 				setIsMemberTyping(false)
-			}, 1500)
+			}, 500)
 		})
 
 		return () => {
@@ -129,7 +166,17 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 						)
 					}
 
-					queryClient.setQueryData<IGetConversationMessagesOutput[]>(
+					setShouldScroll(true)
+
+					setConversationMessagesCount(prev => prev + 1)
+
+					queryClient.setQueryData<{
+						pageParams: number[]
+						pages: Array<{
+							count: number
+							messages: Array<IGetConversationMessagesOutput>
+						}>
+					}>(
 						['conversation-messages', conversationId],
 						oldMessages => {
 							const newMessage: IGetConversationMessagesOutput = {
@@ -141,7 +188,17 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 								firstMember: { ...firstMember },
 								secondMember: { ...secondMember },
 							}
-							return [...(oldMessages || []), newMessage]
+
+							const updatedPages =
+								oldMessages?.pages.map(page => ({
+									count: page.count + 1,
+									messages: [...page.messages, newMessage],
+								})) || []
+
+							return {
+								pageParams: oldMessages?.pageParams || [1],
+								pages: updatedPages,
+							}
 						},
 					)
 				}
@@ -150,7 +207,11 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}, [arrivalMessage])
 
 	useEffect(() => {
-		scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+		if (shouldScroll) {
+			scrollRef.current?.scrollIntoView({ behavior: 'instant' })
+		} else {
+			wrapperRef.current?.scrollTo(0, 800)
+		}
 	}, [conversationMessages])
 
 	if (isConversationLoading || isConversationFetching) {
@@ -189,6 +250,9 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	const handleSendMessage = () => {
 		const message = newMessage.trim()
 		if (message && !isPending) {
+			setShouldScroll(true)
+			setConversationMessagesCount(prev => prev + 1)
+
 			sendMessage({
 				senderId: user.id,
 				conversationId,
@@ -209,8 +273,27 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	return (
 		<div className='max-w-screen-lg m-auto h-[calc(100vh-350px)] sm:h-[calc(100vh-275px)]'>
-			<div className='h-full overflow-y-auto pr-2 pb-6'>
-				{conversationMessages.length > 0 ? (
+			<div ref={wrapperRef} className='h-full overflow-y-auto pr-2 pb-6'>
+				{conversationMessages &&
+				conversationMessagesCount &&
+				conversationMessages.length < conversationMessagesCount ? (
+					<Button
+						className='w-full'
+						variant={'secondary'}
+						onClick={() => {
+							setShouldScroll(false)
+							fetchNextPage()
+						}}>
+						Load more messages
+					</Button>
+				) : (
+					conversationMessagesCount > 0 && (
+						<div className='text-lg border rounded-lg p-1.5 font-bold text-center'>
+							All messages are loaded
+						</div>
+					)
+				)}
+				{conversationMessages && conversationMessages.length > 0 ? (
 					conversationMessages.map(m => (
 						<div key={m.id} ref={scrollRef}>
 							<Message currentUser={user} message={m} />
