@@ -20,6 +20,7 @@ import Message from '../message/Message'
 import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Textarea'
 import ConversationPageLoader from './ConversationPageLoader'
+import LoadMoreMessagesButton from './LoadMoreMessagesButton'
 import NoMessages from './NoMessages'
 import Typing from './Typing'
 
@@ -251,19 +252,13 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				{conversationMessages &&
 				conversationMessagesCount &&
 				conversationMessages.length < conversationMessagesCount ? (
-					<Button
-						className='w-full'
-						variant={'secondary'}
+					<LoadMoreMessagesButton
+						isLoading={isConversationMessagesFetching}
 						onClick={() => {
 							setShouldScroll(false)
 							fetchNextPage()
-						}}>
-						{isConversationMessagesFetching ? (
-							<Loader2 className='h-6 w-6 animate-spin' />
-						) : (
-							'Load more messages'
-						)}
-					</Button>
+						}}
+					/>
 				) : (
 					conversationMessagesCount > 0 && (
 						<div className='text-lg border rounded-lg p-1.5 font-bold text-center'>
