@@ -83,7 +83,32 @@ class MessageService {
 	async getByConversationId(
 		conversationId: string,
 		currentUserId: string,
-	): Promise<GetAllConversationMessagesOutputDto[]> {
+		queryPage: string,
+		queryLimit: string,
+	): Promise<{
+		count: number
+		messages: GetAllConversationMessagesOutputDto[]
+	}> {
+		const DEFAULT_LIMIT = 20
+		const MAX_LIMIT = 100
+		const MIN_LIMIT = 3
+		const DEFAULT_PAGE = 1
+
+		let limit = queryLimit
+			? Number(queryLimit) || DEFAULT_LIMIT
+			: DEFAULT_LIMIT
+
+		let page = queryPage ? Number(queryPage) || DEFAULT_PAGE : DEFAULT_PAGE
+
+		if (limit > MAX_LIMIT || limit < MIN_LIMIT) {
+			limit = DEFAULT_LIMIT
+		}
+
+		if (page < 1) {
+			page = DEFAULT_PAGE
+		}
+
+		const offset = page * limit - limit
 		const conversationExists = await conversationService.exists(
 			conversationId,
 		)
@@ -92,9 +117,14 @@ class MessageService {
 			throw HttpError.NotFound('Conversation does not exist')
 		}
 
-		const messages = await this.messageRepository.find(
-			getAllConversationMessagesOptions(conversationId),
-		)
+		const { '0': messages, '1': count } =
+			await this.messageRepository.findAndCount(
+				getAllConversationMessagesOptions(
+					conversationId,
+					offset,
+					limit,
+				),
+			)
 
 		if (
 			messages.some(
@@ -148,7 +178,7 @@ class MessageService {
 			}
 		})
 
-		return resultMessages
+		return { messages: resultMessages.reverse(), count }
 	}
 
 	async deleteByConversationId(conversationId: string) {

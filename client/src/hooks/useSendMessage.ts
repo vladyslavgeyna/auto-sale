@@ -21,21 +21,34 @@ export const useSendMessage = (
 		onSuccess: ({ data }) => {
 			reset()
 			if (firstMember && secondMember) {
-				queryClient.setQueryData<IGetConversationMessagesOutput[]>(
-					['conversation-messages', conversationId],
-					oldMessages => {
-						const newMessage: IGetConversationMessagesOutput = {
-							id: data.id,
-							text: data.text,
-							senderId: data.senderId,
-							dateOfCreation: data.dateOfCreation,
-							conversationId: data.conversationId,
-							firstMember: { ...firstMember },
-							secondMember: { ...secondMember },
-						}
-						return [...(oldMessages || []), newMessage]
-					},
-				)
+				queryClient.setQueryData<{
+					pageParams: number[]
+					pages: Array<{
+						count: number
+						messages: Array<IGetConversationMessagesOutput>
+					}>
+				}>(['conversation-messages', conversationId], oldMessages => {
+					const newMessage: IGetConversationMessagesOutput = {
+						id: data.id,
+						text: data.text,
+						senderId: data.senderId,
+						dateOfCreation: data.dateOfCreation,
+						conversationId: data.conversationId,
+						firstMember: { ...firstMember },
+						secondMember: { ...secondMember },
+					}
+
+					const updatedPages =
+						oldMessages?.pages.map(page => ({
+							count: page.count + 1,
+							messages: [...page.messages, newMessage],
+						})) || []
+
+					return {
+						pageParams: oldMessages?.pageParams || [1],
+						pages: updatedPages,
+					}
+				})
 			}
 		},
 		onError: (error: AxiosError) => {
