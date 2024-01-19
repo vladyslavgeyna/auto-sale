@@ -2,6 +2,8 @@ import messageService from '@/services/message.service'
 import IMember from '@/types/conversation/member.interface'
 import { IHttpError } from '@/types/http-error.interface'
 import IGetConversationMessagesOutput from '@/types/message/get-conversation-messages-output.interface'
+import { IMessageQueryData } from '@/types/message/message-query-data.interface'
+import { getMessagesQueryDataPages } from '@/utils/message.utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useErrorToast } from './useErrorToast'
@@ -21,34 +23,25 @@ export const useSendMessage = (
 		onSuccess: ({ data }) => {
 			reset()
 			if (firstMember && secondMember) {
-				queryClient.setQueryData<{
-					pageParams: number[]
-					pages: Array<{
-						count: number
-						messages: Array<IGetConversationMessagesOutput>
-					}>
-				}>(['conversation-messages', conversationId], oldMessages => {
-					const newMessage: IGetConversationMessagesOutput = {
-						id: data.id,
-						text: data.text,
-						senderId: data.senderId,
-						dateOfCreation: data.dateOfCreation,
-						conversationId: data.conversationId,
-						firstMember: { ...firstMember },
-						secondMember: { ...secondMember },
-					}
+				queryClient.setQueryData<IMessageQueryData>(
+					['conversation-messages', conversationId],
+					oldMessagesData => {
+						const newMessage: IGetConversationMessagesOutput = {
+							id: data.id,
+							text: data.text,
+							senderId: data.senderId,
+							dateOfCreation: data.dateOfCreation,
+							conversationId: data.conversationId,
+							firstMember: { ...firstMember },
+							secondMember: { ...secondMember },
+						}
 
-					const updatedPages =
-						oldMessages?.pages.map(page => ({
-							count: page.count + 1,
-							messages: [...page.messages, newMessage],
-						})) || []
-
-					return {
-						pageParams: oldMessages?.pageParams || [1],
-						pages: updatedPages,
-					}
-				})
+						return getMessagesQueryDataPages(
+							newMessage,
+							oldMessagesData,
+						)
+					},
+				)
 			}
 		},
 		onError: (error: AxiosError) => {
