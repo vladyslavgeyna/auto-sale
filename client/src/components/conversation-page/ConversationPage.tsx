@@ -20,6 +20,7 @@ import Message from '../message/Message'
 import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Textarea'
 import ConversationPageLoader from './ConversationPageLoader'
+import NoMessages from './NoMessages'
 import Typing from './Typing'
 
 type ArrivalMessageType = {
@@ -82,6 +83,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	useEffect(() => {
 		if (conversationMessagesData) {
 			const conversationMessages = conversationMessagesData.pages
+				.slice()
 				.reverse()
 				.flatMap(m => m.messages)
 
@@ -199,7 +201,10 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		return <ComplexError error={getConversationError} />
 	}
 
-	if (areConversationMessagesLoading || isConversationMessagesFetching) {
+	if (
+		areConversationMessagesLoading ||
+		(areConversationMessagesLoading && isConversationMessagesFetching)
+	) {
 		return <ConversationPageLoader />
 	}
 
@@ -253,7 +258,11 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 							setShouldScroll(false)
 							fetchNextPage()
 						}}>
-						Load more messages
+						{isConversationMessagesFetching ? (
+							<Loader2 className='h-6 w-6 animate-spin' />
+						) : (
+							'Load more messages'
+						)}
 					</Button>
 				) : (
 					conversationMessagesCount > 0 && (
@@ -269,11 +278,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 						</div>
 					))
 				) : (
-					<p className='text-center text-5xl text-gray-300 font-bold'>
-						There is no messages yet
-						<br />
-						Write the first message
-					</p>
+					<NoMessages />
 				)}
 			</div>
 			<Typing isTyping={isMemberTyping} />
