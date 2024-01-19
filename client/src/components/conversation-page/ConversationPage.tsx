@@ -1,23 +1,32 @@
 'use client'
 import { useGetConversation } from '@/hooks/useGetConversation'
+import { useGetInfiniteConversationMessages } from '@/hooks/useGetInfiniteConversationMessages'
 import { useSendMessage } from '@/hooks/useSendMessage'
 import { useUpdateLastConversationVisit } from '@/hooks/useUpdateLastConversationVisit'
 import { useSocket } from '@/providers/SocketProvider'
-import messageService from '@/services/message.service'
 import { useUserStore } from '@/store/user'
 import IGetConversationMessagesOutput from '@/types/message/get-conversation-messages-output.interface'
+import { IMessageQueryData } from '@/types/message/message-query-data.interface'
+import { getMessagesQueryDataPages } from '@/utils/message.utils'
 import { generateRandomInt } from '@/utils/utils'
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { FiSend } from 'react-icons/fi'
 import { useShallow } from 'zustand/react/shallow'
 import ComplexError from '../complex-error/ComplexError'
-import Loader from '../loader/Loader'
 import Message from '../message/Message'
 import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Textarea'
+import ConversationPageLoader from './ConversationPageLoader'
+import Typing from './Typing'
+
+type ArrivalMessageType = {
+	senderId: string
+	text: string
+	dateOfCreation: string
+}
 
 const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	let timer: NodeJS.Timeout | null = null
@@ -48,11 +57,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	const [conversationMessagesCount, setConversationMessagesCount] =
 		useState<number>(0)
 	const [isMemberTyping, setIsMemberTyping] = useState(false)
-	const [arrivalMessage, setArrivalMessage] = useState<{
-		senderId: string
-		text: string
-		dateOfCreation: string
-	} | null>(null)
+	const [arrivalMessage, setArrivalMessage] =
+		useState<ArrivalMessageType | null>(null)
 
 	const {
 		data: conversation,
@@ -71,25 +77,11 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		isFetching: isConversationMessagesFetching,
 		error: getConversationMessagesError,
 		fetchNextPage,
-	} = useInfiniteQuery({
-		queryKey: ['conversation-messages', conversationId],
-		queryFn: async ({ pageParam = 1 }) => {
-			const { data } = await messageService.getAllConversationMessages(
-				conversationId,
-				pageParam,
-			)
-			return data
-		},
-		getNextPageParam: (lastPage, pages) => {
-			return lastPage.messages.length ? pages.length + 1 : undefined
-		},
-		initialPageParam: 1,
-	})
+	} = useGetInfiniteConversationMessages(conversationId)
 
 	useEffect(() => {
 		if (conversationMessagesData) {
 			const conversationMessages = conversationMessagesData.pages
-				.slice()
 				.reverse()
 				.flatMap(m => m.messages)
 
@@ -140,6 +132,16 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		}
 	}, [])
 
+	const getConversationMessageRandomId = () => {
+		let randomInt = 0
+
+		do {
+			randomInt = generateRandomInt(1, Number.MAX_SAFE_INTEGER)
+		} while (conversationMessages.some(m => m.id === randomInt))
+
+		return randomInt
+	}
+
 	useEffect(() => {
 		if (arrivalMessage) {
 			const firstMember = conversation?.firstMember
@@ -150,35 +152,15 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					firstMember.id === arrivalMessage.senderId ||
 					secondMember.id === arrivalMessage.senderId
 				) {
-					let randomInt = 0
-
-					if (
-						conversationMessages &&
-						conversationMessages.length > 0
-					) {
-						do {
-							randomInt = generateRandomInt(
-								1,
-								Number.MAX_SAFE_INTEGER,
-							)
-						} while (
-							conversationMessages.some(m => m.id === randomInt)
-						)
-					}
+					let randomInt = getConversationMessageRandomId()
 
 					setShouldScroll(true)
 
 					setConversationMessagesCount(prev => prev + 1)
 
-					queryClient.setQueryData<{
-						pageParams: number[]
-						pages: Array<{
-							count: number
-							messages: Array<IGetConversationMessagesOutput>
-						}>
-					}>(
+					queryClient.setQueryData<IMessageQueryData>(
 						['conversation-messages', conversationId],
-						oldMessages => {
+						oldMessagesData => {
 							const newMessage: IGetConversationMessagesOutput = {
 								id: randomInt,
 								text: arrivalMessage.text,
@@ -189,16 +171,10 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 								secondMember: { ...secondMember },
 							}
 
-							const updatedPages =
-								oldMessages?.pages.map(page => ({
-									count: page.count + 1,
-									messages: [...page.messages, newMessage],
-								})) || []
-
-							return {
-								pageParams: oldMessages?.pageParams || [1],
-								pages: updatedPages,
-							}
+							return getMessagesQueryDataPages(
+								newMessage,
+								oldMessagesData,
+							)
 						},
 					)
 				}
@@ -210,16 +186,13 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		if (shouldScroll) {
 			scrollRef.current?.scrollIntoView({ behavior: 'instant' })
 		} else {
-			wrapperRef.current?.scrollTo(0, 800)
+			//1400 refers to height of +-22 messages
+			wrapperRef.current?.scrollTo(0, 1400)
 		}
 	}, [conversationMessages])
 
 	if (isConversationLoading || isConversationFetching) {
-		return (
-			<div className='w-full mt-80 flex items-center justify-center'>
-				<Loader />
-			</div>
-		)
+		return <ConversationPageLoader />
 	}
 
 	if (!isGettingConversationSuccess || isGettingConversationError) {
@@ -227,11 +200,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	if (areConversationMessagesLoading || isConversationMessagesFetching) {
-		return (
-			<div className='w-full mt-80 flex items-center justify-center'>
-				<Loader />
-			</div>
-		)
+		return <ConversationPageLoader />
 	}
 
 	if (
@@ -307,16 +276,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					</p>
 				)}
 			</div>
-			{isMemberTyping ? (
-				<div
-					className={
-						'italic font-medium text-gray-500 animate-pulse'
-					}>
-					<span className='ml-2'>Typing...</span>
-				</div>
-			) : (
-				<div className='h-6'></div>
-			)}
+			<Typing isTyping={isMemberTyping} />
 			<div className='mt-2 flex gap-2 flex-col sm:flex-row items-center justify-between'>
 				<Textarea
 					className='p-2 w-full sm:w-[80%] text-base resize-none h-24'
