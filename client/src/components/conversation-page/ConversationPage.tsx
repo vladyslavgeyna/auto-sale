@@ -83,7 +83,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	//After sending message and receiving it from server, it is duplicated in the conversationMessages array
 	//because of conflict between the data from the server and the data from the client.
-	//This function removes the duplicates.
+	//This function removes the duplicates and sorts the messages by dateOfCreation
 	const getUniqueAndSortedMessages = (
 		messages: IGetConversationMessagesOutput[],
 	) => {
