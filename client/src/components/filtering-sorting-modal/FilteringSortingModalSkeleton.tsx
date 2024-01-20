@@ -1,7 +1,7 @@
 import { Skeleton } from '../ui/Skeleton'
 
 const FilteringSortingModalSkeleton = () => {
-	return <Skeleton className='w-48 h-10' />
+	return <Skeleton className='sm:w-[189px] w-full h-10' />
 }
 
 export default FilteringSortingModalSkeleton

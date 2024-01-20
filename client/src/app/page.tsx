@@ -82,9 +82,9 @@ export default function Home() {
 						/>
 					)
 				)}
-				<div className='text-xl font-bold flex gap-2 items-center'>
+				<div className='text-xl w-full sm:w-[initial] font-bold'>
 					{areCarAdsLoadingOrFetching ? (
-						<Skeleton className='w-96 h-7' />
+						<Skeleton className='w-full sm:w-96 h-7' />
 					) : (
 						carAdsData && (
 							<p className='text-center sm:text-right text-pretty'>

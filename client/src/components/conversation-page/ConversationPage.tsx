@@ -47,11 +47,12 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	const socket = useSocket()
 
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const wrapperRef = useRef<HTMLDivElement>(null)
+	const scrollRef = useRef<HTMLDivElement | null>(null)
+	const afterLoadRef = useRef<HTMLDivElement | null>(null)
 
 	const [newMessage, setNewMessage] = useState('')
 	const [shouldScroll, setShouldScroll] = useState(true)
+	const [wereNewMessagesLoaded, setWereNewMessagesLoaded] = useState(false)
 	const [conversationMessages, setConversationMessages] = useState<
 		IGetConversationMessagesOutput[]
 	>([])
@@ -80,6 +81,29 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		fetchNextPage,
 	} = useGetInfiniteConversationMessages(conversationId)
 
+	//After sending message and receiving it from server, it is duplicated in the conversationMessages array
+	//because of conflict between the data from the server and the data from the client.
+	//This function removes the duplicates and sorts the messages by dateOfCreation
+	const getUniqueAndSortedMessages = (
+		messages: IGetConversationMessagesOutput[],
+	) => {
+		// Create a Map to ensure uniqueness based on message ID
+		const uniqueMessagesMap = new Map(
+			messages.map(message => [message.id, message]),
+		)
+
+		// Convert Map values to an array and sort by dateOfCreation
+		const sortedUniqueMessages = Array.from(
+			uniqueMessagesMap.values(),
+		).sort(
+			(a, b) =>
+				new Date(a.dateOfCreation).getTime() -
+				new Date(b.dateOfCreation).getTime(),
+		)
+
+		return sortedUniqueMessages
+	}
+
 	useEffect(() => {
 		if (conversationMessagesData) {
 			const conversationMessages = conversationMessagesData.pages
@@ -87,7 +111,9 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 				.reverse()
 				.flatMap(m => m.messages)
 
-			setConversationMessages(conversationMessages)
+			setConversationMessages(
+				getUniqueAndSortedMessages(conversationMessages),
+			)
 
 			setConversationMessagesCount(
 				conversationMessagesData.pages[0].count,
@@ -188,8 +214,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		if (shouldScroll) {
 			scrollRef.current?.scrollIntoView({ behavior: 'instant' })
 		} else {
-			//1400 refers to height of +-22 messages
-			wrapperRef.current?.scrollTo(0, 1400)
+			afterLoadRef.current?.scrollIntoView({ behavior: 'instant' })
 		}
 	}, [conversationMessages])
 
@@ -247,27 +272,35 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	return (
 		<div className='max-w-screen-lg m-auto h-[calc(100vh-350px)] sm:h-[calc(100vh-275px)]'>
-			<div ref={wrapperRef} className='h-full overflow-y-auto pr-2 pb-6'>
-				{conversationMessages &&
-				conversationMessagesCount &&
-				conversationMessages.length < conversationMessagesCount ? (
+			<div className='h-full overflow-y-auto pr-2 pb-6'>
+				{conversationMessages.length < conversationMessagesCount &&
+				!isPending ? (
 					<LoadMoreMessagesButton
 						isLoading={isConversationMessagesFetching}
 						onClick={() => {
 							setShouldScroll(false)
 							fetchNextPage()
+							setWereNewMessagesLoaded(true)
 						}}
 					/>
 				) : (
-					conversationMessagesCount > 0 && (
+					conversationMessagesCount > 0 &&
+					wereNewMessagesLoaded && (
 						<div className='text-lg border rounded-lg p-1.5 font-bold text-center'>
 							All messages are loaded
 						</div>
 					)
 				)}
 				{conversationMessages && conversationMessages.length > 0 ? (
-					conversationMessages.map(m => (
-						<div key={m.id} ref={scrollRef}>
+					conversationMessages.map((m, index) => (
+						<div
+							key={m.id}
+							ref={el => {
+								scrollRef.current = el
+								if (index === 18) {
+									afterLoadRef.current = el
+								}
+							}}>
 							<Message currentUser={user} message={m} />
 						</div>
 					))
