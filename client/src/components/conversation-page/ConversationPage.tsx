@@ -185,7 +185,6 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					setShouldScroll(true)
 
 					setConversationMessagesCount(prev => prev + 1)
-
 					queryClient.setQueryData<IMessageQueryData>(
 						['conversation-messages', conversationId],
 						oldMessagesData => {
