@@ -47,8 +47,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	const socket = useSocket()
 
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const wrapperRef = useRef<HTMLDivElement>(null)
+	const scrollRef = useRef<HTMLDivElement | null>(null)
+	const afterLoadRef = useRef<HTMLDivElement | null>(null)
 
 	const [newMessage, setNewMessage] = useState('')
 	const [shouldScroll, setShouldScroll] = useState(true)
@@ -188,8 +188,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 		if (shouldScroll) {
 			scrollRef.current?.scrollIntoView({ behavior: 'instant' })
 		} else {
-			//1400 refers to height of +-22 messages
-			wrapperRef.current?.scrollTo(0, 1400)
+			afterLoadRef.current?.scrollIntoView({ behavior: 'instant' })
 		}
 	}, [conversationMessages])
 
@@ -247,7 +246,7 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 
 	return (
 		<div className='max-w-screen-lg m-auto h-[calc(100vh-350px)] sm:h-[calc(100vh-275px)]'>
-			<div ref={wrapperRef} className='h-full overflow-y-auto pr-2 pb-6'>
+			<div className='h-full overflow-y-auto pr-2 pb-6'>
 				{conversationMessages &&
 				conversationMessagesCount &&
 				conversationMessages.length < conversationMessagesCount ? (
@@ -266,8 +265,15 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 					)
 				)}
 				{conversationMessages && conversationMessages.length > 0 ? (
-					conversationMessages.map(m => (
-						<div key={m.id} ref={scrollRef}>
+					conversationMessages.map((m, index) => (
+						<div
+							key={m.id}
+							ref={el => {
+								scrollRef.current = el
+								if (index === 18) {
+									afterLoadRef.current = el
+								}
+							}}>
 							<Message currentUser={user} message={m} />
 						</div>
 					))

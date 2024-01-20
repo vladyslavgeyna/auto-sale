@@ -202,7 +202,7 @@ const FilteringSortingModal = ({
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
 				<Button
-					className='min-w-[83px] w-full sm:w-[initial]'
+					className='min-w-[189px] w-full sm:w-[initial]'
 					type='button'>
 					Filtering and sorting
 				</Button>
