@@ -16,3 +16,19 @@ export const getMessagesQueryDataPages = (
 		pages: updatedPages,
 	}
 }
+
+export const validateMessage = (message: string) => {
+	const newMessage = message.trim()
+
+	if (newMessage && newMessage.length <= 5000) {
+		return {
+			message: newMessage,
+			isValid: true,
+		}
+	}
+
+	return {
+		message: newMessage,
+		isValid: false,
+	}
+}
