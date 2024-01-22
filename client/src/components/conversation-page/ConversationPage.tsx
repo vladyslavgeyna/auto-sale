@@ -7,7 +7,10 @@ import { useSocket } from '@/providers/SocketProvider'
 import { useUserStore } from '@/store/user'
 import IGetConversationMessagesOutput from '@/types/message/get-conversation-messages-output.interface'
 import { IMessageQueryData } from '@/types/message/message-query-data.interface'
-import { getMessagesQueryDataPages } from '@/utils/message.utils'
+import {
+	getMessagesQueryDataPages,
+	validateMessage,
+} from '@/utils/message.utils'
 import { generateRandomInt } from '@/utils/utils'
 import { useQueryClient } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
@@ -246,8 +249,8 @@ const ConversationPage = ({ conversationId }: { conversationId: string }) => {
 	}
 
 	const handleSendMessage = () => {
-		const message = newMessage.trim()
-		if (message && !isPending) {
+		const { message, isValid } = validateMessage(newMessage)
+		if (isValid && !isPending) {
 			setShouldScroll(true)
 			setConversationMessagesCount(prev => prev + 1)
 
