@@ -28,9 +28,9 @@ The Auto Sale app is a full-stack application designed for selling cars, providi
 -   **UI Libraries**: Swiper
 -   **Dev Tools**: TypeScript
 
-#### Nginx
+#### Caddy
 
--   **Proxy Server**: Nginx is used as a reverse proxy to route requests to the appropriate services.
+-   **Proxy Server**: Caddy is used as a web server and reverse proxy to handle SSL termination.
 
 ## Prerequisites
 
@@ -38,12 +38,6 @@ Before you begin, make sure you have the following software installed on your ma
 
 -   [Docker](https://www.docker.com/get-started)
 -   [Node.js](https://nodejs.org/)
-
-## Notes on SSL Configuration
-
--   Certbot is used to obtain and renew SSL certificates from Let's Encrypt.
--   Nginx is configured to use these SSL certificates for secure communication.
--   SSL certificates are stored and managed in the `./certbot` directory.
 
 ## How to Run the Project (Development / Local mode)
 
