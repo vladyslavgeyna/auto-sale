@@ -38,7 +38,11 @@ const ActionLinks = ({ isNotCurrentUserAd, carAd }: PropsType) => {
 
 	return (
 		<>
-			<ActionLink href='/' text='All reviews' icon={<FaRegComments />} />
+			<ActionLink
+				href={`/user-review/${carAd.userId}`}
+				text='All reviews'
+				icon={<FaRegComments />}
+			/>
 			{isNotCurrentUserAd && (
 				<>
 					<ActionLink

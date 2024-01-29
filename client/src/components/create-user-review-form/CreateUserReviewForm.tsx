@@ -67,10 +67,11 @@ const CreateUserReviewForm = ({ userTo }: { userTo: IUser }) => {
 					value={userTo.id}
 				/>
 				<div>
-					<Label className='ml-3' htmlFor='image'>
+					<Label className='ml-3' htmlFor='title'>
 						Review title:
 					</Label>
 					<Input
+						id='title'
 						type='text'
 						className='mt-1'
 						{...register('title', {
@@ -91,7 +92,7 @@ const CreateUserReviewForm = ({ userTo }: { userTo: IUser }) => {
 					/>
 				</div>
 				<div>
-					<Label className='ml-3' htmlFor='image'>
+					<Label className='ml-3' htmlFor='text'>
 						Review text:
 					</Label>
 					<Textarea
