@@ -1,5 +1,6 @@
 import { useExistsCarComparison } from '@/hooks/useExistsCarComparison'
 import { useToggleCarComparison } from '@/hooks/useToggleCarComparison'
+import { IGetCarAdByIdOutput } from '@/types/car-ad/get-car-ad-by-id-output.interface'
 import { Loader2 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { FaRegComment, FaRegComments } from 'react-icons/fa'
@@ -9,19 +10,19 @@ import ActionLink from './ActionLink'
 
 type PropsType = {
 	isNotCurrentUserAd: boolean
-	carAdId: number
+	carAd: IGetCarAdByIdOutput
 }
 
-const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
+const ActionLinks = ({ isNotCurrentUserAd, carAd }: PropsType) => {
 	const {
 		data: exists,
 		isLoading: isCheckingCarComparisonLoading,
 		isSuccess: isCheckingCarComparisonSuccess,
 		isError: isCheckingCarComparisonError,
 		isFetching: isCheckingCarComparisonFetching,
-	} = useExistsCarComparison(carAdId, isNotCurrentUserAd)
+	} = useExistsCarComparison(carAd.id, isNotCurrentUserAd)
 
-	const { mutate: toggle, isPending } = useToggleCarComparison(carAdId)
+	const { mutate: toggle, isPending } = useToggleCarComparison(carAd.id)
 
 	if (
 		!isCheckingCarComparisonLoading &&
@@ -32,7 +33,7 @@ const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
 	}
 
 	const handleToggleComparison = async () => {
-		toggle(carAdId)
+		toggle(carAd.id)
 	}
 
 	return (
@@ -41,7 +42,7 @@ const ActionLinks = ({ isNotCurrentUserAd, carAdId }: PropsType) => {
 			{isNotCurrentUserAd && (
 				<>
 					<ActionLink
-						href='/'
+						href={`/user-review/create/${carAd.userId}`}
 						text='Leave a review'
 						icon={<FaRegComment />}
 					/>

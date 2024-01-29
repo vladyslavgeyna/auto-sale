@@ -15,6 +15,7 @@ import conversationRouter from './resources/conversation/conversation.router'
 import favoriteAdRouter from './resources/favorite-ad/favorite-ad.router'
 import messageRouter from './resources/message/message.router'
 import userReviewRouter from './resources/user-review/user-review.router'
+import userRouter from './resources/user/user.router'
 
 class App {
 	private port: number
@@ -45,6 +46,7 @@ class App {
 		this.app.use(this.getRouteUri('conversations'), conversationRouter)
 		this.app.use(this.getRouteUri('messages'), messageRouter)
 		this.app.use(this.getRouteUri('user-reviews'), userReviewRouter)
+		this.app.use(this.getRouteUri('users'), userRouter)
 	}
 
 	private initializeMiddlewares() {
