@@ -14,4 +14,6 @@ userReviewRouter.post(
 	userReviewController.create,
 )
 
+userReviewRouter.get('/:userToId', userReviewController.getByUserToId)
+
 export default userReviewRouter

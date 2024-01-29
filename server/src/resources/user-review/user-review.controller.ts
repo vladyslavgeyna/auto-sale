@@ -1,6 +1,9 @@
 import { NextFunction, Response } from 'express'
 import HttpError from '../../utils/exceptions/http.error'
-import { RequestWithBody } from '../../utils/types/request.type'
+import {
+	RequestWithBody,
+	RequestWithParams,
+} from '../../utils/types/request.type'
 import CreateUserReviewInputDto from './dtos/create-user-review-input.dto'
 import userReviewService from './user-review.service'
 
@@ -33,6 +36,21 @@ class UserReviewController {
 
 			const createdUserReview = await userReviewService.create(req.body)
 			res.json(createdUserReview)
+		} catch (error) {
+			next(error)
+		}
+	}
+
+	async getByUserToId(
+		req: RequestWithParams<{ userToId: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const userReviews = await userReviewService.getByUserToId(
+				req.params.userToId,
+			)
+			res.json(userReviews)
 		} catch (error) {
 			next(error)
 		}
