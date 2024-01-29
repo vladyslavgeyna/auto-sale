@@ -14,6 +14,7 @@ import carRouter from './resources/car/car.router'
 import conversationRouter from './resources/conversation/conversation.router'
 import favoriteAdRouter from './resources/favorite-ad/favorite-ad.router'
 import messageRouter from './resources/message/message.router'
+import userReviewRouter from './resources/user-review/user-review.router'
 
 class App {
 	private port: number
@@ -43,6 +44,7 @@ class App {
 		this.app.use(this.getRouteUri('favorite-ads'), favoriteAdRouter)
 		this.app.use(this.getRouteUri('conversations'), conversationRouter)
 		this.app.use(this.getRouteUri('messages'), messageRouter)
+		this.app.use(this.getRouteUri('user-reviews'), userReviewRouter)
 	}
 
 	private initializeMiddlewares() {
