@@ -6,7 +6,6 @@ import Title from '@/components/ui/Title'
 import UserReviewsList from '@/components/user-reviews-list/UserReviewsList'
 import { useGetUserById } from '@/hooks/useGetUserById'
 import { useGetUserReviewsByUserToId } from '@/hooks/useGetUserReviewsByUserToId'
-import Link from 'next/link'
 
 type PropsType = {
 	params: {
@@ -62,13 +61,6 @@ const UserReviewsPage = ({ params }: PropsType) => {
 			) : (
 				<Title className='text-center'>
 					The seller has not got any reviews yet.
-					<br />
-					But you can{' '}
-					<Link
-						className='underline'
-						href={`/user-review/create/${userToId}`}>
-						leave the first one
-					</Link>
 				</Title>
 			)}
 		</div>
