@@ -10,7 +10,7 @@ const UserReviewItem = ({
 	userToId,
 }: {
 	userReview: IGetUserReviewsByUserToIdOutput
-	currentUserId: string
+	currentUserId?: string
 	userToId: string
 }) => {
 	const { mutate: remove, isPending: isDeletePending } = useDeleteUserReview(
@@ -22,7 +22,8 @@ const UserReviewItem = ({
 		remove(userReview.id)
 	}
 
-	const isCurrentUser = currentUserId === userReview.userFrom.id
+	const isCurrentUser: boolean =
+		currentUserId && currentUserId === userReview.userFrom.id ? true : false
 
 	return (
 		<div className='col-span-1 overflow-hidden border rounded-lg'>

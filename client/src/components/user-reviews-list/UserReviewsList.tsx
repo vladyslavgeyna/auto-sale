@@ -1,7 +1,7 @@
 import { useUserStore } from '@/store/user'
 import IGetUserReviewsByUserToIdOutput from '@/types/user-review/get-user-reviews-by-user-to-id-output.interface'
-import { redirect } from 'next/navigation'
 import { useShallow } from 'zustand/react/shallow'
+import Loader from '../loader/Loader'
 import UserReviewItem from '../user-review-item/UserReviewItem'
 
 const UserReviewsList = ({
@@ -11,14 +11,20 @@ const UserReviewsList = ({
 	userReviews: IGetUserReviewsByUserToIdOutput[]
 	userToId: string
 }) => {
-	const { user } = useUserStore(
+	const { user, isCheckingAuthFinished, isLoading } = useUserStore(
 		useShallow(state => ({
 			user: state.user,
+			isCheckingAuthFinished: state.isCheckingAuthFinished,
+			isLoading: state.isLoading,
 		})),
 	)
 
-	if (!user) {
-		redirect('/')
+	if (!isCheckingAuthFinished || isLoading) {
+		return (
+			<div className='mt-72'>
+				<Loader />
+			</div>
+		)
 	}
 
 	return (
@@ -28,7 +34,7 @@ const UserReviewsList = ({
 					<UserReviewItem
 						key={userReview.id}
 						userReview={userReview}
-						currentUserId={user.id}
+						currentUserId={user?.id}
 						userToId={userToId}
 					/>
 				)

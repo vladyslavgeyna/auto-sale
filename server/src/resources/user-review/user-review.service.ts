@@ -1,6 +1,7 @@
 import { Repository } from 'typeorm'
 import { appDataSource } from '../../data-source'
 import { getFormattedDate } from '../../utils/date.utils'
+import HttpError from '../../utils/exceptions/http.error'
 import awsService from '../aws/aws.service'
 import CreateUserReviewInputDto from './dtos/create-user-review-input.dto'
 import GetUserReviewsByUserToIdOutputDto from './dtos/get-user-reviews-by-user-to-id-output.dto'
@@ -105,6 +106,30 @@ class UserReviewService {
 		}
 
 		return createdUserReviewDto
+	}
+
+	async delete(userReviewId: number, currentUserId: string) {
+		const userReview = await this.userReviewRepository.findOne({
+			where: { id: userReviewId },
+			relations: {
+				userFrom: true,
+			},
+			select: {
+				userFrom: {
+					id: true,
+				},
+			},
+		})
+
+		if (!userReview) {
+			throw HttpError.NotFound('User review was not found')
+		}
+
+		if (userReview.userFrom.id !== currentUserId) {
+			throw HttpError.Forbidden('You can only delete your own reviews')
+		}
+
+		await this.userReviewRepository.delete(userReviewId)
 	}
 }
 

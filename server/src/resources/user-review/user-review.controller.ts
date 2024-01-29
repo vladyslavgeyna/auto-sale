@@ -1,10 +1,8 @@
 import { NextFunction, Response } from 'express'
-import redisClient from '../../redis'
+import HttpStatusCode from '../../utils/enums/http-status-code'
 import HttpError from '../../utils/exceptions/http.error'
-import {
-	RequestWithBody,
-	RequestWithParams,
-} from '../../utils/types/request.type'
+import { RequestWithBody } from '../../utils/types/request.type'
+import { RequestWithParams } from './../../utils/types/request.type'
 import CreateUserReviewInputDto from './dtos/create-user-review-input.dto'
 import userReviewService from './user-review.service'
 
@@ -52,18 +50,33 @@ class UserReviewController {
 				req.params.userToId,
 			)
 
-			if (userReviews.length > 0) {
-				const key = redisClient.constructKey(
-					'user-reviews',
-					undefined,
-					'users',
-					req.params.userToId,
-				)
+			res.json(userReviews)
+		} catch (error) {
+			next(error)
+		}
+	}
 
-				await redisClient.set(key, userReviews, 30)
+	async delete(
+		req: RequestWithParams<{ id: string }>,
+		res: Response,
+		next: NextFunction,
+	) {
+		try {
+			const useReviewId = req.params.id
+				? Number(req.params.id) || undefined
+				: undefined
+
+			if (!useReviewId) {
+				return next(HttpError.BadRequest(`Invalid user review`))
 			}
 
-			res.json(userReviews)
+			if (!req.authUser) {
+				return next(HttpError.UnauthorizedError())
+			}
+
+			await userReviewService.delete(useReviewId, req.authUser.id)
+
+			res.sendStatus(HttpStatusCode.NO_CONTENT_204)
 		} catch (error) {
 			next(error)
 		}
