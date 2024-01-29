@@ -76,7 +76,7 @@ const CarAdPage = ({ carAd }: { carAd: IGetCarAdByIdOutput }) => {
 						/>
 					)}
 					<ActionLinks
-						carAdId={carAd.id}
+						carAd={carAd}
 						isNotCurrentUserAd={isUserAuthenticatedAndNotUserAd}
 					/>
 					<CarAdAdditionalInfo

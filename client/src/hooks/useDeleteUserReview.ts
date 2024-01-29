@@ -1,24 +1,23 @@
-import conversationService from '@/services/conversation.service'
+import userReviewService from '@/services/user-review.service'
 import { IHttpError } from '@/types/http-error.interface'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
 import { useErrorToast } from './useErrorToast'
+import { useSuccessToast } from './useSuccessToast'
 
-export const useCreateConversation = (currentUserId: string) => {
+export const useDeleteUserReview = (userReviewId: number, userToId: string) => {
 	const { errorToast } = useErrorToast()
+	const { successToast } = useSuccessToast()
 	const queryClient = useQueryClient()
-	const router = useRouter()
 
 	return useMutation({
-		mutationKey: ['create-message'],
-		mutationFn: conversationService.create,
-		onSuccess: async ({ data }) => {
-			const conversationId = data.id
+		mutationKey: ['delete-user-review', userReviewId],
+		mutationFn: userReviewService.delete,
+		onSuccess: async () => {
+			successToast(`The review is deleted successfully!`)
 			await queryClient.invalidateQueries({
-				queryKey: ['user-conversations', currentUserId],
+				queryKey: ['user-reviews', userToId],
 			})
-			router.push(`/chat/${conversationId}`)
 		},
 		onError: (error: AxiosError) => {
 			const httpError = IHttpError.toIHttpError(error)

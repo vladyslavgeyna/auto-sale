@@ -5,6 +5,7 @@ import {
 	S3Client,
 } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
+import redisClient from '../../redis'
 import UploadFileInputDto from './dtos/upload-file-input.dto'
 
 class AWSService {
@@ -40,14 +41,22 @@ class AWSService {
 	 * @returns the url of the file
 	 */
 	async getImageUrl(fileName: string) {
+		const imageUrlFromCache = await redisClient.getString(fileName)
+
+		if (imageUrlFromCache) {
+			return imageUrlFromCache
+		}
+
 		const command = new GetObjectCommand({
 			Bucket: this.bucketName,
 			Key: fileName,
 		})
 
 		const imageUrl = await getSignedUrl(this.s3, command, {
-			expiresIn: 259200,
+			expiresIn: 3600,
 		})
+
+		await redisClient.setString(fileName, imageUrl, 1800)
 
 		return imageUrl
 	}
