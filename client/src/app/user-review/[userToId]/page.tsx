@@ -4,7 +4,6 @@ import ComplexError from '@/components/complex-error/ComplexError'
 import Loader from '@/components/loader/Loader'
 import Title from '@/components/ui/Title'
 import UserReviewsList from '@/components/user-reviews-list/UserReviewsList'
-import RequireAuth from '@/hoc/RequireAuth'
 import { useGetUserById } from '@/hooks/useGetUserById'
 import { useGetUserReviewsByUserToId } from '@/hooks/useGetUserReviewsByUserToId'
 
@@ -45,19 +44,25 @@ const UserReviewsPage = ({ params }: PropsType) => {
 	}
 
 	return (
-		<RequireAuth>
-			<div>
-				<Title className='mt-5 mb-5'>
-					Reviews about the seller:
-					<br />
-					{data.name} {data.surname}
+		<div>
+			{userReviews.length > 0 ? (
+				<>
+					<Title className='mt-5 mb-5'>
+						Reviews about the seller:
+						<br />
+						{data.name} {data.surname}
+					</Title>
+					<UserReviewsList
+						userToId={userToId}
+						userReviews={userReviews}
+					/>
+				</>
+			) : (
+				<Title className='text-center'>
+					The seller has not got any reviews yet.
 				</Title>
-				<UserReviewsList
-					userToId={userToId}
-					userReviews={userReviews}
-				/>
-			</div>
-		</RequireAuth>
+			)}
+		</div>
 	)
 }
 
