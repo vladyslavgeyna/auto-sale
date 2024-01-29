@@ -1,4 +1,5 @@
 import { NextFunction, Response } from 'express'
+import redisClient from '../../redis'
 import HttpError from '../../utils/exceptions/http.error'
 import {
 	RequestWithBody,
@@ -50,6 +51,18 @@ class UserReviewController {
 			const userReviews = await userReviewService.getByUserToId(
 				req.params.userToId,
 			)
+
+			if (userReviews.length > 0) {
+				const key = redisClient.constructKey(
+					'user-reviews',
+					undefined,
+					'users',
+					req.params.userToId,
+				)
+
+				await redisClient.set(key, userReviews, 30)
+			}
+
 			res.json(userReviews)
 		} catch (error) {
 			next(error)
