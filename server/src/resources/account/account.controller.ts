@@ -210,7 +210,7 @@ class AccountController {
 		}
 	}
 
-	async googleLogin(req: Request, res: Response, _next: NextFunction) {
+	async googleLogin(req: Request, res: Response, next: NextFunction) {
 		try {
 			const loginData = await accountService.googleLogin(req.user)
 
@@ -240,11 +240,15 @@ class AccountController {
 				}`,
 			)
 		} catch (error) {
-			res.redirect(
-				`${String(
-					process.env.API_URL,
-				)}/api/account/google-login/failed`,
-			)
+			let redirectUrl = `${String(
+				process.env.API_URL,
+			)}/api/account/google-login/failed`
+
+			if (error instanceof HttpError && error.message) {
+				redirectUrl += `?error=${error.message}`
+			}
+
+			res.redirect(redirectUrl)
 		}
 	}
 }

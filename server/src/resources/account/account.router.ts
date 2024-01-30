@@ -1,9 +1,9 @@
-import { Router } from 'express'
+import { Response, Router } from 'express'
 import passport from 'passport'
 import checkValidationMiddleware from '../../middlewares/check-validation.middleware'
 import { imageUploadMiddleware } from '../../middlewares/image-upload.middleware'
 import requireAuthMiddleware from '../../middlewares/require-auth.middleware'
-import HttpStatusCode from '../../utils/enums/http-status-code'
+import { RequestWithQuery } from '../../utils/types/request.type'
 import { imageExtensionValidation } from '../image/validation/image-extension.validation'
 import { imageSizeValidation } from '../image/validation/image-size.validation'
 import accountController from './account.controller'
@@ -89,11 +89,20 @@ accountRouter.get(
 	}),
 )
 
-accountRouter.get('/google-login/failed', (_req, res) => {
-	return res
-		.status(HttpStatusCode.BAD_REQUEST_400)
-		.json({ message: 'Google login failed', errors: [] })
-})
+accountRouter.get(
+	'/google-login/failed',
+	(req: RequestWithQuery<{ error?: string }>, res: Response) => {
+		let redirectUrl = `${String(
+			process.env.CLIENT_URL,
+		)}/account/google-login-failed`
+
+		if (req.query.error) {
+			redirectUrl += `?error=${req.query.error}`
+		}
+
+		return res.redirect(redirectUrl)
+	},
+)
 
 accountRouter.get('/google-login/success', accountController.googleLogin)
 

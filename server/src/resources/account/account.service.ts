@@ -12,10 +12,12 @@ import userService from '../user/user.service'
 import ChangePasswordInputDto from './dtos/change-password-input.dto'
 import EditInputDto from './dtos/edit-input.dto'
 import GoogleLoginInputDto from './dtos/google-login-input.dto'
+import GoogleLoginDto from './dtos/google-login.dto'
 import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
 import RefreshOutputDto from './dtos/refresh-output.dto'
 import RegisterInputDto from './dtos/register-input.dto'
+
 class AccountService {
 	async hashPassword(password: string) {
 		return await bcrypt.hash(password, 3)
@@ -392,22 +394,16 @@ class AccountService {
 	 * @param userData User data from google login
 	 * @returns Logged in user data and tokens
 	 */
-	async googleLogin(userData?: Express.User): Promise<LoginOutputDto> {
-		//Just typescript stuff. Checking if data is valid
-		if (
-			userData &&
-			'_json' in userData &&
-			typeof userData._json === 'object' &&
-			userData._json &&
-			'email' in userData._json &&
-			typeof userData._json.email === 'string' &&
-			'given_name' in userData._json &&
-			typeof userData._json.given_name === 'string' &&
-			'family_name' in userData._json &&
-			typeof userData._json.family_name === 'string' &&
-			'picture' in userData._json &&
-			typeof userData._json.picture === 'string'
-		) {
+	async googleLogin(userFromGoogle?: Express.User): Promise<LoginOutputDto> {
+		const userData = userFromGoogle as GoogleLoginDto
+
+		if (userData && userData._json) {
+			if (!userData._json.email_verified) {
+				throw HttpError.Forbidden(
+					`Email ${userData._json.email} is not verified`,
+				)
+			}
+
 			const user: GoogleLoginInputDto = {
 				email: userData._json.email,
 				name: userData._json.given_name,

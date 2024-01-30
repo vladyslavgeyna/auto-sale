@@ -72,6 +72,8 @@ class AWSService {
 		})
 
 		await this.s3.send(command)
+
+		await redisClient.delete(fileName)
 	}
 
 	/**
