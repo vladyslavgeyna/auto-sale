@@ -406,8 +406,16 @@ class AccountService {
 			'family_name' in userData._json &&
 			typeof userData._json.family_name === 'string' &&
 			'picture' in userData._json &&
-			typeof userData._json.picture === 'string'
+			typeof userData._json.picture === 'string' &&
+			'email_verified' in userData._json &&
+			typeof userData._json.email_verified === 'boolean'
 		) {
+			if (!userData._json.email_verified) {
+				throw HttpError.Forbidden(
+					`Email ${userData._json.email} is not verified`,
+				)
+			}
+
 			const user: GoogleLoginInputDto = {
 				email: userData._json.email,
 				name: userData._json.given_name,
