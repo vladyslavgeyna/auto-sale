@@ -4,6 +4,8 @@
 
 The Auto Sale app is a full-stack application designed for selling cars, providing a platform similar to [AUTO.RIA](https://auto.ria.com/uk/). The project is structured with a client-side application and a server-side API. The entire project is containerized using Docker to enhance portability and scalability.
 
+##### To view the project, please visit [Auto Sale App](https://auto-sale.anyeg.me).
+
 ## Technologies Used
 
 ### Server (Express.js)
