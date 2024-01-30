@@ -68,7 +68,15 @@ Before you begin, make sure you have the following software installed on your ma
     npm run dev
     ```
 
-5. Install dependencies and start the client:
+5. Install dependencies and start the socket server:
+
+    ```bash
+    cd ../socket
+    npm install
+    npm run dev
+    ```
+
+6. Install dependencies and start the client:
 
     ```bash
     cd ../client
