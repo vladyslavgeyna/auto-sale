@@ -16,6 +16,7 @@ import LoginInputDto from './dtos/login-input.dto'
 import LoginOutputDto from './dtos/login-output.dto'
 import RefreshOutputDto from './dtos/refresh-output.dto'
 import RegisterInputDto from './dtos/register-input.dto'
+
 class AccountService {
 	async hashPassword(password: string) {
 		return await bcrypt.hash(password, 3)
