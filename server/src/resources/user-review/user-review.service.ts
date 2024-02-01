@@ -10,6 +10,7 @@ import {
 	default as UserReviewDto,
 } from './dtos/user-review.dto'
 import { UserReview } from './user-review.entity'
+import { deleteOptions, getByUserToIdOptions } from './user-review.utils'
 
 class UserReviewService {
 	private userReviewRepository: Repository<UserReview>
@@ -21,32 +22,9 @@ class UserReviewService {
 	async getByUserToId(
 		userToId: string,
 	): Promise<GetUserReviewsByUserToIdOutputDto[]> {
-		const userReviewsData = await this.userReviewRepository.find({
-			select: {
-				id: true,
-				dateOfCreation: true,
-				text: true,
-				title: true,
-				userFrom: {
-					id: true,
-					email: true,
-					name: true,
-					surname: true,
-					phone: true,
-					image: {
-						name: true,
-					},
-					role: true,
-				},
-			},
-			where: { userTo: { id: userToId } },
-			relations: {
-				userFrom: {
-					image: true,
-				},
-			},
-			order: { dateOfCreation: 'DESC' },
-		})
+		const userReviewsData = await this.userReviewRepository.find(
+			getByUserToIdOptions(userToId),
+		)
 
 		const userReviews: GetUserReviewsByUserToIdOutputDto[] =
 			await Promise.all(
@@ -109,17 +87,9 @@ class UserReviewService {
 	}
 
 	async delete(userReviewId: number, currentUserId: string) {
-		const userReview = await this.userReviewRepository.findOne({
-			where: { id: userReviewId },
-			relations: {
-				userFrom: true,
-			},
-			select: {
-				userFrom: {
-					id: true,
-				},
-			},
-		})
+		const userReview = await this.userReviewRepository.findOne(
+			deleteOptions(userReviewId),
+		)
 
 		if (!userReview) {
 			throw HttpError.NotFound('User review was not found')
