@@ -64,7 +64,7 @@ class CarAdService {
 
 		const createCarInputDto: CreateCarInputDto = {
 			carBrand: { id: carAd.carBrandId },
-			carModel: { id: carAd.carBrandId },
+			carModel: { id: carAd.carModelId },
 			color: carAd.color,
 			region: carAd.region,
 			fuel: carAd.fuel,
