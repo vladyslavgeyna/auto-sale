@@ -24,6 +24,7 @@ The Auto Sale app is a full-stack application designed for selling cars, providi
 ### Client (Next.js)
 
 - **UI Components**: Radix UI, shadcn, React Icons, Lucide React, Tailwind CSS
+- **Storubook**: Storybook is utilized for developing and testing UI components in isolation, enhancing the development process by allowing for rapid prototyping and easier collaboration
 - **State Management**: Zustand
 - **Form Handling**: React Hook Form
 - **HTTP Requests**: Axios
@@ -85,6 +86,12 @@ Before you begin, make sure you have the following software installed on your ma
    ```
 
 Visit `http://localhost:3000` in your web browser to access the Auto Sale app.
+
+In order to run StoryBook run
+
+```bash
+npm run storybook
+```
 
 ## Docker Compose Commands
 
