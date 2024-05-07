@@ -24,7 +24,7 @@ The Auto Sale app is a full-stack application designed for selling cars, providi
 ### Client (Next.js)
 
 - **UI Components**: Radix UI, shadcn, React Icons, Lucide React, Tailwind CSS
-- **Storubook**: Storybook is utilized for developing and testing UI components in isolation, enhancing the development process by allowing for rapid prototyping and easier collaboration
+- **Storybook**: Storybook is utilized for developing and testing UI components in isolation, enhancing the development process by allowing for rapid prototyping and easier collaboration
 - **State Management**: Zustand
 - **Form Handling**: React Hook Form
 - **HTTP Requests**: Axios
