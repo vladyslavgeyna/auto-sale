@@ -7,7 +7,7 @@ type Story = StoryObj<typeof Input>;
 export default {
   title: "Components/Input",
   component: Input,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

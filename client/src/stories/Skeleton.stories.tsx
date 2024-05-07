@@ -6,7 +6,7 @@ type Story = StoryObj<typeof Skeleton>;
 export default {
   title: "Components/Skeleton",
   component: Skeleton,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

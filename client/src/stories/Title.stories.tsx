@@ -6,7 +6,7 @@ type Story = StoryObj<typeof Title>;
 export default {
   title: "Components/Title",
   component: Title,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

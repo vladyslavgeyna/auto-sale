@@ -6,7 +6,7 @@ type Story = StoryObj<typeof FormButton>;
 export default {
   title: "Components/FormButton",
   component: FormButton,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
@@ -30,7 +30,7 @@ export const Loading: Story = {
   },
 };
 
-export const Disables: Story = {
+export const Disabled: Story = {
   render: (args) => <Template {...args} />,
 
   args: {

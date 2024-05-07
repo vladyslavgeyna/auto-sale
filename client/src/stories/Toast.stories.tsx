@@ -9,7 +9,7 @@ type Story = StoryObj<typeof Button>;
 export default {
   title: "Components/Toast",
   component: Button,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

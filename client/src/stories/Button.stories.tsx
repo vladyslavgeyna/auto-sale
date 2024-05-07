@@ -6,7 +6,7 @@ type Story = StoryObj<typeof Button>;
 export default {
   title: "Components/Button",
   component: Button,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

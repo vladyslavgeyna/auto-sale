@@ -15,7 +15,7 @@ const Root = ({ children }: { children: React.ReactNode }) => (
 export default {
   title: "Components/Tooltip",
   component: Tooltip,
-
+  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
