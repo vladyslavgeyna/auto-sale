@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An express server for auto-sale app",
   "main": "index.js",
+  "license": "GPL-2.0-only",
   "scripts": {
     "build": "rimraf dist && npx tsc",
     "start": "node dist/index.js",
@@ -13,7 +14,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.481.0",
     "@aws-sdk/s3-request-presigner": "^3.481.0",

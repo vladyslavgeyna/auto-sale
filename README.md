@@ -105,9 +105,3 @@ npm run storybook
   ```bash
   docker-compose down
   ```
-
-Feel free to customize the instructions and details based on your specific setup and requirements.
-
-## License
-
-This project is MIT licensed.
