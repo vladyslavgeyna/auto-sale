@@ -4,21 +4,38 @@ const page = () => {
   return (
     <div className="[&_p]:text-lg [&_p]:mt-3">
       <Title>Privacy Policy</Title>
-      <p className="!text-xl">Last Updated: March 2, 2024</p>
+      <p className="!text-xl">
+        Last Updated: <span className="line-through">March 2</span> May 5, 2024
+      </p>
       <p>
         This Privacy Policy describes Our policies and procedures on the
         collection, use and disclosure of Your information when You use the
         Service and tells You about Your privacy rights and how the law protects
         You.
       </p>
+      <p>
+        This privacy policy describes the following topics:
+        <ul>
+          <li>- Types of Information Collected</li>
+          <li>- Methods of Collection</li>
+          <li>- Purpose of Collection</li>
+          <li>- Use of Information</li>
+          <li>- Third-party Sharing</li>
+          <li>- Data Security Measures</li>
+          <li>- Data Retention</li>
+          <li>- User Rights</li>
+          <li>- Updates to the Privacy Policy</li>
+          <li>- Contact Information</li>
+        </ul>
+      </p>
       <h2 className="text-xl font-bold mt-3">
         Collecting and Using Your Personal Data
       </h2>
       <p>
         While using Our Service, We may ask You to provide Us with certain
-        personally identifiable information that can be used to contact or
-        identify You. Personally identifiable information may include, but is
-        not limited to:
+        personally identifiable information through filling the website forms
+        that can be used to contact or identify You. Personally identifiable
+        information may include, but is not limited to:
       </p>
       <ul>
         <li className="text-lg">- Email address</li>
@@ -27,10 +44,12 @@ const page = () => {
         <li className="text-lg">- Images</li>
         <li className="text-lg">- Passwords</li>
         <li className="text-lg">- Usage data</li>
+        <li className="text-lg">- Chats</li>
+        <li className="text-lg">- Messages</li>
       </ul>
       <h2 className="text-xl font-bold mt-3">Usage data</h2>
 
-      <p>Usage Data is collected automatically when using the Service.</p>
+      <p>Usage Data is collected automatically when using the Service</p>
       <p>
         Usage Data may include information such as Your Device's Internet
         Protocol address (e.g. IP address), browser type, browser version, the
@@ -182,10 +201,12 @@ const page = () => {
         a country unless there are adequate controls in place including the
         security of Your data and other personal information.
       </p>
-      <h2 className="text-xl font-bold mt-3">Delete Your Personal Data</h2>
+      <h2 className="text-xl font-bold mt-3">
+        Delete & update Your Personal Data
+      </h2>
       <p>
-        You have the right to delete or request that We assist in deleting the
-        Personal Data that We have collected about You.
+        You have the right to delete / update or request that We assist in
+        deleting the Personal Data that We have collected about You.
       </p>
       <p>
         Our Service may give You the ability to delete certain information about
