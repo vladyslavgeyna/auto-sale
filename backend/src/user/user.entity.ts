@@ -1,0 +1,39 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ unique: true })
+  email: string;
+
+  @Column()
+  name: string;
+
+  @Column()
+  surname: string;
+
+  @Column({ type: 'character varying', nullable: true })
+  password: string | null;
+
+  @Column({ type: 'character varying', unique: true, nullable: true })
+  phone: string | null;
+
+  @Column({ default: false })
+  isVerified: boolean;
+
+  //   @OneToOne(() => Token, (token) => token.user)
+  //   token: Token;
+
+  //   @Column({
+  //     type: 'enum',
+  //     enum: UserRole,
+  //     default: UserRole.USER,
+  //   })
+  //   role: UserRole;
+
+  //   @OneToOne(() => Image, { nullable: true })
+  //   @JoinColumn()
+  //   image: Image | null;
+}
