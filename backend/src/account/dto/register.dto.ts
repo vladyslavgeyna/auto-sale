@@ -1,28 +1,23 @@
 import {
   IsEmail,
   IsOptional,
-  IsString,
   Length,
   IsStrongPassword,
   Matches,
-  ValidateIf,
 } from 'class-validator';
 import { PHONE_REGEX } from 'src/common/constants';
+import { Match } from 'src/common/decorators/match.decorator';
 
 export class RegisterDto {
-  @IsString()
   @IsEmail()
   email: string;
 
-  @IsString()
   @Length(2, 50)
   name: string;
 
-  @IsString()
   @Length(2, 50)
   surname: string;
 
-  @IsString()
   @IsStrongPassword({
     minLength: 6,
     minLowercase: 1,
@@ -32,14 +27,10 @@ export class RegisterDto {
   })
   password: string;
 
-  @IsString()
-  @ValidateIf((o) => o.password !== o.repeatPassword, {
-    message: 'Passwords do not match',
-  })
+  @Match('password', { message: 'Passwords do not match' })
   passwordConfirm: string;
 
   @IsOptional()
-  @IsString()
   @Matches(PHONE_REGEX)
   phone?: string;
 }
