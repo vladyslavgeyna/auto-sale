@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
   IsEmail,
   IsOptional,
@@ -10,12 +11,15 @@ import { Match } from 'src/common/decorators/match.decorator';
 
 export class RegisterDto {
   @IsEmail()
+  @Expose()
   email: string;
 
   @Length(2, 50)
+  @Expose()
   name: string;
 
   @Length(2, 50)
+  @Expose()
   surname: string;
 
   @IsStrongPassword({
@@ -25,12 +29,15 @@ export class RegisterDto {
     minNumbers: 1,
     minSymbols: 1,
   })
+  @Expose()
   password: string;
 
   @Match('password', { message: 'Passwords do not match' })
+  @Expose()
   passwordConfirm: string;
 
   @IsOptional()
   @Matches(PHONE_REGEX)
+  @Expose()
   phone?: string;
 }
