@@ -9,7 +9,6 @@ export class AccountService {
 
   async register(registerDto: RegisterDto) {
     const { email, phone, password } = registerDto;
-    console.log('registerDto', registerDto);
 
     const candidate = await this.userService.getByEmail(email);
 

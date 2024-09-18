@@ -1,7 +1,16 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AccountService } from './account.service';
 import { RegisterDto } from './dto/register.dto';
 import { Serialize } from 'src/common/decorators/serialize.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { File } from 'src/common/types';
+import { fileValidator } from 'src/common/utils/file-validator';
 
 @Controller('account')
 export class AccountController {
@@ -9,8 +18,12 @@ export class AccountController {
 
   @Post('register')
   @Serialize(RegisterDto)
-  async register(@Body() registerDto: RegisterDto) {
-    console.log('CONTROLLER register');
+  @UseInterceptors(FileInterceptor('image'))
+  async register(
+    @Body() registerDto: RegisterDto,
+    @UploadedFile(fileValidator) image: File,
+  ) {
+    console.log('image', image);
     const registeredUser = await this.accountService.register(registerDto);
 
     return registeredUser;
