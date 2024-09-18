@@ -1,16 +1,14 @@
 import { Button } from "@/react/_components/ui/button";
-import {
-  RegistrationForm,
-  useRegistrationForm,
-} from "./_hooks/useRegistrationForm";
+import { useRegistrationForm } from "./_hooks/useRegistrationForm";
 import { FormControl } from "@/react/_components/FormControl";
+import { RegistrationPayload } from "@/queries/account";
 
 export const Registration = () => {
   const {
     handleSubmit,
     formState: { errors, isValid },
     nameRegister,
-    lastNameRegister,
+    surnameRegister,
     emailRegister,
     phoneRegister,
     imageRegister,
@@ -18,7 +16,7 @@ export const Registration = () => {
     passwordRegister,
   } = useRegistrationForm();
 
-  const onSubmit = (data: RegistrationForm) => {
+  const onSubmit = (data: RegistrationPayload) => {
     console.log(data);
   };
 
@@ -41,11 +39,11 @@ export const Registration = () => {
         />
 
         <FormControl
-          label="Last name"
-          name="last-name"
+          label="Surname"
+          name="surname"
           isRequired
-          inputProps={{ placeholder: "Appleseed", ...lastNameRegister }}
-          errorMessage={errors.lastName?.message}
+          inputProps={{ placeholder: "Appleseed", ...surnameRegister }}
+          errorMessage={errors.surname?.message}
         />
 
         <FormControl

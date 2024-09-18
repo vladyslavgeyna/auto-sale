@@ -7,19 +7,10 @@ import {
   PASSWORD_REGEX,
   PHONE_NUMBER_REGEX,
 } from "@/react/_utils/validation";
-
-export type RegistrationForm = {
-  name: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  password: string;
-  passwordConfirm: string;
-  image?: File[];
-};
+import { RegistrationPayload } from "@/queries/account";
 
 export const useRegistrationForm = () => {
-  const form = useForm<RegistrationForm>({ mode: "onChange" });
+  const form = useForm<RegistrationPayload>({ mode: "onChange" });
 
   const { setValue, register, watch } = form;
 
@@ -36,7 +27,7 @@ export const useRegistrationForm = () => {
         message: "Max name length is 100 symbols",
       },
     }),
-    lastNameRegister: register("lastName", {
+    surnameRegister: register("surname", {
       required: "Surname is required",
       minLength: {
         value: 2,
