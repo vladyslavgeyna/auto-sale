@@ -26,5 +26,5 @@ class SerializeInputInterceptor<T> implements NestInterceptor {
   }
 }
 
-export const Serialize = <T>(dto: ClassConstructor<T>) =>
+export const SerializeInput = <T>(dto: ClassConstructor<T>) =>
   applyDecorators(UseInterceptors(new SerializeInputInterceptor(dto)));

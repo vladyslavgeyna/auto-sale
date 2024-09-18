@@ -1,11 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
-import { RegisterDto } from './dto/register.dto';
+import { RegisterInputDto } from './dto/register-input.dto';
 import { getHashedString } from 'src/common/utils/getHashedString';
 import { File } from 'src/common/types';
 import { ImageService } from 'src/image/image.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
+import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
 export class AccountService {
@@ -14,9 +15,10 @@ export class AccountService {
     private readonly imageService: ImageService,
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
+    private readonly awsService: AwsService,
   ) {}
 
-  async register(registerDto: RegisterDto, image?: File) {
+  async register(registerDto: RegisterInputDto, image?: File) {
     const { email, phone, password } = registerDto;
 
     const candidate = await this.userService.getByEmail(email);
@@ -57,6 +59,10 @@ export class AccountService {
       html: emailHtml.replace('${VERIFICATION_LINK}', verificationLink),
     });
 
-    return user;
+    const imageLink = createdImage
+      ? await this.awsService.getImageUrl(createdImage.name)
+      : null;
+
+    return { ...user, imageLink };
   }
 }

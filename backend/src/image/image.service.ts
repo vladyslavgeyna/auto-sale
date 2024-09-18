@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Image } from './image.entity';
 import { Repository } from 'typeorm';
-import sharp from 'sharp';
+import * as sharp from 'sharp';
 import { getUniqueString } from 'src/common/utils/getUniqueString';
 import { UploadImageDto } from 'src/aws/dto/upload-image.dto';
 import { AwsService } from 'src/aws/aws.service';

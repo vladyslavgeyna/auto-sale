@@ -9,7 +9,7 @@ import {
 import { PHONE_REGEX } from 'src/common/constants';
 import { Match } from 'src/common/decorators/match.decorator';
 
-export class RegisterDto {
+export class RegisterInputDto {
   @IsEmail()
   @Expose()
   email: string;
