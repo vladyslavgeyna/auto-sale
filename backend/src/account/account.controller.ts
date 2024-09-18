@@ -21,10 +21,12 @@ export class AccountController {
   @UseInterceptors(FileInterceptor('image'))
   async register(
     @Body() registerDto: RegisterDto,
-    @UploadedFile(fileValidator) image: File,
+    @UploadedFile(fileValidator) image?: File,
   ) {
-    console.log('image', image);
-    const registeredUser = await this.accountService.register(registerDto);
+    const registeredUser = await this.accountService.register(
+      registerDto,
+      image,
+    );
 
     return registeredUser;
   }

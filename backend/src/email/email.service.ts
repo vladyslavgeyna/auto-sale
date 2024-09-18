@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { promises as fs } from 'fs';
+import * as path from 'path';
 
 @Injectable()
 export class EmailService {
@@ -20,12 +22,32 @@ export class EmailService {
     });
   }
 
-  async sendHtmlEmail(to: string, subject: string, html: string) {
+  async sendHtmlEmail({
+    html,
+    subject,
+    to,
+  }: {
+    to: string;
+    subject: string;
+    html: string;
+  }) {
     await this.transporter.sendMail({
       from: this.configService.get('SMTP_USER'),
       to,
       subject,
       html,
     });
+  }
+
+  async readEmailTemplate(templateName: string) {
+    const templatePath = path.resolve(
+      __dirname,
+      '../common/templates',
+      `${templateName}.html`,
+    );
+
+    const template = await fs.readFile(templatePath, 'utf-8');
+
+    return template;
   }
 }

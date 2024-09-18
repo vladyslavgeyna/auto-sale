@@ -7,5 +7,6 @@ import { AwsModule } from 'src/aws/aws.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Image]), AwsModule],
   providers: [ImageService],
+  exports: [ImageService],
 })
 export class ImageModule {}

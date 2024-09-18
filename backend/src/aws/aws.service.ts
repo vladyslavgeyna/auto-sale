@@ -17,13 +17,13 @@ export class AwsService {
   constructor(private readonly configService: ConfigService) {
     this.s3 = new S3Client({
       credentials: {
-        accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+        accessKeyId: configService.getOrThrow('AWS_ACCESS_KEY_ID'),
+        secretAccessKey: configService.getOrThrow('AWS_SECRET_ACCESS_KEY'),
       },
-      region: configService.get('AWS_BUCKET_REGION'),
+      region: configService.getOrThrow('AWS_BUCKET_REGION'),
     });
 
-    this.bucketName = configService.get('AWS_BUCKET_NAME');
+    this.bucketName = configService.getOrThrow('AWS_BUCKET_NAME');
   }
 
   async uploadImage(fileData: UploadImageDto) {

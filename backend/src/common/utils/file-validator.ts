@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 
 export const fileValidator = new ParseFilePipe({
+  fileIsRequired: false,
   validators: [
     new MaxFileSizeValidator({
       maxSize: 1024 * 1024 * 5,
