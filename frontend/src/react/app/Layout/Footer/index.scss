@@ -1,0 +1,24 @@
+.footer {
+  padding-block: 8px;
+
+  .footer-content {
+    max-width: 1320px;
+    padding-inline: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 auto;
+
+    .source {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
