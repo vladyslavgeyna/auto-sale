@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Image } from 'src/image/image.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class User {
@@ -33,7 +40,7 @@ export class User {
   //   })
   //   role: UserRole;
 
-  //   @OneToOne(() => Image, { nullable: true })
-  //   @JoinColumn()
-  //   image: Image | null;
+  @OneToOne(() => Image, { nullable: true })
+  @JoinColumn()
+  image: Image | null;
 }

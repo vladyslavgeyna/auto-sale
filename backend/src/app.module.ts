@@ -3,6 +3,9 @@ import { AccountModule } from './account/account.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { AwsModule } from './aws/aws.module';
+import { ImageModule } from './image/image.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { UserModule } from './user/user.module';
       }),
     }),
     UserModule,
+    AwsModule,
+    ImageModule,
+    EmailModule,
   ],
   controllers: [],
   providers: [],
