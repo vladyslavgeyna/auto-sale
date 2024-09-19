@@ -18,6 +18,8 @@ import { SerializeInput } from 'src/common/decorators/serialize-input.decorator'
 import { SerializeOutput } from 'src/common/decorators/serialize-output.decorator';
 import { RegisterOutputDto } from './dto/register-output.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
+import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
+import { SetRefreshTokenCookieInterceptor } from './interceptors/set-refresh-token-cookie.interceptor';
 
 @Controller('account')
 export class AccountController {
@@ -42,7 +44,17 @@ export class AccountController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
+  @UseInterceptors(SetRefreshTokenCookieInterceptor)
   async login(@Request() request) {
+    const userData = await this.accountService.login(request.user);
+
+    return userData;
+  }
+
+  @Post('refresh')
+  @UseGuards(RefreshAuthGuard)
+  @UseInterceptors(SetRefreshTokenCookieInterceptor)
+  async refreshTokens(@Request() request) {
     const userData = await this.accountService.login(request.user);
 
     return userData;

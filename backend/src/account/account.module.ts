@@ -6,25 +6,13 @@ import { ImageModule } from 'src/image/image.module';
 import { EmailModule } from 'src/email/email.module';
 import { AwsModule } from 'src/aws/aws.module';
 import { LocalStrategy } from './strategies/local.strategy';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { RefreshJwtStrategy } from './strategies/refresh-jwt.strategy';
+import { TokenModule } from 'src/token/token.module';
 
 @Module({
   controllers: [AccountController],
-  providers: [AccountService, LocalStrategy, JwtStrategy],
-  imports: [
-    UserModule,
-    ImageModule,
-    EmailModule,
-    AwsModule,
-    JwtModule.registerAsync({
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get('JWT_ACCESS_SECRET'),
-        signOptions: { expiresIn: '1d' },
-      }),
-      inject: [ConfigService],
-    }),
-  ],
+  providers: [AccountService, LocalStrategy, JwtStrategy, RefreshJwtStrategy],
+  imports: [UserModule, ImageModule, EmailModule, AwsModule, TokenModule],
 })
 export class AccountModule {}

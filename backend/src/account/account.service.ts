@@ -13,9 +13,8 @@ import { EmailService } from 'src/email/email.service';
 import { AwsService } from 'src/aws/aws.service';
 import { LoginInputDto } from './dto/login-input.dto';
 import { compare } from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
-import { AuthJwtPayload } from './types/auth-jwt-payload';
 import { RequestUser } from './types/request-user';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AccountService {
@@ -25,7 +24,7 @@ export class AccountService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly awsService: AwsService,
-    private readonly jwtService: JwtService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async register(registerDto: RegisterInputDto, image?: File) {
@@ -104,21 +103,12 @@ export class AccountService {
       ? await this.awsService.getImageUrl(imageName)
       : null;
 
-    return {
-      id: candidate.id,
-      email: candidate.email,
-      name: candidate.name,
-      surname: candidate.surname,
-      phone: candidate.phone,
-      imageLink,
-    };
+    return new RequestUser(candidate, imageLink);
   }
 
   async login(user: RequestUser) {
-    const tokenPayload: AuthJwtPayload = { sub: user };
+    const tokens = this.tokenService.generateTokens(user);
 
-    const accessToken = this.jwtService.sign(tokenPayload);
-
-    return { accessToken, ...user };
+    return { ...tokens, ...user };
   }
 }

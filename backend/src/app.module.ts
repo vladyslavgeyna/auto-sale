@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { AwsModule } from './aws/aws.module';
 import { ImageModule } from './image/image.module';
 import { EmailModule } from './email/email.module';
+import { TokenService } from './token/token.service';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -29,8 +31,9 @@ import { EmailModule } from './email/email.module';
     AwsModule,
     ImageModule,
     EmailModule,
+    TokenModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [TokenService],
 })
 export class AppModule {}
