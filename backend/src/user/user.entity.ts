@@ -21,8 +21,8 @@ export class User {
   @Column()
   surname: string;
 
-  @Column({ type: 'character varying', nullable: true })
-  password: string | null;
+  @Column({ type: 'character varying' }) //, nullable: true
+  password: string; // | null;
 
   @Column({ type: 'character varying', unique: true, nullable: true })
   phone: string | null;

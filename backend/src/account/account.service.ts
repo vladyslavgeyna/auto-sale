@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { RegisterInputDto } from './dto/register-input.dto';
 import { getHashedString } from 'src/common/utils/getHashedString';
@@ -7,6 +11,10 @@ import { ImageService } from 'src/image/image.service';
 import { ConfigService } from '@nestjs/config';
 import { EmailService } from 'src/email/email.service';
 import { AwsService } from 'src/aws/aws.service';
+import { LoginInputDto } from './dto/login-input.dto';
+import { compare } from 'bcrypt';
+import { RequestUser } from './types/request-user';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class AccountService {
@@ -16,12 +24,17 @@ export class AccountService {
     private readonly configService: ConfigService,
     private readonly emailService: EmailService,
     private readonly awsService: AwsService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async register(registerDto: RegisterInputDto, image?: File) {
     const { email, phone, password } = registerDto;
 
-    const candidate = await this.userService.getByEmail(email);
+    const candidate = await this.userService.getByEmail(email, {
+      relations: {
+        image: true,
+      },
+    });
 
     if (candidate)
       throw new BadRequestException(`User with ${email} email already exists`);
@@ -64,5 +77,38 @@ export class AccountService {
       : null;
 
     return { ...user, imageLink };
+  }
+
+  async validateUser(registerDto: LoginInputDto): Promise<RequestUser> {
+    const { email, password } = registerDto;
+
+    const candidate = await this.userService.getByEmail(email);
+
+    if (!candidate)
+      throw new BadRequestException(`User with email ${email} was not found`);
+
+    if (!candidate.isVerified)
+      throw new ForbiddenException(
+        `User is not verified. Please, verify ${email} email address by following the link in received email`,
+      );
+
+    const isPasswordCorrect = await compare(password, candidate.password);
+
+    if (!isPasswordCorrect)
+      throw new BadRequestException('Password is incorrect');
+
+    const imageName = candidate.image?.name;
+
+    const imageLink = imageName
+      ? await this.awsService.getImageUrl(imageName)
+      : null;
+
+    return new RequestUser(candidate, imageLink);
+  }
+
+  async login(user: RequestUser) {
+    const tokens = this.tokenService.generateTokens(user);
+
+    return { ...tokens, ...user };
   }
 }
