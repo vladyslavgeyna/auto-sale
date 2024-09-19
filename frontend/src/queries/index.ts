@@ -1,4 +1,11 @@
 import { QueryClient } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+
+export type ApiError = AxiosError<{
+  error: string;
+  message: string | string[];
+  statusCode: number;
+}>;
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -7,4 +14,22 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
+});
+
+const API_URL = String(import.meta.env.VITE_API_URL) + "/api";
+
+export const api = axios.create({
+  baseURL: API_URL,
+  withCredentials: false,
+});
+
+export const credentialsApi = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+});
+
+//TODO: Add interceptors to add token to requests
+export const authApi = axios.create({
+  baseURL: API_URL,
+  withCredentials: false,
 });
