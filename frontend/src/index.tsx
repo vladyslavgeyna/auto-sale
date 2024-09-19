@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Account } from "./react/app/Account";
 import { Layout } from "./react/app/Layout";
 import "./styles/index.scss";
+import { Toaster } from "./react/_components/ui/toaster";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,6 +17,8 @@ createRoot(document.getElementById("root")!).render(
             <Route path="account/*" element={<Account />} />
           </Route>
         </Routes>
+
+        <Toaster />
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>

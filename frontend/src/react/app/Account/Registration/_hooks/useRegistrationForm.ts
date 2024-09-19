@@ -63,8 +63,6 @@ export const useRegistrationForm = () => {
 
         const file = value[0];
 
-        console.log("file", file);
-
         if (!ACCEPT_IMAGE_TYPES.some((t) => t === file.type))
           return "Only png and jpeg files are valid.";
 

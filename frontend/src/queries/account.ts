@@ -1,5 +1,5 @@
 import { User } from "@/types";
-import { api } from ".";
+import { api, ApiError } from ".";
 import { REGISTER } from "./queryKeys";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
@@ -17,6 +17,7 @@ export type RegistrationPayload = {
 
 const register = async (userData: RegistrationPayload) => {
   const formData = new FormData();
+  console.log("userData", userData);
 
   for (const key in userData) {
     const value = userData[key as keyof RegistrationPayload];
@@ -34,7 +35,7 @@ const register = async (userData: RegistrationPayload) => {
 };
 
 export const useRegister = (
-  options?: UseMutationOptions<User, void, RegistrationPayload, void>
+  options?: UseMutationOptions<User, ApiError, RegistrationPayload, void>
 ) => {
   return useMutation({
     ...options,
