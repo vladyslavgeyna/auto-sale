@@ -10,7 +10,7 @@ import {
 import { RegistrationPayload } from "@/queries/account";
 
 export const useRegistrationForm = () => {
-  const form = useForm<RegistrationPayload>({ mode: "onChange" });
+  const form = useForm<RegistrationPayload>({ mode: "onBlur" });
 
   const { setValue, register, watch } = form;
 
