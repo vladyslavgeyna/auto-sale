@@ -1,3 +1,3 @@
-import * as bcrypt from 'bcrypt';
+import { hash } from 'bcrypt';
 
-export const getHashedString = async (str: string) => await bcrypt.hash(str, 3);
+export const getHashedString = async (str: string) => await hash(str, 3);

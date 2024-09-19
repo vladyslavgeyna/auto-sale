@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
@@ -11,17 +11,37 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async getByEmail(email: string): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({
-      email,
+  async getByEmail(
+    email: string,
+    options?: FindOneOptions<User>,
+  ): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      ...options,
+      where: { email },
     });
 
     return user;
   }
 
-  async getByPhone(phone: string): Promise<User | null> {
-    const user = await this.userRepository.findOneBy({
-      phone,
+  async getById(
+    id: string,
+    options?: FindOneOptions<User>,
+  ): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      ...options,
+      where: { id },
+    });
+
+    return user;
+  }
+
+  async getByPhone(
+    phone: string,
+    options?: FindOneOptions<User>,
+  ): Promise<User | null> {
+    const user = await this.userRepository.findOne({
+      ...options,
+      where: { phone },
     });
 
     return user;
