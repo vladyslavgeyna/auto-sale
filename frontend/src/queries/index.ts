@@ -1,6 +1,7 @@
 import { ACCESS_TOKEN } from "@/utils/constants";
 import { QueryClient } from "@tanstack/react-query";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import { refreshToken } from "./account";
 
 export type ApiError = AxiosError<{
   error: string;
@@ -45,3 +46,25 @@ export const authApi = axios.create({
 });
 
 authApi.interceptors.request.use(requestAuthInterceptor);
+
+authApi.interceptors.response.use(
+  (resp) => resp,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response.status === 401 && !error.config._retry) {
+      error.config._retry = true;
+
+      try {
+        const { accessToken } = await refreshToken();
+
+        localStorage.setItem(ACCESS_TOKEN, accessToken);
+        return authApi.request(originalRequest);
+      } catch (error) {
+        console.error("Error refreshing token", error);
+      }
+    }
+
+    throw error;
+  }
+);
