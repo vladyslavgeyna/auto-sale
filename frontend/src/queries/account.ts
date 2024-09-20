@@ -1,6 +1,6 @@
 import { User } from "@/types";
-import { api, ApiError } from ".";
-import { REGISTER } from "./queryKeys";
+import { api, ApiError, credentialsApi } from ".";
+import { LOGIN, LOGOUT, REFRESH_TOKEN, REGISTER } from "./queryKeys";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 
 const URL = "account";
@@ -17,7 +17,6 @@ export type RegistrationPayload = {
 
 const register = async (userData: RegistrationPayload) => {
   const formData = new FormData();
-  console.log("userData", userData);
 
   for (const key in userData) {
     const value = userData[key as keyof RegistrationPayload];
@@ -36,10 +35,62 @@ const register = async (userData: RegistrationPayload) => {
 
 export const useRegister = (
   options?: UseMutationOptions<User, ApiError, RegistrationPayload, void>
-) => {
-  return useMutation({
+) =>
+  useMutation({
     ...options,
     mutationKey: [REGISTER],
     mutationFn: register,
   });
+
+export type LoginPayload = {
+  email: string;
+  password: string;
 };
+
+type LoginResponse = User & { accessToken: string };
+
+const login = async (userData: LoginPayload) => {
+  const { data } = await credentialsApi.post<LoginResponse>(
+    `${URL}/login`,
+    userData
+  );
+
+  return data;
+};
+
+export const useLogin = (
+  options?: UseMutationOptions<LoginResponse, ApiError, LoginPayload, void>
+) =>
+  useMutation({
+    ...options,
+    mutationKey: [LOGIN],
+    mutationFn: login,
+  });
+
+const logout = async () => {
+  await credentialsApi.post(`${URL}/logout`);
+};
+
+export const useLogout = (
+  options?: UseMutationOptions<void, ApiError, void, void>
+) =>
+  useMutation({
+    ...options,
+    mutationKey: [LOGOUT],
+    mutationFn: logout,
+  });
+
+export const refreshToken = async () => {
+  const { data } = await credentialsApi.post<LoginResponse>(`${URL}/refresh`);
+
+  return data;
+};
+
+export const useRefreshToken = (
+  options?: UseMutationOptions<LoginResponse, ApiError, void, void>
+) =>
+  useMutation({
+    ...options,
+    mutationKey: [REFRESH_TOKEN],
+    mutationFn: refreshToken,
+  });

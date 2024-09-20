@@ -7,19 +7,22 @@ import { Account } from "./react/app/Account";
 import { Layout } from "./react/app/Layout";
 import "./styles/index.scss";
 import { Toaster } from "./react/_components/ui/toaster";
+import { AuthUserProvider } from "./react/_components/AuthUserProvider";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route path="account/*" element={<Account />} />
-          </Route>
-        </Routes>
+      <AuthUserProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="account/*" element={<Account />} />
+            </Route>
+          </Routes>
 
-        <Toaster />
-      </BrowserRouter>
+          <Toaster />
+        </BrowserRouter>
+      </AuthUserProvider>
     </QueryClientProvider>
   </StrictMode>
 );
