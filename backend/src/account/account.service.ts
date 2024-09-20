@@ -59,6 +59,7 @@ export class AccountService {
     });
 
     const apiUrl = this.configService.get('API_URL');
+    const clientUrl = this.configService.get('CLIENT_URL');
 
     const verificationLink = `${apiUrl}/api/account/verify/${user.id}`;
 
@@ -68,7 +69,7 @@ export class AccountService {
 
     await this.emailService.sendHtmlEmail({
       to: user.email,
-      subject: `Email verification on ${apiUrl}`,
+      subject: `Email verification on ${clientUrl}`,
       html: emailHtml.replace('${VERIFICATION_LINK}', verificationLink),
     });
 
