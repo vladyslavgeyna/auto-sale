@@ -1,9 +1,7 @@
 import { User } from "@/types";
 import { api, ApiError, credentialsApi } from ".";
-import { LOGIN, LOGOUT, REGISTER } from "./queryKeys";
+import { LOGIN, LOGOUT, REFRESH_TOKEN, REGISTER } from "./queryKeys";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
-import { useContext } from "react";
-import { AuthUserContext } from "@/react/_components/AuthUserProvider";
 
 const URL = "account";
 
@@ -37,13 +35,12 @@ const register = async (userData: RegistrationPayload) => {
 
 export const useRegister = (
   options?: UseMutationOptions<User, ApiError, RegistrationPayload, void>
-) => {
-  return useMutation({
+) =>
+  useMutation({
     ...options,
     mutationKey: [REGISTER],
     mutationFn: register,
   });
-};
 
 export type LoginPayload = {
   email: string;
@@ -63,26 +60,12 @@ const login = async (userData: LoginPayload) => {
 
 export const useLogin = (
   options?: UseMutationOptions<LoginResponse, ApiError, LoginPayload, void>
-) => {
-  const { setAuthUser } = useContext(AuthUserContext);
-
-  return useMutation({
+) =>
+  useMutation({
     ...options,
     mutationKey: [LOGIN],
     mutationFn: login,
-    onSuccess: (...params) => {
-      options?.onSuccess?.(...params);
-
-      const [loginResponse] = params;
-
-      const { accessToken, ...user } = loginResponse;
-
-      localStorage.setItem("accessToken", accessToken);
-
-      setAuthUser(user);
-    },
   });
-};
 
 const logout = async () => {
   await credentialsApi.post(`${URL}/logout`);
@@ -90,19 +73,24 @@ const logout = async () => {
 
 export const useLogout = (
   options?: UseMutationOptions<void, ApiError, void, void>
-) => {
-  const { setAuthUser } = useContext(AuthUserContext);
-
-  return useMutation({
+) =>
+  useMutation({
     ...options,
     mutationKey: [LOGOUT],
     mutationFn: logout,
-    onSuccess: (...params) => {
-      options?.onSuccess?.(...params);
-
-      localStorage.removeItem("accessToken");
-
-      setAuthUser(undefined);
-    },
   });
+
+export const refreshToken = async () => {
+  const { data } = await credentialsApi.post<LoginResponse>(`${URL}/refresh`);
+
+  return data;
 };
+
+export const useRefreshToken = (
+  options?: UseMutationOptions<LoginResponse, ApiError, void, void>
+) =>
+  useMutation({
+    ...options,
+    mutationKey: [REFRESH_TOKEN],
+    mutationFn: refreshToken,
+  });

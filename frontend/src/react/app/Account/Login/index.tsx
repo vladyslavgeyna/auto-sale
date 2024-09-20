@@ -4,6 +4,9 @@ import { Button } from "@/react/_components/ui/button";
 import { useLoginForm } from "./_utils/useLoginForm";
 import { useErrorToast } from "@/react/_hooks/use-toast";
 import { getErrorDescription } from "@/react/_utils/getErrorDescription";
+import { ACCESS_TOKEN } from "@/utils/constants";
+import { AuthUserContext } from "@/react/_components/AuthUserProvider";
+import { useContext } from "react";
 
 export const Login = () => {
   const {
@@ -16,6 +19,8 @@ export const Login = () => {
 
   const { showErrorToast } = useErrorToast();
 
+  const { setAuthUser } = useContext(AuthUserContext);
+
   const { mutateAsync: login, isPending } = useLogin({
     onError: (error) => {
       showErrorToast({
@@ -23,7 +28,17 @@ export const Login = () => {
         description: getErrorDescription(error),
       });
     },
-    onSuccess: () => reset(),
+    onSuccess: (...params) => {
+      reset();
+
+      const [loginResponse] = params;
+
+      const { accessToken, ...user } = loginResponse;
+
+      localStorage.setItem(ACCESS_TOKEN, accessToken);
+
+      setAuthUser(user);
+    },
   });
 
   const onSubmit = (data: LoginPayload) => login(data);

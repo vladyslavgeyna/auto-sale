@@ -3,13 +3,15 @@ import { AuthUserContext } from "@/react/_components/AuthUserProvider";
 import { Button } from "@/react/_components/ui/button";
 import { useErrorToast } from "@/react/_hooks/use-toast";
 import { getErrorDescription } from "@/react/_utils/getErrorDescription";
+import { ACCESS_TOKEN } from "@/utils/constants";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { HeaderSkeletonButtons } from "./HeaderSkeletonButtons";
 
 export const Header = () => {
   const navigate = useNavigate();
 
-  const { authUser } = useContext(AuthUserContext);
+  const { authUser, setAuthUser, isUserLoading } = useContext(AuthUserContext);
 
   const isLoggedIn = !!authUser;
 
@@ -22,6 +24,11 @@ export const Header = () => {
         description: getErrorDescription(error),
       });
     },
+    onSuccess: () => {
+      setAuthUser(undefined);
+
+      localStorage.removeItem(ACCESS_TOKEN);
+    },
   });
 
   return (
@@ -31,7 +38,9 @@ export const Header = () => {
           <Link to="/">Auto Sale</Link>
         </div>
         <div className="actions">
-          {!isLoggedIn ? (
+          {isUserLoading ? (
+            <HeaderSkeletonButtons />
+          ) : !isLoggedIn ? (
             <>
               <Button onClick={() => navigate("/account/registration")}>
                 Register

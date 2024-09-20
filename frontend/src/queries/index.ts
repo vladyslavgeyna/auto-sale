@@ -1,3 +1,4 @@
+import { ACCESS_TOKEN } from "@/utils/constants";
 import { QueryClient } from "@tanstack/react-query";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
@@ -17,7 +18,7 @@ export const queryClient = new QueryClient({
 });
 
 const requestAuthInterceptor = (config: InternalAxiosRequestConfig) => {
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem(ACCESS_TOKEN);
   config.headers.Authorization = `Bearer ${accessToken}`;
 
   return config;
