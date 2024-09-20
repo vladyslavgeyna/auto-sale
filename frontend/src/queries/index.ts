@@ -39,7 +39,6 @@ export const credentialsApi = axios.create({
 
 credentialsApi.interceptors.request.use(requestAuthInterceptor);
 
-//TODO: Add interceptor to response to refresh token
 export const authApi = axios.create({
   baseURL: API_URL,
   withCredentials: false,
