@@ -2,11 +2,10 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-jwt';
 import { AuthJwtPayload } from '../types/auth-jwt-payload';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
-import { UserService } from 'src/user/user.service';
 import { RequestUser } from '../types/request-user';
-import { AwsService } from 'src/aws/aws.service';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class RefreshJwtStrategy extends PassportStrategy(
@@ -15,8 +14,7 @@ export class RefreshJwtStrategy extends PassportStrategy(
 ) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
-    private readonly awsService: AwsService,
+    private readonly tokenService: TokenService,
   ) {
     super({
       jwtFromRequest: (req: Request) => {
@@ -26,27 +24,23 @@ export class RefreshJwtStrategy extends PassportStrategy(
       },
       secretOrKey: configService.get('JWT_REFRESH_SECRET'),
       ignoreExpiration: false,
+      passReqToCallback: true,
     });
   }
 
-  async validate({ sub }: AuthJwtPayload): Promise<RequestUser> {
+  async validate(
+    request: Request,
+    { sub }: AuthJwtPayload,
+  ): Promise<RequestUser> {
     const { id: userId } = sub;
+    const { refreshToken } = request.cookies;
 
-    //Find user by id in database to get and store fresh user data
-    const user = await this.userService.getById(userId, {
-      relations: {
-        image: true,
-      },
-    });
+    // Validate and find user by id in database to get and store fresh user data
+    const user = await this.tokenService.validateRefreshToken(
+      userId,
+      refreshToken,
+    );
 
-    if (!user) throw new UnauthorizedException();
-
-    const imageName = user.image?.name;
-
-    const imageLink = imageName
-      ? await this.awsService.getImageUrl(imageName)
-      : null;
-
-    return new RequestUser(user, imageLink);
+    return user;
   }
 }

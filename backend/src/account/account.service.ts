@@ -107,8 +107,16 @@ export class AccountService {
   }
 
   async login(user: RequestUser) {
-    const tokens = this.tokenService.generateTokens(user);
+    const tokens = await this.tokenService.generateTokens(user);
+
+    const hashedRefreshToken = await getHashedString(tokens.refreshToken);
+
+    await this.userService.updateRefreshToken(user.id, hashedRefreshToken);
 
     return { ...tokens, ...user };
+  }
+
+  async logout(userId: string) {
+    await this.userService.updateRefreshToken(userId, null);
   }
 }

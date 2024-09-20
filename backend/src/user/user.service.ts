@@ -54,4 +54,8 @@ export class UserService {
 
     return createdUser;
   }
+
+  async updateRefreshToken(userId: string, refreshToken: string | null) {
+    return await this.userRepository.update({ id: userId }, { refreshToken });
+  }
 }

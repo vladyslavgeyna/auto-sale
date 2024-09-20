@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   Request,
+  Response,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -20,6 +21,8 @@ import { RegisterOutputDto } from './dto/register-output.dto';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { SetRefreshTokenCookieInterceptor } from './interceptors/set-refresh-token-cookie.interceptor';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { REFRESH_TOKEN_COOKIE } from 'src/common/constants';
 
 @Controller('account')
 export class AccountController {
@@ -58,5 +61,14 @@ export class AccountController {
     const userData = await this.accountService.login(request.user);
 
     return userData;
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  async logout(@Request() request, @Response({ passthrough: true }) response) {
+    await this.accountService.logout(request.user.id);
+
+    response.clearCookie(REFRESH_TOKEN_COOKIE);
   }
 }

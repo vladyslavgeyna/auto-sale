@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { TokenService } from './token.service';
+import { AwsModule } from 'src/aws/aws.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { TokenService } from './token.service';
       }),
       inject: [ConfigService],
     }),
+    AwsModule,
+    UserModule,
   ],
   exports: [TokenService, JwtModule],
   providers: [TokenService],

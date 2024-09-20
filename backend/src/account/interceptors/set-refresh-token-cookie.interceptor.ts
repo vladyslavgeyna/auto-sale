@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { REFRESH_TOKEN_COOKIE } from 'src/common/constants';
 
 @Injectable()
 export class SetRefreshTokenCookieInterceptor implements NestInterceptor {
@@ -16,7 +17,7 @@ export class SetRefreshTokenCookieInterceptor implements NestInterceptor {
 
         const { refreshToken, ...responseData } = data;
 
-        response.cookie('refreshToken', refreshToken, {
+        response.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
           httpOnly: true,
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });

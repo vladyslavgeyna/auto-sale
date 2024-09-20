@@ -30,15 +30,15 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
-  //   @OneToOne(() => Token, (token) => token.user)
-  //   token: Token;
-
   //   @Column({
   //     type: 'enum',
   //     enum: UserRole,
   //     default: UserRole.USER,
   //   })
   //   role: UserRole;
+
+  @Column({ nullable: true, type: 'character varying' })
+  refreshToken: string | null;
 
   @OneToOne(() => Image, { nullable: true })
   @JoinColumn()
