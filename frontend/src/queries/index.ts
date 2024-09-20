@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 export type ApiError = AxiosError<{
   error: string;
@@ -16,6 +16,13 @@ export const queryClient = new QueryClient({
   },
 });
 
+const requestAuthInterceptor = (config: InternalAxiosRequestConfig) => {
+  const accessToken = localStorage.getItem("accessToken");
+  config.headers.Authorization = `Bearer ${accessToken}`;
+
+  return config;
+};
+
 const API_URL = String(import.meta.env.VITE_API_URL) + "/api";
 
 export const api = axios.create({
@@ -28,8 +35,12 @@ export const credentialsApi = axios.create({
   withCredentials: true,
 });
 
-//TODO: Add interceptors to add token to requests
+credentialsApi.interceptors.request.use(requestAuthInterceptor);
+
+//TODO: Add interceptor to response to refresh token
 export const authApi = axios.create({
   baseURL: API_URL,
   withCredentials: false,
 });
+
+authApi.interceptors.request.use(requestAuthInterceptor);

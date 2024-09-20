@@ -1,6 +1,6 @@
 import { User } from "@/types";
 import { api, ApiError, credentialsApi } from ".";
-import { LOGIN, REGISTER } from "./queryKeys";
+import { LOGIN, LOGOUT, REGISTER } from "./queryKeys";
 import { useMutation, UseMutationOptions } from "@tanstack/react-query";
 import { useContext } from "react";
 import { AuthUserContext } from "@/react/_components/AuthUserProvider";
@@ -80,6 +80,29 @@ export const useLogin = (
       localStorage.setItem("accessToken", accessToken);
 
       setAuthUser(user);
+    },
+  });
+};
+
+const logout = async () => {
+  await credentialsApi.post(`${URL}/logout`);
+};
+
+export const useLogout = (
+  options?: UseMutationOptions<void, ApiError, void, void>
+) => {
+  const { setAuthUser } = useContext(AuthUserContext);
+
+  return useMutation({
+    ...options,
+    mutationKey: [LOGOUT],
+    mutationFn: logout,
+    onSuccess: (...params) => {
+      options?.onSuccess?.(...params);
+
+      localStorage.removeItem("accessToken");
+
+      setAuthUser(undefined);
     },
   });
 };
