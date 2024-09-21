@@ -7,8 +7,11 @@ import { getErrorDescription } from "@/react/_utils/getErrorDescription";
 import { ACCESS_TOKEN } from "@/utils/constants";
 import { AuthUserContext } from "@/react/_components/AuthUserProvider";
 import { useContext } from "react";
+import { useDocumentTitle } from "@/react/_hooks/useDocumentTitle";
 
 export const Login = () => {
+  useDocumentTitle("Login");
+
   const {
     handleSubmit,
     reset,

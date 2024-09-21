@@ -4,8 +4,11 @@ import { FormControl } from "@/react/_components/FormControl";
 import { RegistrationPayload, useRegister } from "@/queries/account";
 import { useErrorToast, useSuccessToast } from "@/react/_hooks/use-toast";
 import { getErrorDescription } from "@/react/_utils/getErrorDescription";
+import { useDocumentTitle } from "@/react/_hooks/useDocumentTitle";
 
 export const Registration = () => {
+  useDocumentTitle("Registration");
+
   const {
     handleSubmit,
     reset,
