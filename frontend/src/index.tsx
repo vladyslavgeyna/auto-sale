@@ -8,6 +8,7 @@ import { Layout } from "./react/app/Layout";
 import "./styles/index.scss";
 import { Toaster } from "./react/_components/ui/toaster";
 import { AuthUserProvider } from "./react/_components/AuthUserProvider";
+import { NotFound } from "./react/app/ErrorPage/NotFound";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route path="account/*" element={<Account />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
 
