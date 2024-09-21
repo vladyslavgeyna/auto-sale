@@ -42,13 +42,22 @@ export const Header = () => {
             <HeaderSkeletonButtons />
           ) : !isLoggedIn ? (
             <>
-              <Button onClick={() => navigate("/account/registration")}>
+              <Button
+                variant="secondary"
+                onClick={() => navigate("/account/registration")}
+              >
                 Register
               </Button>
-              <Button onClick={() => navigate("/account/login")}>Log in</Button>
+              <Button
+                variant="secondary"
+                onClick={() => navigate("/account/login")}
+              >
+                Log in
+              </Button>
             </>
           ) : (
             <Button
+              variant="secondary"
               onClick={async () => {
                 await logout();
 
