@@ -59,7 +59,7 @@ authApi.interceptors.response.use(
 
         localStorage.setItem(ACCESS_TOKEN, accessToken);
         return authApi.request(originalRequest);
-      } catch (error) {
+      } catch {
         console.error("Error refreshing token", error);
       }
     }
